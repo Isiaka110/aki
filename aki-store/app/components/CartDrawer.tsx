@@ -13,21 +13,20 @@ export default function CartDrawer() {
 
   const handleCheckout = () => {
     toggleCart(); // Close drawer
-    clearCart(); // Empty the cart
-    router.push("/checkout/success"); // Route to success page
+    router.push("/checkout"); // Route to true checkout page
   };
 
   return (
     <>
       {/* Background Overlay */}
-      <div 
+      <div
         className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity"
         onClick={toggleCart}
       />
 
       {/* Drawer Panel */}
       <div className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-white shadow-2xl dark:bg-gray-950 sm:w-[400px] animate-in slide-in-from-right duration-300">
-        
+
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 p-6 dark:border-gray-800">
           <h2 className="flex items-center gap-2 text-xl font-black text-gray-900 dark:text-white">
@@ -73,7 +72,7 @@ export default function CartDrawer() {
               <span>Total</span>
               <span>${getTotal().toFixed(2)}</span>
             </div>
-            <button 
+            <button
               onClick={handleCheckout}
               className="w-full rounded-full bg-black py-4 text-sm font-bold text-white transition-colors hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
             >

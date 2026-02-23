@@ -1,141 +1,133 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Check } from "lucide-react";
+import { Hammer, Rocket, Store, BarChart3, ChevronRight, CheckCircle2, Layout, Image as ImageIcon, CreditCard } from "lucide-react";
+import Link from "next/link";
 
-export default function OnboardingPage() {
-  const router = useRouter();
-  const [step, setStep] = useState(1);
-  const [storeName, setStoreName] = useState("");
+const steps = [
+  {
+    id: 1,
+    title: "Claim your Boutique",
+    desc: "Pick your unique store name and URL (e.g., aki.com/vintage-chic).",
+    icon: Store,
+    fullDesc: "Your URL is your digital storefront address. Choose something memorable that reflects your brand identity."
+  },
+  {
+    id: 2,
+    title: "Customize & Brand",
+    desc: "Upload your logo, banner, and pick your signature brand colors.",
+    icon: Layout,
+    fullDesc: "AESTHETICS ARE EVERYTHING. Use high-resolution images and pick a color palette that makes your products pop."
+  },
+  {
+    id: 3,
+    title: "Upload your Craft",
+    desc: "Add products with premium photos and clear, honest descriptions.",
+    icon: ImageIcon,
+    fullDesc: "The better your photos, the higher your sales. We recommend clear lighting and a consistent background style."
+  },
+  {
+    id: 4,
+    title: "Setup Payments",
+    desc: "Link your bank account to receive automatic, secure payouts.",
+    icon: CreditCard,
+    fullDesc: "We use industrial-standard payment gateways to ensure you get paid instantly and securely after every successful order."
+  }
+];
 
-  const handleNext = () => setStep(2);
-  const handleBack = () => setStep(1);
-  const handleComplete = () => router.push("/store-admin");
-
-  // Auto-generate a slug from the store name (e.g., "My Store" -> "my-store")
-  const storeSlug = storeName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+export default function OnboardingGuide() {
+  const [activeStep, setActiveStep] = useState(1);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 dark:bg-gray-950">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        
-        <div className="mb-8">
-          <h1 className="text-3xl font-black tracking-tight text-gray-900 dark:text-white">Complete your profile</h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">Complete these quick steps to setup your storefront.</p>
-        </div>
+    <div className="min-h-screen bg-white dark:bg-gray-950 px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl">
 
-        <div className="flex flex-col rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 md:flex-row md:min-h-[500px]">
-          
-          {/* Left Sidebar: Stepper */}
-          <div className="w-full border-b border-gray-200 p-8 dark:border-gray-800 md:w-1/3 md:border-b-0 md:border-r">
-            <div className="relative flex flex-col gap-8">
-              {/* Vertical connecting line (hidden on mobile) */}
-              <div className="absolute left-[19px] top-10 hidden h-[calc(100%-80px)] w-[2px] bg-gray-200 dark:bg-gray-700 md:block"></div>
+        <header className="text-center mb-20">
+          <h1 className="text-4xl font-black tracking-tighter text-gray-900 dark:text-white sm:text-6xl">
+            Launch Your <br /> <span className="text-gray-400">Empire</span> on AKI.
+          </h1>
+          <p className="mt-6 text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto font-medium">
+            Everything you need to know about setting up a world-class digital storefront in under 10 minutes.
+          </p>
+        </header>
 
-              {/* Step 1 Indicator */}
-              <div className="relative flex items-start gap-4 z-10">
-                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold transition-colors ${step >= 1 ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-gray-200 text-gray-500 dark:bg-gray-800 dark:text-gray-400'}`}>
-                  {step > 1 ? <Check className="h-5 w-5" /> : "1"}
-                </div>
-                <div>
-                  <h3 className={`font-bold ${step >= 1 ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>Basic Information</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Submit your Name and contact</p>
-                </div>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
 
-              {/* Step 2 Indicator */}
-              <div className="relative flex items-start gap-4 z-10">
-                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold transition-colors ${step === 2 ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-gray-200 text-gray-500 dark:bg-gray-800 dark:text-gray-400'}`}>
-                  2
+          {/* Left: Interactive Steps Overlay */}
+          <div className="lg:col-span-12 mb-12 flex justify-between gap-4 overflow-x-auto pb-4 custom-scrollbar">
+            {steps.map((step) => (
+              <button
+                key={step.id}
+                onClick={() => setActiveStep(step.id)}
+                className={`flex flex-col items-center min-w-[120px] transition-all ${activeStep === step.id ? "scale-110 opacity-100" : "opacity-40 grayscale"}`}
+              >
+                <div className={`mb-3 flex h-16 w-16 items-center justify-center rounded-[1.5rem] bg-black text-white dark:bg-white dark:text-black`}>
+                  <step.icon className="h-6 w-6" />
                 </div>
-                <div>
-                  <h3 className={`font-bold ${step === 2 ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>Store Details</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Name your store and get your link</p>
-                </div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white">Step {step.id}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Side by Side Content */}
+          <div className="lg:col-span-7">
+            <div className="rounded-[3rem] bg-gray-50 p-12 dark:bg-gray-900 transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-800">
+              <h3 className="text-sm font-black uppercase tracking-[0.2em] text-gray-400 mb-6">Phase {activeStep}</h3>
+              <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-6 tracking-tighter">
+                {steps.find(s => s.id === activeStep)?.title}
+              </h2>
+              <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed font-medium mb-8">
+                {steps.find(s => s.id === activeStep)?.fullDesc}
+              </p>
+
+              <div className="flex gap-4">
+                <button
+                  onClick={() => activeStep < 4 && setActiveStep(activeStep + 1)}
+                  className="flex items-center gap-2 rounded-full bg-black px-8 py-4 text-sm font-bold text-white transition-all hover:gap-4 dark:bg-white dark:text-black"
+                >
+                  {activeStep === 4 ? "Ready to Launch" : "Next Step"} <ChevronRight className="h-4 w-4" />
+                </button>
+                {activeStep === 4 && (
+                  <Link href="/auth/signup" className="rounded-full border-2 border-black px-8 py-4 text-sm font-bold text-gray-900 transition-colors dark:border-white dark:text-white">
+                    Start Now
+                  </Link>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Right Side: Form Area */}
-          <div className="flex w-full flex-col justify-between p-8 md:w-2/3">
-            
-            {/* Form Content */}
-            <div className="flex-1">
-              {step === 1 && (
-                <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                  <h2 className="mb-6 text-xl font-bold text-gray-900 dark:text-white">Basic Information</h2>
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                      <div>
-                        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">First Name</label>
-                        <input type="text" placeholder="e.g. John" className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm dark:border-gray-700 dark:bg-gray-950 dark:text-white focus:border-black focus:ring-1 focus:ring-black dark:focus:border-white" />
-                      </div>
-                      <div>
-                        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Last Name</label>
-                        <input type="text" placeholder="e.g. Doe" className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm dark:border-gray-700 dark:bg-gray-950 dark:text-white focus:border-black focus:ring-1 focus:ring-black dark:focus:border-white" />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Phone Number</label>
-                      <input type="tel" placeholder="+234 800 000 0000" className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm dark:border-gray-700 dark:bg-gray-950 dark:text-white focus:border-black focus:ring-1 focus:ring-black dark:focus:border-white" />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {step === 2 && (
-                <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                  <h2 className="mb-6 text-xl font-bold text-gray-900 dark:text-white">Store Details</h2>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Store Name</label>
-                      <input 
-                        type="text" 
-                        value={storeName}
-                        onChange={(e) => setStoreName(e.target.value)}
-                        placeholder="e.g. Thrift Elegance" 
-                        className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm dark:border-gray-700 dark:bg-gray-950 dark:text-white focus:border-black focus:ring-1 focus:ring-black dark:focus:border-white" 
-                      />
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Your Standalone Link</label>
-                      <div className="flex items-center rounded-lg border border-gray-300 bg-gray-50 px-4 py-2 text-sm dark:border-gray-700 dark:bg-gray-950">
-                        <span className="text-gray-500">aki.com/</span>
-                        <span className="font-bold text-gray-900 dark:text-white">{storeSlug || "your-store"}</span>
-                      </div>
-                      <p className="mt-1 text-xs text-gray-500">This is the link you will share with your customers.</p>
-                    </div>
-                  </div>
-                </div>
-              )}
+          {/* Right: Feature Highlights */}
+          <div className="lg:col-span-5 space-y-8 h-full">
+            <div className="p-8 rounded-[2rem] bg-gray-950 text-white dark:bg-white dark:text-black shadow-2xl">
+              <Rocket className="h-8 w-8 mb-4 text-gray-400" />
+              <h4 className="text-xl font-black uppercase tracking-tighter mb-2">Power Delivery</h4>
+              <p className="text-sm text-gray-400 dark:text-gray-500 font-medium">Our platform is optimized for the slowest networks, ensuring your customers can shop smoothly from anywhere.</p>
             </div>
-
-            {/* Bottom Navigation Buttons */}
-            <div className="mt-10 flex items-center justify-between border-t border-gray-200 pt-6 dark:border-gray-800">
-              {step === 1 ? (
-                <button className="rounded-lg border border-gray-300 px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">
-                  Cancel
-                </button>
-              ) : (
-                <button onClick={handleBack} className="rounded-lg border border-gray-300 px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">
-                  Back
-                </button>
-              )}
-
-              {step === 1 ? (
-                <button onClick={handleNext} className="rounded-lg bg-black px-8 py-2 text-sm font-bold text-white transition-colors hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
-                  Next
-                </button>
-              ) : (
-                <button onClick={handleComplete} className="rounded-lg bg-black px-8 py-2 text-sm font-bold text-white transition-colors hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
-                  Complete Setup
-                </button>
-              )}
+            <div className="p-8 rounded-[2rem] bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
+              <CheckCircle2 className="h-8 w-8 mb-4 text-green-500" />
+              <h4 className="text-xl font-black uppercase tracking-tighter mb-2">Verified Sellers</h4>
+              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Join a community of trusted local creators. Every AKI store undergoes a brief verification to build buyer confidence.</p>
             </div>
+            <div className="p-8 rounded-[2rem] bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
+              <BarChart3 className="h-8 w-8 mb-4 text-blue-500" />
+              <h4 className="text-xl font-black uppercase tracking-tighter mb-2">Smart Insights</h4>
+              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Track your best performing hours, popular regions, and top products to scale your business with data.</p>
+            </div>
+          </div>
 
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="mt-32 text-center p-16 rounded-[4rem] bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white shadow-2xl overflow-hidden relative group">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&q=80')] bg-cover bg-center opacity-10 group-hover:scale-105 transition-transform duration-700" />
+          <div className="relative z-10">
+            <h2 className="text-4xl font-black sm:text-6xl mb-6 tracking-tighter">Your Store. Your Story. <br /> Our Platform.</h2>
+            <Link href="/auth/signup" className="inline-block rounded-full bg-white px-12 py-5 text-lg font-black text-black transition-transform hover:scale-110">
+              Open Your Store for Free
+            </Link>
           </div>
         </div>
+
       </div>
     </div>
   );

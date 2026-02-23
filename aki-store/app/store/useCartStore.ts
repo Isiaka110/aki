@@ -11,19 +11,23 @@ export interface CartItem {
 interface CartStore {
   items: CartItem[];
   isOpen: boolean;
+  quickViewProduct: CartItem | null;
   toggleCart: () => void;
   addItem: (item: CartItem) => void;
   removeItem: (id: string) => void;
   clearCart: () => void;
   getTotal: () => number;
+  setQuickView: (product: CartItem | null) => void;
 }
 
 export const useCartStore = create<CartStore>((set, get) => ({
   items: [],
   isOpen: false,
+  quickViewProduct: null,
   
   // UI Actions
   toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
+  setQuickView: (product) => set({ quickViewProduct: product }),
   
   // Cart Actions
   addItem: (newItem) => set((state) => {

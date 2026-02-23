@@ -18,7 +18,7 @@ const recentOrders = [
 export default function DashboardOverview() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      
+
       {/* Header */}
       <div>
         <h1 className="text-3xl font-black tracking-tight text-gray-900 dark:text-white">
@@ -53,11 +53,11 @@ export default function DashboardOverview() {
       <div className="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div className=" flex items-center justify-between border-b border-gray-200 px-6 py-5 dark:border-gray-800">
           <h2 className="text-lg font-bold text-gray-900 dark:text-white">Recent Orders</h2>
-          <Link href="/dashboard/orders" className="flex items-center gap-1 text-sm font-bold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+          <Link href="/store-admin/orders" className="flex items-center gap-1 text-sm font-bold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
             View All <ArrowUpRight className="h-4 w-4" />
           </Link>
         </div>
-        
+
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="bg-gray-50 text-gray-500 dark:bg-gray-950 dark:text-gray-400">
