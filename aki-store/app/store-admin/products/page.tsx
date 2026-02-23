@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import {
-  Plus, Search, Edit, Trash2, X,
+  Plus, Edit, Trash2, X,
   Image as ImageIcon, UploadCloud,
   Info, Tag, Truck, Check
 } from "lucide-react";
@@ -16,7 +16,7 @@ const initialProducts = [
 export default function ProductsPage() {
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("info"); // Tabs: info, media, pricing, delivery
-  const [products, setProducts] = useState(initialProducts);
+  const [products] = useState(initialProducts);
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">

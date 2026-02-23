@@ -27,7 +27,7 @@ export default function SettingsPage() {
 
       <div>
         <h1 className="text-2xl font-black tracking-tight text-gray-900 dark:text-white">Store Settings</h1>
-        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Manage your store's profile, visuals, and brand colors.</p>
+        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Manage your store&apos;s profile, visuals, and brand colors.</p>
       </div>
 
       <div className="space-y-6">
@@ -103,7 +103,7 @@ export default function SettingsPage() {
               <label className="mb-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Primary Brand Color
               </label>
-              <p className="mb-4 text-xs text-gray-500">This color will be used for your "Add to Cart" buttons, badges, and active links on your standalone store.</p>
+              <p className="mb-4 text-xs text-gray-500">This color will be used for your &quot;Add to Cart&quot; buttons, badges, and active links on your standalone store.</p>
 
               <div className="flex flex-wrap items-center gap-4">
                 {presetColors.map((color) => (
@@ -166,7 +166,7 @@ export default function SettingsPage() {
                   className={`flex flex-col items-center justify-center gap-3 rounded-xl border-2 p-4 transition-all ${theme === "system" ? "border-gray-900 bg-gray-50 dark:border-white dark:bg-gray-800" : "border-gray-200 bg-white hover:border-gray-300 dark:border-gray-800 dark:bg-gray-950 dark:hover:border-gray-700"}`}
                 >
                   <Monitor className={`h-6 w-6 ${theme === "system" ? "text-gray-900 dark:text-white" : "text-gray-400"}`} />
-                  <span className="text-sm font-bold text-gray-900 dark:text-white">Match User's Device</span>
+                  <span className="text-sm font-bold text-gray-900 dark:text-white">Match User&apos;s Device</span>
                 </button>
               </div>
             </div>

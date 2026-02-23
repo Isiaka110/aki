@@ -7,7 +7,7 @@ import { useCartStore } from "../store/useCartStore";
 
 export default function CartDrawer() {
   const router = useRouter();
-  const { items, isOpen, toggleCart, removeItem, getTotal, clearCart } = useCartStore();
+  const { items, isOpen, toggleCart, removeItem, getTotal } = useCartStore();
 
   if (!isOpen) return null;
 

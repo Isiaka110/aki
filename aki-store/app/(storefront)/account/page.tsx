@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { User, Package, MapPin, Settings, LogOut, Heart, ChevronRight, Star, Clock } from "lucide-react";
+import { Package, MapPin, Settings, LogOut, Heart, ChevronRight } from "lucide-react";
 import Image from "next/image";
 
 const orders = [

@@ -1,4 +1,4 @@
-import { Mail, MessageSquare, Phone, MapPin } from "lucide-react";
+import { Mail, MessageSquare, MapPin } from "lucide-react";
 
 export default function ContactPage() {
     return (
@@ -10,7 +10,7 @@ export default function ContactPage() {
                     {/* Left: Contact Info */}
                     <div>
                         <h1 className="text-4xl font-black tracking-tighter text-gray-900 dark:text-white sm:text-6xl text-pretty">
-                            Let's talk about <br /> your <span className="text-gray-500">Business.</span>
+                            Let&apos;s talk about <br /> your <span className="text-gray-500">Business.</span>
                         </h1>
                         <p className="mt-6 text-lg text-gray-600 dark:text-gray-400 max-w-md">
                             Whether you are a vendor looking to scale or a shopper with a question, our team is here to help you navigate the AKI experience.

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Star, Store, ArrowRight } from "lucide-react";
+import { Star, ArrowRight } from "lucide-react";
 import Image from "next/image";
 
 const featuredShops = [

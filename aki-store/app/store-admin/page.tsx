@@ -25,7 +25,7 @@ export default function DashboardOverview() {
           Welcome back to ThriftElegance
         </h1>
         <p className="mt-2 text-gray-600 dark:text-gray-400">
-          Here is what's happening with your store today.
+          Here is what&apos;s happening with your store today.
         </p>
       </div>
 

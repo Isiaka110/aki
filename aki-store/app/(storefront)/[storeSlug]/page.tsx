@@ -54,7 +54,7 @@ export default async function StorePage({
             ))
           ) : (
             <div className="col-span-full py-20 text-center">
-              <p className="text-lg text-gray-500">No products found for "{query || category}"</p>
+              <p className="text-lg text-gray-500">No products found for &quot;{query || category}&quot;</p>
             </div>
           )}
         </div>

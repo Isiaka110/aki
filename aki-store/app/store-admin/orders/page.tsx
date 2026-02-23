@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { 
-  Search, Filter, Eye, Truck, CheckCircle, Clock, 
-  Download, CheckSquare, MoreHorizontal, Printer,
+import {
+  Search, Filter, Eye, Truck, CheckCircle, Clock,
+  Download, MoreHorizontal, Printer,
   ChevronLeft, ChevronRight
 } from "lucide-react";
 
@@ -20,7 +20,7 @@ const dummyOrders = [
 export default function OrdersPage() {
   const [activeTab, setActiveTab] = useState("All");
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
-  
+
   const tabs = ["All", "Pending", "Shipped", "Delivered"];
 
   // Filter orders based on active tab
@@ -51,7 +51,7 @@ export default function OrdersPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      
+
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -70,11 +70,10 @@ export default function OrdersPage() {
             <button
               key={tab}
               onClick={() => { setActiveTab(tab); setSelectedOrders([]); }} // Clear selection on tab change
-              className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                activeTab === tab
+              className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${activeTab === tab
                   ? "bg-white text-gray-900 shadow-sm dark:bg-gray-800 dark:text-white"
                   : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-              }`}
+                }`}
             >
               {tab}
             </button>
@@ -84,9 +83,9 @@ export default function OrdersPage() {
         <div className="flex items-center gap-2">
           <div className="relative">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-            <input 
-              type="text" 
-              placeholder="Search by ID or Name..." 
+            <input
+              type="text"
+              placeholder="Search by ID or Name..."
               className="w-full min-w-[250px] rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 text-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black dark:border-gray-700 dark:bg-gray-950 dark:text-white dark:focus:border-white"
             />
           </div>
@@ -107,11 +106,11 @@ export default function OrdersPage() {
           </div>
           <div className="flex items-center gap-3 text-sm font-bold">
             <button onClick={() => handleBulkAction("Print Slips")} className="flex items-center gap-2 rounded-lg px-3 py-1.5 hover:bg-white/10 transition-colors dark:hover:bg-black/5">
-               <Printer className="h-4 w-4" /> Print Packing Slips
+              <Printer className="h-4 w-4" /> Print Packing Slips
             </button>
             <div className="h-4 w-px bg-gray-600 dark:bg-gray-300"></div>
             <button onClick={() => handleBulkAction("Mark as Shipped")} className="flex items-center gap-2 rounded-lg px-3 py-1.5 hover:bg-white/10 transition-colors dark:hover:bg-black/5">
-               <Truck className="h-4 w-4" /> Mark as Shipped
+              <Truck className="h-4 w-4" /> Mark as Shipped
             </button>
           </div>
         </div>
@@ -124,8 +123,8 @@ export default function OrdersPage() {
             <thead className="border-b border-gray-200 bg-gray-50 text-gray-500 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-400">
               <tr>
                 <th className="px-6 py-4">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     checked={selectedOrders.length === filteredOrders.length && filteredOrders.length > 0}
                     onChange={handleSelectAll}
                     className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black dark:border-gray-600 dark:bg-gray-800"
@@ -141,13 +140,13 @@ export default function OrdersPage() {
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
               {filteredOrders.map((order) => (
-                <tr 
-                  key={order.id} 
+                <tr
+                  key={order.id}
                   className={`transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50 ${selectedOrders.includes(order.id) ? 'bg-gray-50 dark:bg-gray-800/50' : ''}`}
                 >
                   <td className="px-6 py-4">
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       checked={selectedOrders.includes(order.id)}
                       onChange={() => handleSelectOrder(order.id)}
                       className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black dark:border-gray-600 dark:bg-gray-800"
@@ -175,14 +174,14 @@ export default function OrdersPage() {
                     ${order.total.toFixed(2)} <span className="text-xs font-normal text-gray-500">({order.items} items)</span>
                   </td>
                   <td className="px-6 py-4 text-right">
-                     <div className="flex items-center justify-end gap-2">
-                       <button className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors">
-                          <Eye className="mr-1 h-3 w-3" /> View
-                       </button>
-                       <button className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white transition-colors">
-                          <MoreHorizontal className="h-4 w-4" />
-                       </button>
-                     </div>
+                    <div className="flex items-center justify-end gap-2">
+                      <button className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors">
+                        <Eye className="mr-1 h-3 w-3" /> View
+                      </button>
+                      <button className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white transition-colors">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -192,17 +191,17 @@ export default function OrdersPage() {
 
         {/* Pagination Footer */}
         <div className="flex items-center justify-between border-t border-gray-200 bg-white px-6 py-4 dark:border-gray-800 dark:bg-gray-900">
-           <p className="text-sm text-gray-500 dark:text-gray-400">
-             Showing <span className="font-bold text-gray-900 dark:text-white">1</span> to <span className="font-bold text-gray-900 dark:text-white">{filteredOrders.length}</span> of <span className="font-bold text-gray-900 dark:text-white">{filteredOrders.length}</span> results
-           </p>
-           <div className="flex items-center gap-2">
-             <button className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-900 disabled:opacity-50 dark:border-gray-700 dark:hover:bg-gray-800 dark:hover:text-white" disabled>
-               <ChevronLeft className="h-4 w-4" />
-             </button>
-             <button className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:hover:bg-gray-800 dark:hover:text-white">
-               <ChevronRight className="h-4 w-4" />
-             </button>
-           </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Showing <span className="font-bold text-gray-900 dark:text-white">1</span> to <span className="font-bold text-gray-900 dark:text-white">{filteredOrders.length}</span> of <span className="font-bold text-gray-900 dark:text-white">{filteredOrders.length}</span> results
+          </p>
+          <div className="flex items-center gap-2">
+            <button className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-900 disabled:opacity-50 dark:border-gray-700 dark:hover:bg-gray-800 dark:hover:text-white" disabled>
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:hover:bg-gray-800 dark:hover:text-white">
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
         </div>
 
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Hammer, Rocket, Store, BarChart3, ChevronRight, CheckCircle2, Layout, Image as ImageIcon, CreditCard } from "lucide-react";
+import { Rocket, Store, BarChart3, ChevronRight, CheckCircle2, Layout, Image as ImageIcon, CreditCard } from "lucide-react";
 import Link from "next/link";
 
 const steps = [
