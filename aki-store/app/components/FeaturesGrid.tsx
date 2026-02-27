@@ -2,43 +2,49 @@ import { ShoppingBag, BarChart3, ShieldCheck } from "lucide-react";
 
 const features = [
   {
-    title: "Your Own Boutique Link",
-    description: "Stop sending customers to a messy feed. Get a clean `aki.com/your-brand` link that showcases your products beautifully.",
+    title: "Signature URL",
+    description: "Secure a bespoke aki.com/your-brand address. Establish immediate credibility without sharing space on crowded feeds.",
     icon: ShoppingBag,
   },
   {
-    title: "Effortless Inventory Control",
-    description: "Never oversell again. Manage stock levels, variations, and pricing from one simple dashboard, accessible on your phone.",
+    title: "Precision Control",
+    description: "Manage exclusive collections, limited drops, and pricing from an elegantly engineered dashboard designed for high volume.",
     icon: BarChart3,
   },
   {
-    title: "Build Verified Trust",
-    description: "Collect legitimate reviews from real buyers. Displaying social proof on your store page increases sales conversions instantly.",
+    title: "Verified Prestige",
+    description: "Accumulate unparalleled social proof. Display verified reviews that convert passive admirers into loyal clientele.",
     icon: ShieldCheck,
   },
 ];
 
 export default function FeaturesGrid() {
   return (
-    <section className="bg-gray-50 py-24 dark:bg-gray-900/50">
+    <section className="bg-[#fcfcfc] py-24 sm:py-32 dark:bg-[#050505] relative border-b border-gray-200 dark:border-white/10">
+
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-           <h2 className="text-3xl font-black tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-             Everything you need to run a modern business.
-           </h2>
-           <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
-             We handle the tech so you can focus on your products.
-           </p>
+        <div className="text-center mb-24 max-w-3xl mx-auto">
+          <span className="mb-4 block text-xs font-semibold tracking-[0.3em] text-gray-400 uppercase">
+            The Essentials
+          </span>
+          <h2 className="font-cinzel text-4xl sm:text-6xl text-gray-900 dark:text-white font-medium leading-[1.1] tracking-wide mb-6">
+            Effortless Commerce
+          </h2>
+          <p className="text-lg text-gray-500 dark:text-gray-400 font-light max-w-xl mx-auto">
+            We handle the complex engineering so you can focus entirely on crafting exceptional products for an exacting audience.
+          </p>
         </div>
-        
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20">
           {features.map((feature, index) => (
-            <div key={index} className="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-950">
-              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-lg bg-gray-900 text-white dark:bg-white dark:text-gray-900">
-                <feature.icon className="h-6 w-6" />
+            <div key={index} className="group relative flex flex-col text-center items-center">
+
+              <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-none bg-transparent border border-gray-900 text-gray-900 transition-all duration-500 group-hover:bg-gray-900 group-hover:text-white dark:border-white dark:text-white dark:group-hover:bg-white dark:group-hover:text-black">
+                <feature.icon className="h-6 w-6 transition-transform duration-500 group-hover:scale-110" strokeWidth={1} />
               </div>
-              <h3 className="mb-3 text-xl font-bold text-gray-900 dark:text-white">{feature.title}</h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+
+              <h3 className="mb-4 font-cinzel text-2xl text-gray-900 dark:text-white tracking-wide">{feature.title}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-light">
                 {feature.description}
               </p>
             </div>

@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Cinzel } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -12,6 +12,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const cinzel = Cinzel({
+  variable: "--font-cinzel",
+  subsets: ["latin"],
+});
+
 export const metadata = {
   title: "AKI - Discover Local Businesses",
   description: "The premier platform for small business owners.",
@@ -20,7 +25,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-300 font-sans`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${cinzel.variable} antialiased bg-[#fcfcfc] text-gray-900 dark:bg-[#050505] dark:text-gray-100 transition-colors duration-300 font-sans`}>
         <Providers>
           {children}
         </Providers>

@@ -5,55 +5,65 @@ import { CreditCard, Rocket, Smile, Store } from "lucide-react";
 const steps = [
     {
         title: "Launch with Ease",
-        desc: "Create your profile in minutes. No coding, no high fees, just your vision.",
-        icon: Store,
-        color: "bg-blue-500"
+        desc: "Create your profile in minutes. No coding, no high fees, just your vision coming to life.",
+        icon: Store
     },
     {
         title: "Premium Experience",
-        desc: "Your customers get a beautiful, fast interface that feels like a top-tier brand.",
-        icon: Rocket,
-        color: "bg-purple-500"
+        desc: "Your customers get a beautiful, fast interface that feels like a top-tier luxury brand.",
+        icon: Rocket
     },
     {
         title: "Seamless Payments",
-        desc: "Secure checkout and instant payouts so you can focus on growing.",
-        icon: CreditCard,
-        color: "bg-green-500"
+        desc: "Secure checkout and instant payouts so you can focus on growing your empire.",
+        icon: CreditCard
     },
     {
         title: "Direct Trust",
-        desc: "Build lasting relationships with your customers through an account system.",
-        icon: Smile,
-        color: "bg-orange-500"
+        desc: "Build lasting relationships with your customers through an intuitive account system.",
+        icon: Smile
     }
 ];
 
 export default function HowItWorks() {
     return (
-        <section className="py-24 bg-gray-50 dark:bg-gray-900/30">
+        <section className="py-24 sm:py-32 bg-[#fcfcfc] dark:bg-[#050505] border-t border-gray-200 dark:border-white/10">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
 
-                <div className="mb-20">
-                    <h2 className="text-4xl font-black tracking-tighter text-gray-900 dark:text-white sm:text-6xl">
-                        Beyond a Simple <br /> <span className="text-gray-400">Checkout Link.</span>
+                <div className="mb-24">
+                    <span className="mb-4 block text-xs font-semibold tracking-[0.3em] text-gray-400 uppercase">
+                        Elevated Engineering
+                    </span>
+                    <h2 className="font-cinzel text-4xl sm:text-6xl text-gray-900 dark:text-white font-medium leading-[1.1] tracking-wide">
+                        Beyond a Simple <br />
+                        <span className="text-gray-400 dark:text-gray-600">Checkout Link.</span>
                     </h2>
-                    <p className="mt-6 text-xl text-gray-500 max-w-2xl mx-auto">
-                        Everything we do is designed to make your local brand feel globally competitive.
+                    <p className="mt-8 text-lg sm:text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
+                        Everything we do is meticulously designed to make your local brand feel globally competitive and exceptionally premium.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-left">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16 text-left relative">
+                    {/* Connecting line for desktop */}
+                    <div className="hidden lg:block absolute top-[28px] left-[12%] right-[12%] h-px bg-gray-200 dark:bg-white/10 z-0" />
+
                     {steps.map((step, i) => (
-                        <div key={i} className="group relative">
-                            <div className={`mb-8 flex h-16 w-16 items-center justify-center rounded-[1.5rem] ${step.color} bg-opacity-10 dark:bg-opacity-20 transition-all group-hover:scale-110`}>
-                                <step.icon className={`h-8 w-8 text-gray-900 dark:text-white`} />
+                        <div key={i} className="group relative z-10 flex flex-col items-start bg-[#fcfcfc] dark:bg-[#050505] pt-0">
+
+                            <div className="relative flex h-14 w-14 items-center justify-center bg-gray-900 dark:bg-white text-white dark:text-black transition-transform duration-500 group-hover:scale-110 mb-8 border border-gray-900 dark:border-white">
+                                <step.icon className="h-6 w-6" strokeWidth={1.5} />
                             </div>
-                            <div className="absolute top-8 left-12 -z-10 text-[8rem] font-black leading-none text-gray-100 opacity-0 group-hover:opacity-50 transition-all dark:text-gray-800 pointer-events-none">
-                                {i + 1}
+
+                            <div className="mb-4 text-sm font-bold tracking-[0.2em] text-gray-300 dark:text-gray-700 transition-colors duration-300 group-hover:text-gray-900 dark:group-hover:text-gray-300 select-none pointer-events-none">
+                                0{i + 1}
                             </div>
-                            <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-3">{step.title}</h3>
-                            <p className="text-gray-500 leading-relaxed font-medium">{step.desc}</p>
+
+                            <h3 className="font-cinzel text-xl text-gray-900 dark:text-white font-medium tracking-wide mb-3">
+                                {step.title}
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm font-light">
+                                {step.desc}
+                            </p>
                         </div>
                     ))}
                 </div>

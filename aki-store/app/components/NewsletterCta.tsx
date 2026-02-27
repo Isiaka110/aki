@@ -1,36 +1,42 @@
-import { Mail } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function NewsletterCta() {
   return (
-    <section className="py-16 px-4">
-      <div className="mx-auto max-w-7xl rounded-[2.5rem] bg-gray-900 px-6 py-16 dark:bg-white md:px-12 lg:py-24">
-        <div className="mx-auto max-w-3xl text-center">
-          <Mail className="mx-auto h-12 w-12 text-white dark:text-gray-900 mb-6" />
-          <h2 className="text-3xl font-black tracking-tight text-white dark:text-gray-900 sm:text-4xl">
-            Be the first to know.
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-gray-300 dark:text-gray-600">
-            Join our newsletter to receive platform updates, seller tips, and exclusive launch promotions.
-          </p>
-          
-          <form className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-full max-w-md rounded-full border-0 bg-white/10 px-6 py-4 text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50 dark:bg-gray-100 dark:text-gray-900 dark:placeholder-gray-500 dark:focus:ring-gray-900/20 sm:w-80"
-              required
-            />
-            <button
-              type="submit"
-              className="w-full rounded-full bg-white px-8 py-4 text-base font-bold text-gray-900 transition-transform hover:scale-105 dark:bg-gray-900 dark:text-white sm:w-auto"
-            >
-              Subscribe Now
-            </button>
-          </form>
-          <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
-            We care about your data in our privacy policy. No spam.
-          </p>
-        </div>
+    <section className="py-24 sm:py-32 bg-[#fcfcfc] dark:bg-[#050505] border-t border-gray-200 dark:border-white/10">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+
+        <span className="mb-4 block text-xs font-semibold tracking-[0.3em] text-gray-400 uppercase">
+          Exclusive Access
+        </span>
+
+        <h2 className="font-cinzel text-3xl sm:text-5xl text-gray-900 dark:text-white font-medium mb-6">
+          The AKI Newsletter
+        </h2>
+
+        <p className="mx-auto max-w-xl text-sm sm:text-base text-gray-600 dark:text-gray-400 font-light leading-relaxed mb-12">
+          Subscribe to receive a curated selection of emerging boutiques, editorial insights on commerce, and exclusive invitations.
+        </p>
+
+        <form className="flex flex-col sm:flex-row items-center justify-center gap-0 w-full max-w-2xl mx-auto border border-gray-900 dark:border-white p-1">
+          <input
+            type="email"
+            placeholder="Email Address"
+            className="w-full bg-transparent px-6 py-4 text-sm text-gray-900 placeholder-gray-500 focus:outline-none dark:text-white dark:placeholder-gray-600 rounded-none sm:w-auto flex-1 font-light tracking-wide"
+            required
+          />
+          <button
+            type="submit"
+            className="group flex w-full sm:w-auto items-center justify-center gap-2 bg-gray-900 px-8 py-4 text-xs font-semibold tracking-widest text-white uppercase transition-all duration-500 hover:bg-black dark:bg-white dark:text-black dark:hover:bg-gray-200 mt-2 sm:mt-0"
+          >
+            Subscribe
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </button>
+        </form>
+
+        <p className="mt-8 text-xs text-gray-400 font-light tracking-wide uppercase">
+          Unsubscribe at any moment.
+        </p>
+
       </div>
     </section>
   );
