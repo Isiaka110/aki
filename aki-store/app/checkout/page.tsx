@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function CheckoutPage() {
-    const { items, getTotal, clearCart } = useCartStore();
+    const { items, getTotal, clearCart, setLastOrder } = useCartStore();
     const router = useRouter();
     const [mounted, setMounted] = useState(false);
 
@@ -25,6 +25,17 @@ export default function CheckoutPage() {
 
     const handlePlaceOrder = (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Generate a mock order ID
+        const orderId = "ORD-" + Math.floor(1000 + Math.random() * 9000);
+
+        // Save the details for the success page
+        setLastOrder({
+            id: orderId,
+            items: [...items],
+            total: total
+        });
+
         // Simulate order placement
         clearCart();
         router.push("/checkout/success");
@@ -32,110 +43,108 @@ export default function CheckoutPage() {
 
     if (items.length === 0) {
         return (
-            <div className="flex min-h-screen flex-col items-center justify-center bg-white p-4 dark:bg-gray-950">
-                <ShoppingBag className="mb-6 h-20 w-20 text-gray-200 dark:text-gray-800" />
-                <h1 className="text-2xl font-black text-gray-900 dark:text-white">Your cart is empty</h1>
-                <p className="mt-2 text-gray-500">Add some items before checking out.</p>
-                <Link href="/explore" className="mt-8 rounded-full bg-black px-8 py-3 font-bold text-white dark:bg-white dark:text-black">
-                    Continue Shopping
+            <div className="flex min-h-screen flex-col items-center justify-center bg-[#fcfcfc] p-4 dark:bg-[#050505]">
+                <ShoppingBag className="mb-8 h-16 w-16 text-gray-300 dark:text-gray-700" strokeWidth={1} />
+                <h1 className="text-3xl font-cinzel text-gray-900 dark:text-white mb-4 tracking-wide">Your collection is empty</h1>
+                <p className="mt-2 text-sm font-light tracking-wide text-gray-500">Discover exclusive pieces to begin.</p>
+                <Link href="/explore" className="mt-10 border border-gray-900 bg-gray-900 px-8 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white">
+                    Enter the Directory
                 </Link>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 pt-20 dark:bg-gray-950 transition-colors">
-            <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-[#fcfcfc] dark:bg-[#050505] pt-24 pb-16 transition-colors">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-                <Link href="/" className="mb-8 inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
-                    <ArrowLeft className="h-4 w-4" /> Back to Store
-                </Link>
+                <div className="mb-12 border-b border-gray-200 dark:border-white/10 pb-6">
+                    <Link href="/" className="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <ArrowLeft className="h-4 w-4" strokeWidth={1} /> Return to Store
+                    </Link>
+                </div>
 
-                <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+                <div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-24">
 
                     {/* Left Column: Form */}
                     <div className="lg:col-span-7">
-                        <h1 className="text-4xl font-black tracking-tighter text-gray-900 dark:text-white mb-8">Checkout.</h1>
+                        <h1 className="text-5xl font-cinzel text-gray-900 dark:text-white mb-12 tracking-wider">Finalize.</h1>
 
-                        <form onSubmit={handlePlaceOrder} className="space-y-8">
+                        <form onSubmit={handlePlaceOrder} className="space-y-16">
                             {/* Shipping Information */}
-                            <section className="rounded-3xl border border-gray-100 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                                <div className="mb-6 flex items-center gap-2">
-                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-[10px] font-bold text-white dark:bg-white dark:text-black">01</div>
-                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Shipping Information</h2>
+                            <section>
+                                <div className="mb-8 flex items-center gap-4 border-b border-gray-200 dark:border-white/10 pb-4">
+                                    <div className="font-cinzel text-lg text-gray-400">I.</div>
+                                    <h2 className="text-xl font-cinzel tracking-widest uppercase text-gray-900 dark:text-white">Shipping Details</h2>
                                 </div>
 
-                                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                                    <div>
+                                        <input type="email" required placeholder="Email Address" className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors duration-300 tracking-wide font-light placeholder-gray-400" />
+                                    </div>
+                                    <div>
+                                        <input type="tel" required placeholder="Phone Number" className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors duration-300 tracking-wide font-light placeholder-gray-400" />
+                                    </div>
+                                    <div>
+                                        <input type="text" required placeholder="First Name" className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors duration-300 tracking-wide font-light placeholder-gray-400" />
+                                    </div>
+                                    <div>
+                                        <input type="text" required placeholder="Last Name" className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors duration-300 tracking-wide font-light placeholder-gray-400" />
+                                    </div>
                                     <div className="sm:col-span-2">
-                                        <label className="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">Email Address</label>
-                                        <input type="email" required placeholder="john@example.com" className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 text-sm focus:border-black focus:outline-none dark:border-gray-800 dark:bg-gray-950 dark:text-white" />
+                                        <input type="text" required placeholder="Street Address" className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors duration-300 tracking-wide font-light placeholder-gray-400" />
                                     </div>
                                     <div>
-                                        <label className="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">First Name</label>
-                                        <input type="text" required placeholder="John" className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 text-sm focus:border-black focus:outline-none dark:border-gray-800 dark:bg-gray-950 dark:text-white" />
+                                        <input type="text" required placeholder="City" className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors duration-300 tracking-wide font-light placeholder-gray-400" />
                                     </div>
                                     <div>
-                                        <label className="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">Last Name</label>
-                                        <input type="text" required placeholder="Doe" className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 text-sm focus:border-black focus:outline-none dark:border-gray-800 dark:bg-gray-950 dark:text-white" />
-                                    </div>
-                                    <div className="sm:col-span-2">
-                                        <label className="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">Street Address</label>
-                                        <input type="text" required placeholder="123 Luxury Avenue" className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 text-sm focus:border-black focus:outline-none dark:border-gray-800 dark:bg-gray-950 dark:text-white" />
-                                    </div>
-                                    <div>
-                                        <label className="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">City</label>
-                                        <input type="text" required placeholder="Lagos" className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 text-sm focus:border-black focus:outline-none dark:border-gray-800 dark:bg-gray-950 dark:text-white" />
-                                    </div>
-                                    <div>
-                                        <label className="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">Postcode</label>
-                                        <input type="text" required placeholder="100001" className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 text-sm focus:border-black focus:outline-none dark:border-gray-800 dark:bg-gray-950 dark:text-white" />
+                                        <input type="text" required placeholder="Postcode" className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors duration-300 tracking-wide font-light placeholder-gray-400" />
                                     </div>
                                 </div>
                             </section>
 
                             {/* Payment Information */}
-                            <section className="rounded-3xl border border-gray-100 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                                <div className="mb-6 flex items-center gap-2">
-                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-[10px] font-bold text-white dark:bg-white dark:text-black">02</div>
-                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Payment Method</h2>
+                            <section>
+                                <div className="mb-8 flex items-center gap-4 border-b border-gray-200 dark:border-white/10 pb-4">
+                                    <div className="font-cinzel text-lg text-gray-400">II.</div>
+                                    <h2 className="text-xl font-cinzel tracking-widest uppercase text-gray-900 dark:text-white">Payment Method</h2>
                                 </div>
 
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between rounded-2xl border-2 border-black p-4 bg-gray-50 dark:border-white dark:bg-gray-800">
+                                <div className="space-y-8">
+                                    <div className="flex items-center justify-between border border-gray-900 p-4 bg-transparent dark:border-white">
                                         <div className="flex items-center gap-4">
-                                            <CreditCard className="h-6 w-6" />
-                                            <span className="font-bold">Credit / Debit Card</span>
+                                            <CreditCard className="h-5 w-5 text-gray-900 dark:text-white" strokeWidth={1} />
+                                            <span className="font-cinzel tracking-widest text-xs uppercase text-gray-900 dark:text-white">Credit / Debit Card</span>
                                         </div>
-                                        <div className="h-4 w-4 rounded-full border-4 border-black dark:border-white"></div>
+                                        <div className="h-3 w-3 bg-gray-900 rounded-none dark:bg-white"></div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
                                         <div className="sm:col-span-2">
-                                            <label className="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">Card Number</label>
-                                            <input type="text" placeholder="0000 0000 0000 0000" className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 text-sm focus:border-black focus:outline-none dark:border-gray-800 dark:bg-gray-950 dark:text-white" />
+                                            <input type="text" placeholder="Card Number (0000 0000 0000 0000)" className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors duration-300 tracking-wide font-light placeholder-gray-400" />
                                         </div>
                                         <div>
-                                            <label className="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">Expiry Date</label>
-                                            <input type="text" placeholder="MM / YY" className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 text-sm focus:border-black focus:outline-none dark:border-gray-800 dark:bg-gray-950 dark:text-white" />
+                                            <input type="text" placeholder="Expiry Date (MM / YY)" className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors duration-300 tracking-wide font-light placeholder-gray-400" />
                                         </div>
                                         <div>
-                                            <label className="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">CVC</label>
-                                            <input type="text" placeholder="123" className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 text-sm focus:border-black focus:outline-none dark:border-gray-800 dark:bg-gray-950 dark:text-white" />
+                                            <input type="text" placeholder="Security Code (CVC)" className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors duration-300 tracking-wide font-light placeholder-gray-400" />
                                         </div>
                                     </div>
                                 </div>
                             </section>
 
-                            <button type="submit" className="w-full rounded-full bg-black py-6 text-lg font-black text-white transition-all hover:scale-[1.02] hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
-                                Complete Purchase — ${total.toFixed(2)}
-                            </button>
+                            <div className="pt-8">
+                                <button type="submit" className="w-full border border-gray-900 bg-gray-900 py-5 text-sm font-semibold tracking-widest uppercase text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white">
+                                    Confirm Order — ${total.toFixed(2)}
+                                </button>
 
-                            <div className="flex items-center justify-center gap-6 py-4">
-                                <div className="flex items-center gap-2 text-xs font-bold text-gray-500">
-                                    <ShieldCheck className="h-4 w-4" /> Secure SSL
-                                </div>
-                                <div className="flex items-center gap-2 text-xs font-bold text-gray-500">
-                                    <Truck className="h-4 w-4" /> Insured Delivery
+                                <div className="mt-8 flex items-center justify-center gap-8 border-t border-gray-200 dark:border-white/10 pt-6">
+                                    <div className="flex items-center gap-3 text-xs tracking-widest uppercase font-light text-gray-500">
+                                        <ShieldCheck className="h-4 w-4" strokeWidth={1} /> Secured
+                                    </div>
+                                    <div className="flex items-center gap-3 text-xs tracking-widest uppercase font-light text-gray-500">
+                                        <Truck className="h-4 w-4" strokeWidth={1} /> Insured Logistics
+                                    </div>
                                 </div>
                             </div>
                         </form>
@@ -143,55 +152,56 @@ export default function CheckoutPage() {
 
                     {/* Right Column: Order Summary */}
                     <div className="lg:col-span-5">
-                        <div className="sticky top-32 space-y-6">
-                            <div className="rounded-[2.5rem] bg-white p-8 shadow-xl dark:bg-gray-900 border border-gray-100 dark:border-gray-800 transition-colors">
-                                <h2 className="text-xl font-black text-gray-900 dark:text-white mb-6">Order Summary</h2>
+                        <div className="sticky top-12 space-y-12">
+                            <div className="bg-transparent border border-gray-200 p-8 sm:p-12 dark:border-white/10">
+                                <h2 className="text-2xl font-cinzel text-gray-900 dark:text-white mb-8 tracking-wider border-b border-gray-200 dark:border-white/10 pb-6">Summary</h2>
 
                                 {/* Items List */}
-                                <div className="space-y-4 mb-8 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+                                <div className="space-y-6 mb-10 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
                                     {items.map((item) => (
-                                        <div key={item.id} className="flex items-center gap-4">
-                                            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800">
+                                        <div key={item.id} className="flex items-start gap-6">
+                                            <div className="relative h-24 w-20 shrink-0 overflow-hidden bg-gray-100 dark:bg-gray-900">
                                                 <Image src={item.image} alt={item.title} fill className="object-cover" />
                                             </div>
-                                            <div className="flex flex-1 flex-col">
-                                                <span className="text-sm font-bold text-gray-900 dark:text-white line-clamp-1">{item.title}</span>
-                                                <span className="text-xs text-gray-500">Qty: {item.quantity}</span>
+                                            <div className="flex flex-1 flex-col justify-between py-1">
+                                                <div>
+                                                    <span className="text-sm font-cinzel text-gray-900 dark:text-white line-clamp-2 leading-relaxed tracking-wide">{item.title}</span>
+                                                    <span className="text-xs font-light text-gray-500 tracking-widest mt-2 block uppercase">Qty: {item.quantity}</span>
+                                                </div>
+                                                <span className="font-medium text-gray-900 dark:text-white mt-4 tracking-widest">${(item.price * item.quantity).toFixed(2)}</span>
                                             </div>
-                                            <span className="font-bold text-gray-900 dark:text-white">${(item.price * item.quantity).toFixed(2)}</span>
                                         </div>
                                     ))}
                                 </div>
 
                                 {/* Subtotals */}
-                                <div className="space-y-3 border-t border-gray-100 pt-6 dark:border-gray-800">
-                                    <div className="flex justify-between text-sm text-gray-500">
+                                <div className="space-y-4 border-t border-gray-200 pt-8 dark:border-white/10">
+                                    <div className="flex justify-between text-sm text-gray-500 font-light tracking-wide">
                                         <span>Subtotal</span>
-                                        <span className="font-bold text-gray-900 dark:text-white">${subtotal.toFixed(2)}</span>
+                                        <span className="text-gray-900 dark:text-white">${subtotal.toFixed(2)}</span>
                                     </div>
-                                    <div className="flex justify-between text-sm text-gray-500">
-                                        <span>Shipping</span>
-                                        <span className="font-bold text-gray-900 dark:text-white">
-                                            {shipping === 0 ? <span className="text-green-500 font-black">FREE</span> : `$${shipping.toFixed(2)}`}
+                                    <div className="flex justify-between text-sm text-gray-500 font-light tracking-wide">
+                                        <span>Logistics</span>
+                                        <span className="text-gray-900 dark:text-white">
+                                            {shipping === 0 ? <span className="text-gray-900 dark:text-white italic">Complimentary</span> : `$${shipping.toFixed(2)}`}
                                         </span>
                                     </div>
-                                    <div className="flex justify-between text-sm text-gray-500">
-                                        <span>Est. Taxes (7.5%)</span>
-                                        <span className="font-bold text-gray-900 dark:text-white">${tax.toFixed(2)}</span>
+                                    <div className="flex justify-between text-sm text-gray-500 font-light tracking-wide">
+                                        <span>Duties (7.5%)</span>
+                                        <span className="text-gray-900 dark:text-white">${tax.toFixed(2)}</span>
                                     </div>
-                                    <div className="flex justify-between border-t border-gray-100 pt-4 dark:border-gray-800">
-                                        <span className="text-xl font-black text-gray-900 dark:text-white">Total</span>
-                                        <span className="text-2xl font-black text-gray-900 dark:text-white">${total.toFixed(2)}</span>
+                                    <div className="flex justify-between mt-8 border-t border-gray-900 pt-6 dark:border-white">
+                                        <span className="text-xl font-cinzel tracking-widest uppercase text-gray-900 dark:text-white">Total</span>
+                                        <span className="text-2xl font-cinzel font-medium text-gray-900 dark:text-white">${total.toFixed(2)}</span>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Promo Code */}
-                            <div className="rounded-3xl border border-gray-100 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
-                                <label className="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">Do you have a promo code?</label>
-                                <div className="flex gap-2">
-                                    <input type="text" placeholder="AKI-FRESH-2026" className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm focus:border-black focus:outline-none dark:border-gray-800 dark:bg-gray-950 dark:text-white" />
-                                    <button className="rounded-xl bg-gray-900 px-6 font-bold text-white transition-colors hover:bg-black dark:bg-white dark:text-black">Apply</button>
+                            <div>
+                                <div className="flex gap-4 border-b border-gray-300 dark:border-gray-700 pb-2">
+                                    <input type="text" placeholder="Privilege Code" className="flex-1 bg-transparent px-2 py-2 text-sm focus:outline-none dark:text-white font-light tracking-wider placeholder-gray-400" />
+                                    <button className="font-cinzel text-xs font-semibold tracking-widest uppercase text-gray-900 transition-colors hover:text-gray-500 dark:text-white dark:hover:text-gray-400">Apply</button>
                                 </div>
                             </div>
                         </div>

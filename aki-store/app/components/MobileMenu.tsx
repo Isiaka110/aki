@@ -26,7 +26,7 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const { storeSlug } = useParams();
-  const { theme, setTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const baseUrl = storeSlug ? `/${storeSlug}` : "/explore";
 
@@ -141,12 +141,12 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             <h2 className="text-lg font-black text-gray-900 dark:text-white">Appearance</h2>
             {mounted && (
               <button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
                 className="flex items-center justify-between rounded-xl bg-gray-50 px-4 py-4 text-sm font-bold text-gray-900 transition-all dark:bg-gray-900 dark:text-white"
               >
                 <div className="flex items-center gap-3">
-                  {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                  <span>{theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}</span>
+                  {resolvedTheme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                  <span>{resolvedTheme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}</span>
                 </div>
               </button>
             )}

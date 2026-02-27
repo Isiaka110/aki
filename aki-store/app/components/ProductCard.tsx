@@ -13,6 +13,7 @@ interface ProductCardProps {
   rating: number;
   reviewsCount: number;
   category: string;
+  images?: string[];
 }
 
 export default function ProductCard({
@@ -24,24 +25,25 @@ export default function ProductCard({
   rating,
   reviewsCount,
   category,
+  images,
 }: ProductCardProps) {
 
   // Pull the actions from our Zustand store
   const { addItem, setQuickView } = useCartStore();
 
-  const product = { id, title, price, image, quantity: 1 };
+  const product = { id, title, price, image, images: images || [image], quantity: 1 };
 
   return (
-    <div className="group flex flex-col gap-3 p-3 transition-all duration-300">
+    <div className="group flex flex-col gap-4 transition-all duration-300">
 
       {/* Image Container */}
       <div
         onClick={() => setQuickView(product)}
-        className="relative w-full overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-900 aspect-[4/5] cursor-pointer"
+        className="relative w-full overflow-hidden bg-transparent aspect-[4/5] cursor-pointer"
       >
 
         {/* Floating Category Tag */}
-        <div className="absolute right-3 top-3 z-10 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-gray-900 shadow-sm backdrop-blur-sm dark:bg-gray-900/90 dark:text-gray-100">
+        <div className="absolute left-3 top-3 z-10 px-2 py-1 bg-white/80 dark:bg-black/80 backdrop-blur-md border border-white dark:border-gray-800 text-[9px] font-semibold uppercase tracking-widest text-gray-900 dark:text-gray-100">
           {category}
         </div>
 
@@ -50,50 +52,55 @@ export default function ProductCard({
           src={image}
           alt={title}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
         />
+
+        {/* Subtle overlay */}
+        <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-500" />
       </div>
 
       {/* Details Section */}
-      <div className="flex flex-col gap-1.5 px-1">
+      <div className="flex flex-col gap-1.5 px-1 relative">
+
+        {/* Rating Row (Absolute positioned to top right) */}
+        <div className="absolute top-0 right-1 flex flex-col items-end gap-0.5">
+          <div className="flex items-center gap-1">
+            <Star className="h-3 w-3 fill-gray-900 text-gray-900 dark:fill-white dark:text-white" strokeWidth={1} />
+            <span className="font-semibold text-xs tracking-wide text-gray-900 dark:text-white">{rating.toFixed(1)}</span>
+          </div>
+          <span className="text-[10px] text-gray-400 font-light tracking-wide">({reviewsCount})</span>
+        </div>
+
         <h3
           onClick={() => setQuickView(product)}
-          className="text-sm font-bold text-gray-900 dark:text-gray-100 line-clamp-1 cursor-pointer hover:underline"
+          className="font-cinzel text-lg font-medium text-gray-900 dark:text-gray-100 line-clamp-1 cursor-pointer hover:opacity-70 transition-opacity pr-14"
         >
           {title}
         </h3>
 
-        {/* Rating & Pricing Row */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-            <span className="font-semibold text-gray-700 dark:text-gray-300">{rating.toFixed(1)}</span>
-            <span>({reviewsCount} Reviews)</span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {slashedPrice && (
-              <span className="text-xs text-gray-400 line-through">${slashedPrice.toFixed(2)}</span>
-            )}
-            <span className="font-black text-gray-900 dark:text-white">${price.toFixed(2)}</span>
-          </div>
+        {/* Pricing */}
+        <div className="flex items-center gap-3 mt-1">
+          {slashedPrice && (
+            <span className="text-sm font-light text-gray-400 line-through tracking-wide">${slashedPrice.toFixed(2)}</span>
+          )}
+          <span className="text-sm font-semibold tracking-widest text-gray-900 dark:text-white">${price.toFixed(2)}</span>
         </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="mt-1 flex w-full gap-2">
+      <div className="mt-2 flex w-full gap-2 px-1">
         <button
           onClick={() => addItem(product)}
-          className="flex-1 rounded-full border-2 border-gray-200 bg-white py-2 text-xs font-bold text-gray-900 transition-colors hover:border-gray-900 dark:border-gray-800 dark:bg-gray-950 dark:text-white dark:hover:border-white"
+          className="flex-1 border border-gray-900 bg-transparent py-3 text-[10px] font-semibold tracking-widest uppercase text-gray-900 transition-all duration-300 hover:bg-gray-900 hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-black"
         >
           Add to Cart
         </button>
         <button
           onClick={() => setQuickView(product)}
-          className="flex-1 rounded-full bg-gray-900 py-2 text-xs font-bold text-white transition-colors hover:bg-black dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200"
+          className="flex-1 border border-gray-900 bg-gray-900 py-3 text-[10px] font-semibold tracking-widest uppercase text-white transition-all duration-300 hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white"
         >
-          Buy Now
+          Acquire
         </button>
       </div>
     </div>

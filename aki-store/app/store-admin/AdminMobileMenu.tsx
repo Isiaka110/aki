@@ -26,17 +26,17 @@ export default function AdminMobileMenu({ isOpen, onClose }: AdminMobileMenuProp
     return (
         <>
             <div
-                className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
+                className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm md:hidden"
                 onClick={onClose}
             />
-            <div className="fixed inset-y-0 left-0 z-50 w-[80%] max-w-sm bg-white p-6 dark:bg-gray-950 md:hidden animate-in slide-in-from-left duration-300">
-                <div className="flex items-center justify-between mb-8">
-                    <span className="text-2xl font-black tracking-tighter text-gray-900 dark:text-white">Admin.</span>
-                    <button onClick={onClose} className="p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full">
-                        <X className="h-6 w-6" />
+            <div className="fixed inset-y-0 left-0 z-[110] w-[85%] max-w-sm bg-[#fcfcfc] dark:bg-[#050505] p-6 border-r border-gray-200 dark:border-white/10 md:hidden animate-in slide-in-from-left duration-500">
+                <div className="flex items-center justify-between mb-12 pb-6 border-b border-gray-200 dark:border-white/10">
+                    <span className="font-cinzel text-xl font-medium tracking-[0.2em] text-gray-900 dark:text-white uppercase">Admin.</span>
+                    <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <X className="h-6 w-6" strokeWidth={1} />
                     </button>
                 </div>
-                <nav className="space-y-2">
+                <nav className="space-y-4">
                     {navigation.map((item) => {
                         const isActive = item.href === '/store-admin' ? pathname === '/store-admin' : pathname.startsWith(item.href);
                         return (
@@ -44,12 +44,12 @@ export default function AdminMobileMenu({ isOpen, onClose }: AdminMobileMenuProp
                                 key={item.name}
                                 href={item.href}
                                 onClick={onClose}
-                                className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold transition-all ${isActive
-                                        ? "bg-black text-white dark:bg-white dark:text-black shadow-lg"
-                                        : "text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-900"
+                                className={`flex items-center gap-4 border-l-2 px-4 py-3 text-xs font-semibold uppercase tracking-widest transition-all ${isActive
+                                    ? "border-gray-900 bg-gray-50 text-gray-900 dark:border-white dark:bg-white/5 dark:text-white"
+                                    : "border-transparent text-gray-500 hover:border-gray-200 hover:text-gray-900 dark:text-gray-400 dark:hover:border-white/10 dark:hover:text-white"
                                     }`}
                             >
-                                <item.icon className="h-5 w-5" />
+                                <item.icon className="h-4 w-4" strokeWidth={1.5} />
                                 {item.name}
                             </Link>
                         );

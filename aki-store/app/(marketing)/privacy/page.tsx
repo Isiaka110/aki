@@ -1,40 +1,51 @@
 export default function PrivacyPage() {
     return (
-        <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
-            <h1 className="mb-8 text-4xl font-black tracking-tighter text-gray-900 dark:text-white">
-                Privacy Policy
-            </h1>
-            <div className="prose prose-gray max-w-none dark:prose-invert">
-                <p className="text-gray-600 dark:text-gray-400">Last updated: February 2026</p>
+        <div className="bg-[#fcfcfc] dark:bg-[#050505] min-h-screen pt-32 pb-24 px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-4xl">
+                <span className="mb-4 block text-xs font-semibold tracking-[0.3em] text-gray-400 uppercase text-center">
+                    Maison AKI
+                </span>
+                <h1 className="mb-16 text-4xl sm:text-6xl font-cinzel text-gray-900 dark:text-white font-medium tracking-wide text-center">
+                    Privacy Policy
+                </h1>
 
-                <div className="mt-8 space-y-8">
-                    <section>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">1. Information We Collect</h2>
-                        <p className="mt-2 text-gray-600 dark:text-gray-300">
-                            When you create an AKI store, we collect your business name, contact details, and banking information for payouts. When you shop on any store, we collect your shipping address and email for order fulfillment. We do NOT store your full credit card details on our servers; payments are processed securely via industry-standard partners.
-                        </p>
-                    </section>
+                <div className="prose prose-gray max-w-none dark:prose-invert">
+                    <p className="text-gray-500 font-light tracking-wide text-sm text-center mb-16 uppercase">
+                        Effective Date: February 2026
+                    </p>
 
-                    <section>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">2. How We Use Your Data</h2>
-                        <p className="mt-2 text-gray-600 dark:text-gray-300">
-                            Your data is used to maintain your store, fulfill your orders, and notify you of important platform updates. We may also use anonymized sales data to provide better business insights into market trends on AKI.
-                        </p>
-                    </section>
+                    <div className="space-y-16">
+                        <section>
+                            <h2 className="text-xl font-cinzel text-gray-900 dark:text-white tracking-widest uppercase mb-4">I. Data Collection</h2>
+                            <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-light text-sm tracking-wide">
+                                When you establish a Maison AKI presence, we securely collect essential business identifiers, contact parameters, and necessary financial routing information for absolute transaction fidelity. For our distinguished clientele completing acquisitions, we require fulfillment logistics and correspondence details.
+                            </p>
+                            <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-light text-sm tracking-wide mt-4">
+                                Under no pretense do we retain raw financial instrumentation on our direct architecture; all acquisitions traverse encrypted, premier banking infrastructure globally recognized for their stringent security.
+                            </p>
+                        </section>
 
-                    <section>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">3. Cookies & Tracking</h2>
-                        <p className="mt-2 text-gray-600 dark:text-gray-300">
-                            We use functional cookies to keep you logged in and manage your shopping cart across different sessions. We also use analytics cookies to understand how our platform is used so we can improve the design and performance.
-                        </p>
-                    </section>
+                        <section>
+                            <h2 className="text-xl font-cinzel text-gray-900 dark:text-white tracking-widest uppercase mb-4">II. Data Utilization</h2>
+                            <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-light text-sm tracking-wide">
+                                Your data guarantees seamless continuity of your boutique operations and expedites clientele requests. Occasionally, anonymized and aggregate structural data is meticulously analyzed to discern macroeconomic shifts and cultivate high-value insights exclusive to the AKI network.
+                            </p>
+                        </section>
 
-                    <section>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">4. Data Sharing</h2>
-                        <p className="mt-2 text-gray-600 dark:text-gray-300">
-                            Your shipping details are shared with the specific merchant you buy from so they can deliver your item. Merchants are strictly prohibited from using this data for anything other than fulfilling your order. We do not sell your personal information to third-party marketers.
-                        </p>
-                    </section>
+                        <section>
+                            <h2 className="text-xl font-cinzel text-gray-900 dark:text-white tracking-widest uppercase mb-4">III. Digital Architecture (Cookies)</h2>
+                            <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-light text-sm tracking-wide">
+                                Our platform employs sophisticated session management protocols (cookies) to ensure an uninterrupted, luxurious browsing experience across varying devices. Analytical components are exclusively utilized to refine our architectural aesthetics and digital performance.
+                            </p>
+                        </section>
+
+                        <section>
+                            <h2 className="text-xl font-cinzel text-gray-900 dark:text-white tracking-widest uppercase mb-4">IV. Disclosure Parameters</h2>
+                            <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-light text-sm tracking-wide">
+                                Client logistical details are strictly confined to the specific artisans and boutiques contracted for acquisition fulfillment. These entities are absolutely restricted from leveraging client information outside the scope of finalizing the order. We categorically refuse the commercialization or dissemination of personal data to secondary marketing brokers.
+                            </p>
+                        </section>
+                    </div>
                 </div>
             </div>
         </div>

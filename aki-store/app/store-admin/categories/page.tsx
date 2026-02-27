@@ -41,76 +41,76 @@ export default function CategoriesPage() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
 
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-gray-900 dark:text-white">Categories</h1>
-          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Organize your products to help shoppers find what they need.</p>
+          <h1 className="font-cinzel text-3xl font-medium tracking-wider text-gray-900 dark:text-white uppercase mb-2">Collections</h1>
+          <p className="text-sm font-light tracking-wide text-gray-500">Curate and organize your products.</p>
         </div>
         <button
           onClick={openAddModal}
-          className="flex items-center justify-center gap-2 rounded-lg bg-black px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+          className="flex items-center justify-center gap-2 border border-gray-900 bg-gray-900 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white"
         >
-          <Plus className="h-4 w-4" /> Add Category
+          <Plus className="h-4 w-4" strokeWidth={1.5} /> Add Collection
         </button>
       </div>
 
       {/* Toolbar */}
-      <div className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-2 dark:border-gray-800 dark:bg-gray-900">
+      <div className="flex items-center gap-4 border border-gray-200 bg-transparent p-2 dark:border-white/10">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-4 top-3 h-4 w-4 text-gray-400" strokeWidth={1.5} />
           <input
             type="text"
-            placeholder="Search categories..."
-            className="w-full rounded-lg bg-transparent py-2 pl-10 pr-4 text-sm text-gray-900 focus:outline-none dark:text-white placeholder-gray-500"
+            placeholder="Search collections..."
+            className="w-full bg-transparent py-2.5 pl-12 pr-4 text-sm text-gray-900 focus:outline-none dark:text-white placeholder-gray-500 tracking-wide font-light"
           />
         </div>
       </div>
 
       {/* Categories Table */}
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <div className="border border-gray-200 bg-transparent dark:border-white/10">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-gray-200 bg-gray-50 text-gray-500 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-400">
+          <table className="w-full text-left">
+            <thead className="border-b border-gray-100 bg-gray-50/50 dark:border-white/5 dark:bg-white/5">
               <tr>
-                <th className="px-6 py-4 font-medium">Category Name</th>
-                <th className="px-6 py-4 font-medium">Description</th>
-                <th className="px-6 py-4 font-medium">Products</th>
-                <th className="px-6 py-4 font-medium text-right">Actions</th>
+                <th className="px-8 py-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-gray-500">Collection Name</th>
+                <th className="px-8 py-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-gray-500">Description</th>
+                <th className="px-8 py-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-gray-500">Pieces</th>
+                <th className="px-8 py-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-gray-500 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
+            <tbody className="divide-y divide-gray-100 dark:divide-white/5 font-light tracking-wide text-sm">
               {categories.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
-                    <Tags className="mx-auto mb-3 h-8 w-8 opacity-20" />
-                    No categories found. Create one to organize your store!
+                  <td colSpan={4} className="px-8 py-16 text-center text-gray-500">
+                    <Tags className="mx-auto mb-4 h-8 w-8 opacity-20" strokeWidth={1} />
+                    <p className="tracking-widest uppercase text-xs">No collections found. Create one to organize your store.</p>
                   </td>
                 </tr>
               ) : categories.map((category) => (
-                <tr key={category.id} className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                  <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">{category.name}</td>
-                  <td className="px-6 py-4 text-gray-600 dark:text-gray-400 max-w-xs truncate">{category.description}</td>
-                  <td className="px-6 py-4">
-                    <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-bold text-gray-800 dark:bg-gray-800 dark:text-gray-300">
-                      {category.productCount} items
+                <tr key={category.id} className="transition-colors hover:bg-gray-50 dark:hover:bg-white/5">
+                  <td className="px-8 py-6 font-cinzel text-gray-900 dark:text-white uppercase tracking-wider">{category.name}</td>
+                  <td className="px-8 py-6 text-gray-500 max-w-xs truncate">{category.description}</td>
+                  <td className="px-8 py-6">
+                    <span className="inline-flex items-center border border-gray-200 px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-gray-600 dark:border-white/20 dark:text-gray-400">
+                      {category.productCount} pieces
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex justify-end gap-2">
+                  <td className="px-8 py-6 text-right">
+                    <div className="flex justify-end gap-3">
                       <button
                         onClick={() => openEditModal(category)}
-                        className="p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+                        className="p-2 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white transition-colors"
                       >
-                        <Edit className="h-4 w-4" />
+                        <Edit className="h-4 w-4" strokeWidth={1} />
                       </button>
                       <button
                         onClick={() => handleDelete(category.id)}
-                        className="p-2 text-red-500 hover:text-red-700 transition-colors"
+                        className="p-2 text-gray-400 hover:text-red-900 dark:text-gray-500 dark:hover:text-red-500 transition-colors"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4" strokeWidth={1} />
                       </button>
                     </div>
                   </td>
@@ -123,46 +123,46 @@ export default function CategoriesPage() {
 
       {/* Add/Edit Category Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-950 animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-500">
+          <div className="w-full max-w-md overflow-hidden bg-[#fcfcfc] dark:bg-[#050505] shadow-2xl animate-in zoom-in-[0.98] duration-500 border border-gray-200 dark:border-white/10">
 
-            <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-800">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-                {editingCategory ? "Edit Category" : "Add New Category"}
+            <div className="flex items-center justify-between border-b border-gray-200 px-8 py-6 dark:border-white/10">
+              <h2 className="font-cinzel text-lg font-medium tracking-[0.2em] text-gray-900 dark:text-white uppercase">
+                {editingCategory ? "Edit Collection" : "New Collection"}
               </h2>
-              <button onClick={() => setIsModalOpen(false)} className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
-                <X className="h-5 w-5 text-gray-500" />
+              <button onClick={() => setIsModalOpen(false)} className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <X className="h-5 w-5" strokeWidth={1} />
               </button>
             </div>
 
-            <div className="p-6">
-              <form className="space-y-4">
+            <div className="p-8">
+              <form className="space-y-8">
                 <div>
-                  <label className="mb-1 block text-sm font-bold text-gray-700 dark:text-gray-300">Category Name</label>
+                  <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Collection Name</label>
                   <input
                     type="text"
                     defaultValue={editingCategory?.name || ""}
-                    placeholder="e.g. Summer Collection"
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-black focus:ring-1 focus:ring-black"
+                    placeholder="E.g. Summer Archives"
+                    className="w-full border-b border-gray-300 bg-transparent px-0 py-3 text-sm dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm font-bold text-gray-700 dark:text-gray-300">Description (Optional)</label>
+                  <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Narrative (Optional)</label>
                   <textarea
                     rows={3}
                     defaultValue={editingCategory?.description || ""}
-                    placeholder="A brief description of what belongs in this category..."
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-black focus:ring-1 focus:ring-black"
+                    placeholder="A brief description of this collection's theme..."
+                    className="w-full border border-gray-300 bg-transparent px-4 py-3 text-sm dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white resize-none"
                   />
                 </div>
 
-                <div className="flex justify-end gap-3 pt-4">
-                  <button type="button" onClick={() => setIsModalOpen(false)} className="rounded-lg border border-gray-300 px-6 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors">
-                    Cancel
+                <div className="flex flex-col sm:flex-row gap-4 pt-6">
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="w-full sm:w-1/2 border border-gray-300 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-gray-500 hover:border-gray-900 hover:text-gray-900 dark:border-gray-700 dark:text-gray-400 dark:hover:border-white dark:hover:text-white transition-all">
+                    Discard
                   </button>
-                  <button type="button" className="rounded-lg bg-black px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
-                    {editingCategory ? "Save Changes" : "Create Category"}
+                  <button type="button" className="w-full sm:w-1/2 border border-gray-900 bg-gray-900 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white text-center">
+                    {editingCategory ? "Save" : "Create"}
                   </button>
                 </div>
               </form>
