@@ -1,0 +1,176 @@
+"use client";
+
+import Link from "next/link";
+import { useRouter, usePathname, useParams } from "next/navigation";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+import { Search, ShoppingBag, User, Moon, Sun, Menu } from "lucide-react";
+import { useCartStore } from "../store/useCartStore";
+import MobileMenu from "./MobileMenu";
+
+export default function Navbar() {
+  const { setTheme, resolvedTheme } = useTheme();
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+  const pathname = usePathname();
+  const isLandingPage = pathname === "/";
+  const [scrolled, setScrolled] = useState(false);
+
+  const [mounted, setMounted] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showExitWarning, setShowExitWarning] = useState(false);
+
+  // Extract store slug from params to know if we are in a personalized store
+  const params = useParams();
+  const storeSlug = params?.storeSlug as string;
+
+  const { items, toggleCart } = useCartStore();
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/explore?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  useEffect(() => {
+    setMounted(true);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (storeSlug) {
+      e.preventDefault();
+      setShowExitWarning(true);
+    }
+  };
+
+  return (
+    <>
+      <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? "bg-[#fcfcfc]/80 backdrop-blur-md border-b border-gray-200 dark:bg-[#050505]/80 dark:border-white/10" : "bg-transparent border-transparent"}`}>
+        <div className={`mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8 ${!scrolled && isLandingPage ? "text-gray-900 dark:text-white" : "text-gray-900 dark:text-white"}`}>
+
+          {/* Left: Hamburger (Mobile) + Logo */}
+          <div className="flex items-center gap-4">
+            {!isLandingPage && (
+              <button
+                onClick={() => setIsMobileMenuOpen(true)}
+                className={`p-2 transition-colors ${!scrolled && isLandingPage ? "hover:text-gray-600 dark:hover:text-gray-300" : "hover:text-black dark:hover:text-white"}`}
+              >
+                <Menu className="h-5 w-5" strokeWidth={1} />
+              </button>
+            )}
+
+            <Link href="/" onClick={handleLogoClick} className="flex items-center group">
+              <span className={`font-cinzel text-xl sm:text-2xl font-medium tracking-[0.2em] uppercase transition-opacity hover:opacity-70 ${!scrolled && isLandingPage ? "text-gray-900 dark:text-white" : "text-gray-900 dark:text-white"}`}>
+                AKI.
+              </span>
+            </Link>
+          </div>
+
+          {/* Center: Search Bar */}
+          <div className={`${isLandingPage ? 'hidden' : 'hidden md:flex'} flex-1 items-center justify-center px-8`}>
+            <form onSubmit={handleSearch} className="relative w-full max-w-sm group">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search collections..."
+                className="w-full rounded-none border-b border-gray-300 bg-transparent px-2 py-2 pl-8 text-sm text-gray-900 focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-gray-100 dark:focus:border-white transition-colors duration-300 tracking-wide font-light placeholder-gray-400"
+              />
+              <Search className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 transition-colors" strokeWidth={1} />
+            </form>
+          </div>
+
+          {/* Right: Icons & Actions */}
+          <div className="flex items-center gap-4 sm:gap-6">
+
+            {/* Theme Toggle */}
+            {mounted && (
+              <button
+                onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+                className="text-gray-900 hover:text-gray-500 dark:text-white dark:hover:text-gray-400 transition-colors"
+                aria-label="Toggle Dark Mode"
+              >
+                {resolvedTheme === "dark" ? <Sun className="h-4 w-4" strokeWidth={1.5} /> : <Moon className="h-4 w-4" strokeWidth={1.5} />}
+              </button>
+            )}
+
+            {isLandingPage ? (
+              <Link
+                href="/auth/signup"
+                className="border border-gray-900 bg-transparent px-6 py-2.5 text-[10px] sm:text-xs font-semibold tracking-widest text-gray-900 transition-all duration-300 hover:bg-gray-900 hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-black uppercase"
+              >
+                Start Shop
+              </Link>
+            ) : (
+              <Link
+                href={storeSlug ? `/${storeSlug}/account` : "/explore"}
+                className="text-gray-900 hover:text-gray-500 dark:text-white dark:hover:text-gray-400 transition-colors"
+                title="Store Owner Profile"
+              >
+                <User className="h-4 w-4" strokeWidth={1} />
+              </Link>
+            )}
+
+            {/* Cart Icon */}
+            {!isLandingPage && (
+              <button
+                onClick={toggleCart}
+                className="relative text-gray-900 hover:text-gray-500 dark:text-white dark:hover:text-gray-400 transition-colors"
+              >
+                <ShoppingBag className="h-4 w-4" strokeWidth={1} />
+                {totalItems > 0 && (
+                  <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-gray-900 text-[9px] font-bold text-white dark:bg-white dark:text-black">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
+            )}
+
+          </div>
+        </div>
+      </nav>
+
+      {/* Spacer to prevent content from jumping under fixed navbar */}
+      <div className="h-[73px]" />
+
+      <MobileMenu
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+      />
+
+      {/* Exit Store Warning Modal */}
+      {showExitWarning && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm px-4 animate-in fade-in duration-300">
+          <div className="bg-[#fcfcfc] dark:bg-[#050505] border border-gray-200 dark:border-white/10 p-8 max-w-md w-full text-center shadow-2xl">
+            <h3 className="font-cinzel text-xl text-gray-900 dark:text-white mb-4 uppercase tracking-widest">Leave Storefront?</h3>
+            <p className="text-sm font-light tracking-wide leading-relaxed text-gray-600 dark:text-gray-400 mb-8">
+              You are about to exit this personalized store and return to the main platform directory. Are you sure you wish to proceed?
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                onClick={() => setShowExitWarning(false)}
+                className="flex-1 border border-gray-300 dark:border-gray-700 py-3 text-xs font-semibold uppercase tracking-widest text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+              >
+                Stay Here
+              </button>
+              <button
+                onClick={() => {
+                  setShowExitWarning(false);
+                  router.push("/");
+                }}
+                className="flex-1 border border-gray-900 bg-gray-900 dark:border-white dark:bg-white dark:text-black py-3 text-xs font-semibold uppercase tracking-widest text-white hover:bg-transparent hover:text-gray-900 dark:hover:bg-transparent dark:hover:text-white transition-all"
+              >
+                Exit Store
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
