@@ -3,15 +3,15 @@ import { Star } from "lucide-react";
 
 const testimonials = [
   {
-    content: "The aesthetic is unparalleled. Launching my couture line through AKI gave my brand the exact elevation and exclusivity I demanded. It's effortless luxury.",
+    content: "Building my online store with AKI gave my brand the scalable infrastructure and conversions I needed. It's an incredible platform.",
     author: "Amara K.",
-    role: "Creative Director",
+    role: "Founder & CEO",
     image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80&sat=-100",
   },
   {
-    content: "Minimalist, refined, and exceptionally fast. Our bespoke timepieces finally have a digital home that matches their physical craftsmanship.",
+    content: "Fast, reliable, and exceptionally scalable. Our growing business finally has an ecommerce platform that can handle our order volume.",
     author: "David O.",
-    role: "Horologist",
+    role: "Operations Director",
     image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=80&sat=-100",
   },
 ];

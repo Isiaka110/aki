@@ -3,7 +3,7 @@ export default function TermsPage() {
     <div className="bg-[#fcfcfc] dark:bg-[#050505] min-h-screen pt-32 pb-24 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <span className="mb-4 block text-xs font-semibold tracking-[0.3em] text-gray-400 uppercase text-center">
-          Maison AKI
+          AKI Commerce
         </span>
         <h1 className="mb-16 text-4xl sm:text-6xl font-cinzel text-gray-900 dark:text-white font-medium tracking-wide text-center">
           Terms & Conditions

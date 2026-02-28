@@ -202,7 +202,7 @@ export default function ProductDetailsPage() {
               </div>
 
               <p className="mt-4 text-center text-[10px] uppercase tracking-widest text-gray-400 flex justify-center items-center gap-2">
-                <ShieldCheck className="h-4 w-4" strokeWidth={1} /> Secure Transactions via Maison AKI
+                <ShieldCheck className="h-4 w-4" strokeWidth={1} /> Secure Transactions via AKI Commerce
               </p>
             </div>
 

@@ -53,7 +53,7 @@ Customers experience a locked-in, immersive shopping journey defined by the Stor
 
 #### A. Exploring the Personalized Storefront
 A customer enters a personalized storefront via a slug (e.g., `http://localhost:3000/aki`).
-1. **Product Discovery:** They can navigate the "Directory" using the sidebar to sort by "Maison Decor", "Audio Fidelity", or view "New Arrivals" and "Most Coveted".
+1. **Product Discovery:** They can navigate the "Directory" using the sidebar to sort by "Home Decor", "Audio Fidelity", or view "New Arrivals" and "Most Coveted".
 2. **Immersive UI:** The entire UI is governed by the Store Owner's theme (e.g., Dark Mode) and colors (e.g., Rose, Emerald).
 
 #### B. The Director's Profile (Store Account Page)

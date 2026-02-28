@@ -25,13 +25,13 @@ export default function FeaturesGrid() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-24 max-w-3xl mx-auto">
           <span className="mb-4 block text-xs font-semibold tracking-[0.3em] text-gray-400 uppercase">
-            The Essentials
+            Platform Features
           </span>
           <h2 className="font-cinzel text-4xl sm:text-6xl text-gray-900 dark:text-white font-medium leading-[1.1] tracking-wide mb-6">
-            Effortless Commerce
+            Built for Scale
           </h2>
           <p className="text-lg text-gray-500 dark:text-gray-400 font-light max-w-xl mx-auto">
-            We handle the complex engineering so you can focus entirely on crafting exceptional products for an exacting audience.
+            We handle the infrastructure, hosting, and payments so you can focus entirely on scaling your business and delighting your customers.
           </p>
         </div>
 

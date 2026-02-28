@@ -20,16 +20,16 @@ export default function HeroSection() {
       {/* Content */}
       <div className="relative z-10 mx-auto max-w-5xl px-6 text-center sm:px-8 mt-20">
         <span className="mb-6 block text-xs font-semibold tracking-[0.3em] text-gray-600 dark:text-white/80 uppercase">
-          AKI Storefronts
+          AKI COMMERCE
         </span>
 
         <h1 className="mb-8 font-cinzel text-5xl sm:text-7xl lg:text-8xl text-gray-900 dark:text-white font-medium leading-[1.1] tracking-wide drop-shadow-sm dark:drop-shadow-lg">
-          Elevate Your <br />
-          <span className="text-gray-700 dark:text-white/90">Digital Presence</span>
+          Launch Your <br />
+          <span className="text-gray-700 dark:text-white/90">Premium Storefront</span>
         </h1>
 
         <p className="mx-auto mb-12 max-w-2xl text-lg sm:text-xl font-light tracking-wide text-gray-800 dark:text-white/80 leading-relaxed drop-shadow-sm dark:drop-shadow-md">
-          A truly bespoke commerce experience. Launch your luxurious online boutique in minutes without writing a single line of code.
+          The all-in-one ecommerce platform to build, manage, and scale your brand globally without writing a single line of code.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
@@ -37,7 +37,7 @@ export default function HeroSection() {
             href="/auth/signup"
             className="group flex w-full sm:w-auto items-center justify-center gap-3 border border-gray-900 bg-gray-900 px-10 py-4 text-sm font-semibold tracking-widest text-white uppercase transition-all duration-500 hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white"
           >
-            Start Your Journey
+            Start For Free
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
 
@@ -45,7 +45,7 @@ export default function HeroSection() {
             href="/explore"
             className="group flex w-full sm:w-auto items-center justify-center gap-3 border border-gray-900/50 bg-transparent px-10 py-4 text-sm font-semibold tracking-widest text-gray-900 uppercase backdrop-blur-sm transition-all duration-500 hover:border-gray-900 hover:bg-gray-900 hover:text-white dark:border-white/50 dark:text-white dark:hover:border-white dark:hover:bg-white dark:hover:text-black"
           >
-            Explore Portfolio
+            View Examples
           </Link>
         </div>
       </div>

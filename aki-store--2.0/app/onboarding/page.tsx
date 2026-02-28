@@ -44,7 +44,7 @@ export default function OnboardingGuide() {
 
         <header className="text-center mb-24 lg:mb-32">
           <p className="font-cinzel text-xs font-semibold tracking-[0.3em] text-gray-500 uppercase mb-6">
-            Partner with Maison AKI
+            Partner with AKI Commerce
           </p>
           <h1 className="font-cinzel text-5xl tracking-widest text-gray-900 dark:text-white sm:text-7xl mb-6 uppercase">
             Establish Your <br /> <span className="text-gray-400 font-light">Atelier</span>

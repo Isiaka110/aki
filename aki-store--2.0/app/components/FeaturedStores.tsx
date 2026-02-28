@@ -16,8 +16,8 @@ const featuredShops = [
     },
     {
         id: "2",
-        name: "Maison d'Argent",
-        slug: "maison-d-argent",
+        name: "Aura Home",
+        slug: "aura-home",
         category: "Fine Jewelry",
         rating: 4.8,
         image: "https://images.unsplash.com/photo-1550614000-4b95d4edc0c5?w=800&q=80",

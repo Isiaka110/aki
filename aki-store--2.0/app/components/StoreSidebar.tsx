@@ -39,7 +39,7 @@ export default function StoreSidebar() {
           <li>
             <Link href={`${baseUrl}?category=home`} className="flex items-center gap-4 border-l-2 border-transparent px-3 py-3 text-sm font-light tracking-wide text-gray-500 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white transition-colors group">
               <Home className="h-4 w-4 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" strokeWidth={1.5} />
-              <span className="font-cinzel tracking-widest text-xs uppercase">Maison Decor</span>
+              <span className="font-cinzel tracking-widest text-xs uppercase">Home Decor</span>
             </Link>
           </li>
           <li>

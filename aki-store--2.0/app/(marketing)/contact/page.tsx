@@ -16,7 +16,7 @@ export default function ContactPage() {
                             Private <br /> Consultations.
                         </h1>
                         <p className="mt-6 text-lg text-gray-600 dark:text-gray-400 font-light tracking-wide max-w-md leading-relaxed">
-                            Whether you represent an established Maison or are launching a bespoke collection, our advisory board is at your absolute disposal.
+                            Whether you represent an established brand or are launching a bespoke collection, our advisory board is at your absolute disposal.
                         </p>
 
                         <div className="mt-16 space-y-12">
@@ -26,7 +26,7 @@ export default function ContactPage() {
                                 </div>
                                 <div className="pt-1">
                                     <h3 className="font-cinzel tracking-widest text-sm text-gray-900 dark:text-white uppercase mb-2">Direct Correspondence</h3>
-                                    <p className="text-xs text-gray-500 font-light tracking-wide">concierge@aki.maison</p>
+                                    <p className="text-xs text-gray-500 font-light tracking-wide">contact@aki.com</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-6 group">

@@ -150,17 +150,17 @@ export default function StoreOwnerProfilePage() {
                                     <div className="border border-gray-200 dark:border-white/10 p-8 text-center bg-transparent group hover:border-gray-900 dark:hover:border-white transition-all">
                                         <Mail className="h-6 w-6 mx-auto mb-4 text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" strokeWidth={1} />
                                         <span className="block text-[10px] uppercase tracking-widest text-gray-400 mb-2">Direct Inquiries</span>
-                                        <a href={`mailto:${contactEmail}`} className="font-cinzel text-lg tracking-widest text-gray-900 dark:text-white">{contactEmail || "contact@maisonaki.com"}</a>
+                                        <a href={`mailto:${contactEmail}`} className="font-cinzel text-lg tracking-widest text-gray-900 dark:text-white">{contactEmail || "contact@aki.com"}</a>
                                     </div>
                                     <div className="border border-gray-200 dark:border-white/10 p-8 text-center bg-transparent group hover:border-gray-900 dark:hover:border-white transition-all">
                                         <Instagram className="h-6 w-6 mx-auto mb-4 text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" strokeWidth={1} />
                                         <span className="block text-[10px] uppercase tracking-widest text-gray-400 mb-2">Visual Diary</span>
-                                        <a href={`https://instagram.com/${socialInstagram?.replace('@', '')}`} target="_blank" rel="noreferrer" className="font-cinzel text-lg tracking-widest text-gray-900 dark:text-white">{socialInstagram || "@maison_aki"}</a>
+                                        <a href={`https://instagram.com/${socialInstagram?.replace('@', '')}`} target="_blank" rel="noreferrer" className="font-cinzel text-lg tracking-widest text-gray-900 dark:text-white">{socialInstagram || "@aki_commerce"}</a>
                                     </div>
                                     <div className="col-span-1 md:col-span-2 border border-gray-200 dark:border-white/10 p-8 text-center bg-transparent group hover:border-gray-900 dark:hover:border-white transition-all">
                                         <Twitter className="h-6 w-6 mx-auto mb-4 text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" strokeWidth={1} />
                                         <span className="block text-[10px] uppercase tracking-widest text-gray-400 mb-2">Thoughts & Updates</span>
-                                        <a href={`https://twitter.com/${socialTwitter?.replace('@', '')}`} target="_blank" rel="noreferrer" className="font-cinzel text-lg tracking-widest text-gray-900 dark:text-white">{socialTwitter || "@maison_aki"}</a>
+                                        <a href={`https://twitter.com/${socialTwitter?.replace('@', '')}`} target="_blank" rel="noreferrer" className="font-cinzel text-lg tracking-widest text-gray-900 dark:text-white">{socialTwitter || "@aki_commerce"}</a>
                                     </div>
                                 </div>
                             </div>

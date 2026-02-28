@@ -21,7 +21,7 @@ export default function CheckoutSuccessPage() {
   let whatsappUrl = `https://wa.me/${storePhone}`;
 
   if (lastOrder) {
-    let message = `Hello Maison AKI, I have just placed an order (ID: ${lastOrder.id}).\n\n`;
+    let message = `Hello AKI Team, I have just placed an order (ID: ${lastOrder.id}).\n\n`;
     message += `I require a follow-up regarding my acquisition of the following pieces:\n`;
 
     lastOrder.items.forEach((item) => {
@@ -45,7 +45,7 @@ export default function CheckoutSuccessPage() {
       <p className="mb-10 max-w-lg text-sm font-light tracking-wide leading-relaxed text-gray-600 dark:text-gray-400">
         Your selection has been successfully processed.
         A formal receipt and shipping details will be curated and sent to your email shortly.
-        Thank you for choosing Maison AKI.
+        Thank you for choosing AKI Commerce.
       </p>
 
       {lastOrder && (

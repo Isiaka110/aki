@@ -32,14 +32,14 @@ export default function HowItWorks() {
 
                 <div className="mb-24">
                     <span className="mb-4 block text-xs font-semibold tracking-[0.3em] text-gray-400 uppercase">
-                        Elevated Engineering
+                        Seamless Operations
                     </span>
                     <h2 className="font-cinzel text-4xl sm:text-6xl text-gray-900 dark:text-white font-medium leading-[1.1] tracking-wide">
-                        Beyond a Simple <br />
-                        <span className="text-gray-400 dark:text-gray-600">Checkout Link.</span>
+                        Everything You Need to <br />
+                        <span className="text-gray-400 dark:text-gray-600">Run Your Business.</span>
                     </h2>
                     <p className="mt-8 text-lg sm:text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
-                        Everything we do is meticulously designed to make your local brand feel globally competitive and exceptionally premium.
+                        Everything you need to build, manage, and scale your online presence, seamlessly integrated into one powerful platform.
                     </p>
                 </div>
 

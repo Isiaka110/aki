@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, DollarSign, Package, ShoppingCart, TrendingUp, Filter, Clock, Truck, CheckCircle } from "lucide-react";
+import { ArrowUpRight, DollarSign, Package, ShoppingCart, TrendingUp, Filter, Clock, Truck, CheckCircle, ShieldAlert } from "lucide-react";
 
 // Dummy data for the initial layout
 const stats = [
@@ -19,6 +19,17 @@ const recentOrders = [
 export default function DashboardOverview() {
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+
+      {/* Synced System Notice from Super Admin */}
+      <div className="border-l-4 border-red-900 bg-red-50 p-4 dark:bg-red-900/10 mb-8 flex items-start gap-4">
+        <ShieldAlert className="h-5 w-5 text-red-900 dark:text-red-500 mt-0.5 shrink-0" strokeWidth={1.5} />
+        <div>
+          <h3 className="font-cinzel text-sm font-bold tracking-widest text-red-900 dark:text-red-500 uppercase flex items-center gap-2">System Notice <span className="text-[10px] bg-red-200 dark:bg-red-900/50 px-2 py-0.5 rounded-sm">From AKI Core</span></h3>
+          <p className="mt-1 text-xs font-light tracking-wide text-red-800 dark:text-red-400">
+            Mandatory API rotation scheduled for Oct 30, 2026. Please verify your payment routing configurations to avoid disruption in Stripe payouts.
+          </p>
+        </div>
+      </div>
 
       {/* Header */}
       <div>

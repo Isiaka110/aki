@@ -62,7 +62,7 @@ export default function SignupPage() {
 
           <div>
             <p className="text-gray-500 text-[10px] font-medium tracking-[0.2em] uppercase">
-              Part of the AKI Maison Group
+              Part of the AKI Group
             </p>
           </div>
         </div>

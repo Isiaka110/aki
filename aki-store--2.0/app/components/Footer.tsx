@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const footerLinks = {
-  maison: [
+  platform: [
     { name: 'About', href: '/about' },
     { name: 'Collections', href: '/explore' },
     { name: 'Careers', href: '/contact' },
@@ -11,6 +11,7 @@ const footerLinks = {
     { name: 'Start a Boutique', href: '/auth/signup' },
     { name: 'Client Login', href: '/auth/login' },
     { name: 'Vendor Portal', href: '/store-admin' },
+    { name: 'System Admin', href: '/auth/super-login' },
   ],
   legal: [
     { name: 'Terms of Service', href: '/terms' },
@@ -23,7 +24,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#fcfcfc] dark:bg-[#050505] border-t border-gray-200 dark:border-white/10 pt-20 pb-10" aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">
-        Maison Footer
+        Platform Footer
       </h2>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -45,9 +46,9 @@ export default function Footer() {
           {/* Links Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 w-full md:w-2/3">
             <div>
-              <h3 className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-900 dark:text-white mb-6">Maison</h3>
+              <h3 className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-900 dark:text-white mb-6">Platform</h3>
               <ul role="list" className="space-y-4">
-                {footerLinks.maison.map((item) => (
+                {footerLinks.platform.map((item) => (
                   <li key={item.name}>
                     <Link href={item.href} className="text-xs font-light tracking-wide text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                       {item.name}
@@ -88,7 +89,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-[10px] font-light tracking-[0.1em] text-gray-400 uppercase">
-            &copy; {new Date().getFullYear()} AKI Maison. All rights reserved.
+            &copy; {new Date().getFullYear()} AKI Commerce. All rights reserved.
           </p>
           <div className="flex gap-6 text-[10px] font-light tracking-[0.1em] text-gray-400 uppercase">
             <Link href="/privacy" className="hover:text-gray-900 dark:hover:text-white transition-colors">Privacy</Link>

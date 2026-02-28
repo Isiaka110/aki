@@ -23,7 +23,7 @@ export default function AboutPage() {
                         <div>
                             <h2 className="text-3xl font-cinzel text-gray-900 dark:text-white mb-6 font-medium tracking-wide">The Vision</h2>
                             <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm font-light tracking-wide">
-                                AKI was born from a simple observation: visionaries create exceptional products, yet often lack the premium digital presence required to command attention. We built Maison AKI to bridge that gap, providing independent brands with standalone, high-end storefronts that rival the most prestigious global labels.
+                                AKI was born from a simple observation: visionaries create exceptional products, yet often lack the premium digital presence required to command attention. We built AKI Commerce to bridge that gap, providing independent brands with standalone, high-end storefronts that rival the most prestigious global labels.
                             </p>
                         </div>
                         <div className="bg-gray-50 dark:bg-white/5 p-12 flex items-center justify-center border border-gray-200 dark:border-white/10 aspect-square">
@@ -56,7 +56,7 @@ export default function AboutPage() {
                         </div>
                         <div className="text-center p-8 bg-transparent border border-gray-200 dark:border-white/10">
                             <Store className="h-6 w-6 mx-auto mb-6 text-gray-900 dark:text-white" strokeWidth={1} />
-                            <h3 className="font-cinzel tracking-widest text-sm text-gray-900 dark:text-white uppercase mb-4">Maison Design</h3>
+                            <h3 className="font-cinzel tracking-widest text-sm text-gray-900 dark:text-white uppercase mb-4">Platform Design</h3>
                             <p className="text-xs text-gray-500 dark:text-gray-400 font-light leading-relaxed">Architectural digital spaces designed to captivate your clientele.</p>
                         </div>
                     </div>

@@ -128,7 +128,7 @@ export default async function StorePage({
       {/* Store Header Banner */}
       <div className="mb-20 text-center border-b border-gray-200 dark:border-white/10 pb-12 w-full max-w-7xl mx-auto">
         <span className="mb-4 block text-[10px] font-semibold tracking-[0.3em] text-gray-400 uppercase">
-          Maison
+          Home
         </span>
         <h1 className="text-5xl sm:text-7xl font-cinzel text-gray-900 dark:text-white uppercase tracking-widest font-medium">
           {storeSlug}

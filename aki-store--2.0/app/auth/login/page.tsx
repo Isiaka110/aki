@@ -35,7 +35,7 @@ export default function LoginPage() {
 
           <div>
             <p className="text-xs text-gray-900 dark:text-gray-400 font-medium tracking-[0.2em] uppercase">
-              Maison AKI / Authentication
+              AKI Commerce / Authentication
             </p>
           </div>
         </div>

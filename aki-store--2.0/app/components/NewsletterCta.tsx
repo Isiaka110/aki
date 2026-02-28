@@ -14,7 +14,7 @@ export default function NewsletterCta() {
         </h2>
 
         <p className="mx-auto max-w-xl text-sm sm:text-base text-gray-600 dark:text-gray-400 font-light leading-relaxed mb-12">
-          Subscribe to receive a curated selection of emerging boutiques, editorial insights on commerce, and exclusive invitations.
+          Subscribe to our newsletter for the latest product updates, ecommerce strategies, and exclusive growth tips.
         </p>
 
         <form className="flex flex-col sm:flex-row items-center justify-center gap-0 w-full max-w-2xl mx-auto border border-gray-900 dark:border-white p-1">
