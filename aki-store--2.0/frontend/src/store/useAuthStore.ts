@@ -7,7 +7,7 @@ interface AuthUser {
     email: string;
     firstName: string;
     lastName: string;
-    role: 'store_admin' | 'super_admin';
+    role: 'store-admin' | 'super-admin';
     storeName?: string;
 }
 

@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { apiLogin } from '../../../services/api';
@@ -8,6 +8,7 @@ import { useAuthStore } from '../../../store/useAuthStore';
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { setAuth } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,9 +21,11 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      const data = await apiLogin(email, password, 'store_admin');
+      const data = await apiLogin(email, password, 'store-admin');
       setAuth(data.user, data.token);
-      navigate('/store-admin');
+      // Redirect back to originally intended page, or default to dashboard
+      const next = searchParams.get('next') || '/store-admin';
+      navigate(next, { replace: true });
     } catch (err: any) {
       setError(err.message || 'Invalid credentials. Please try again.');
     } finally {

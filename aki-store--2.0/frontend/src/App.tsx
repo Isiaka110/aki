@@ -1,6 +1,9 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
+// Guards
+import ProtectedRoute from './components/ProtectedRoute';
+
 // Layouts
 import MarketingLayout from './pages/marketing/layout';
 import StorefrontLayout from './pages/layout';
@@ -63,22 +66,30 @@ export default function App() {
         <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
         <Route path="/onboarding" element={<OnboardingPage />} />
 
-        {/* ── Super Admin ───────────────────────────────────────────────── */}
-        <Route path="/super-admin" element={<SuperAdminLayout />}>
-          <Route index element={<SuperAdminHome />} />
-          <Route path="stores" element={<SuperAdminStores />} />
-          <Route path="complaints" element={<SuperAdminComplaints />} />
-          <Route path="settings" element={<SuperAdminSettings />} />
+        {/* ── Super Admin (protected: super-admin role only) ────────────── */}
+        <Route element={
+          <ProtectedRoute requiredRole="super-admin" loginPath="/auth/super-login" />
+        }>
+          <Route path="/super-admin" element={<SuperAdminLayout />}>
+            <Route index element={<SuperAdminHome />} />
+            <Route path="stores" element={<SuperAdminStores />} />
+            <Route path="complaints" element={<SuperAdminComplaints />} />
+            <Route path="settings" element={<SuperAdminSettings />} />
+          </Route>
         </Route>
 
-        {/* ── Store Admin ───────────────────────────────────────────────── */}
-        <Route path="/store-admin" element={<StoreAdminLayout />}>
-          <Route index element={<StoreAdminHome />} />
-          <Route path="products" element={<StoreAdminProducts />} />
-          <Route path="orders" element={<StoreAdminOrders />} />
-          <Route path="categories" element={<StoreAdminCategories />} />
-          <Route path="reviews" element={<StoreAdminReviews />} />
-          <Route path="settings" element={<StoreAdminSettings />} />
+        {/* ── Store Admin (protected: store-admin role only) ────────────── */}
+        <Route element={
+          <ProtectedRoute requiredRole="store-admin" loginPath="/auth/login" />
+        }>
+          <Route path="/store-admin" element={<StoreAdminLayout />}>
+            <Route index element={<StoreAdminHome />} />
+            <Route path="products" element={<StoreAdminProducts />} />
+            <Route path="orders" element={<StoreAdminOrders />} />
+            <Route path="categories" element={<StoreAdminCategories />} />
+            <Route path="reviews" element={<StoreAdminReviews />} />
+            <Route path="settings" element={<StoreAdminSettings />} />
+          </Route>
         </Route>
 
         {/* ── Storefront (store-specific pages with Navbar) ─────────────── */}
