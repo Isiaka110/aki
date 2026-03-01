@@ -1,6 +1,8 @@
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // Layouts
+import MarketingLayout from './pages/marketing/layout';
 import StorefrontLayout from './pages/layout';
 import StoreAdminLayout from './pages/store-admin/layout';
 import SuperAdminLayout from './pages/super-admin/layout';
@@ -15,12 +17,14 @@ import TermsPage from './pages/terms/page';
 // Storefront Pages
 import ExplorePage from './pages/explore/page';
 import StorePage from './pages/[storeSlug]/page';
-// ... other storefront pages
 
 // Auth
 import LoginPage from './pages/auth/login/page';
 import SuperLoginPage from './pages/auth/super-login/page';
 import SignupPage from './pages/auth/signup/page';
+
+// Onboarding
+import OnboardingPage from './pages/onboarding/page';
 
 // Store Admin
 import StoreAdminHome from './pages/store-admin/page';
@@ -40,18 +44,24 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Marketing / Auth Routes */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/terms" element={<TermsPage />} />
 
+        {/* ── Marketing (with Navbar + Footer) ────────────────────────── */}
+        <Route element={<MarketingLayout />}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/explore" element={<ExplorePage />} />
+        </Route>
+
+        {/* ── Auth (standalone, no outer nav) ──────────────────────────── */}
         <Route path="/auth/login" element={<LoginPage />} />
         <Route path="/auth/super-login" element={<SuperLoginPage />} />
         <Route path="/auth/signup" element={<SignupPage />} />
+        <Route path="/onboarding" element={<OnboardingPage />} />
 
-        {/* Super Admin Routes */}
+        {/* ── Super Admin ───────────────────────────────────────────────── */}
         <Route path="/super-admin" element={<SuperAdminLayout />}>
           <Route index element={<SuperAdminHome />} />
           <Route path="stores" element={<SuperAdminStores />} />
@@ -59,7 +69,7 @@ export default function App() {
           <Route path="settings" element={<SuperAdminSettings />} />
         </Route>
 
-        {/* Store Admin Routes */}
+        {/* ── Store Admin ───────────────────────────────────────────────── */}
         <Route path="/store-admin" element={<StoreAdminLayout />}>
           <Route index element={<StoreAdminHome />} />
           <Route path="products" element={<StoreAdminProducts />} />
@@ -69,9 +79,8 @@ export default function App() {
           <Route path="settings" element={<StoreAdminSettings />} />
         </Route>
 
-        {/* Dynamic Store Routes */}
+        {/* ── Storefront (store-specific pages with Navbar) ─────────────── */}
         <Route element={<StorefrontLayout />}>
-          <Route path="/explore" element={<ExplorePage />} />
           <Route path="/:storeSlug" element={<StorePage />} />
         </Route>
 

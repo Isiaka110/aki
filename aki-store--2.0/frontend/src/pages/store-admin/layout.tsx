@@ -1,11 +1,13 @@
 // app/store-admin/layout.tsx
-
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faBox, faShoppingBag, faStar, faCog, faSignOutAlt, faStore, faTags, faBars, faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
 import AdminMobileMenu from "./AdminMobileMenu";
 import { useTheme } from "next-themes";
+import ConfirmModal from "../../components/ConfirmModal";
+import { useAuthStore } from "../../store/useAuthStore";
+import { apiLogout } from "../../services/api";
 
 const navigation = [
   { name: "Overview", href: "/store-admin", icon: faTachometerAlt },
@@ -18,15 +20,36 @@ const navigation = [
 
 export default function StoreAdminLayout() {
   const pathname = useLocation().pathname;
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { clearAuth } = useAuthStore();
 
   useEffect(() => setMounted(true), []);
+
+  const handleLogoutConfirm = async () => {
+    try { await apiLogout(); } catch (_) { /* ignore */ }
+    clearAuth();
+    setShowLogoutModal(false);
+    navigate('/auth/login');
+  };
 
   return (
     <div className="flex h-screen bg-[#fcfcfc] dark:bg-[#050505] transition-colors overflow-hidden">
       <AdminMobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+
+      <ConfirmModal
+        isOpen={showLogoutModal}
+        title="Sign Out?"
+        message="Are you certain you wish to sign out of the secure store portal? Any unsaved changes will be lost."
+        confirmLabel="Sign Out"
+        cancelLabel="Stay Here"
+        variant="danger"
+        onConfirm={handleLogoutConfirm}
+        onCancel={() => setShowLogoutModal(false)}
+      />
 
       {/* Sidebar Navigation */}
       <aside className="hidden h-full w-64 flex-col border-r border-gray-200 bg-transparent dark:border-white/10 md:flex">
@@ -40,7 +63,6 @@ export default function StoreAdminLayout() {
         <nav className="flex-1 space-y-2 py-6 px-4 overflow-y-auto custom-scrollbar">
           {navigation.map((item) => {
             const isActive = item.href === '/store-admin' ? pathname === '/store-admin' : pathname.startsWith(item.href);
-
             return (
               <Link
                 key={item.name}
@@ -67,7 +89,10 @@ export default function StoreAdminLayout() {
               {theme === "dark" ? "Light Mode" : "Dark Mode"}
             </button>
           )}
-          <button onClick={() => { if (window.confirm('Are you certain you wish to sign out of the secure store portal?')) { window.location.href = '/auth/login'; } }} className="flex w-full items-center gap-4 bg-transparent px-4 py-3 text-xs font-semibold uppercase tracking-widest text-red-600 transition-colors hover:bg-red-50 dark:text-red-500 dark:hover:bg-red-950/20">
+          <button
+            onClick={() => setShowLogoutModal(true)}
+            className="flex w-full items-center gap-4 bg-transparent px-4 py-3 text-xs font-semibold uppercase tracking-widest text-red-600 transition-colors hover:bg-red-50 dark:text-red-500 dark:hover:bg-red-950/20"
+          >
             <FontAwesomeIcon icon={faSignOutAlt} className="h-4 w-4" />
             Sign Out
           </button>
@@ -77,19 +102,13 @@ export default function StoreAdminLayout() {
       {/* Main Content Area */}
       <main className="flex-1 h-full overflow-y-auto custom-scrollbar">
         <header className="flex h-20 shrink-0 items-center justify-between border-b border-gray-200 bg-[#fcfcfc] px-6 dark:border-white/10 dark:bg-[#050505] md:hidden">
-          <button
-            onClick={() => setIsMobileMenuOpen(true)}
-            className="p-2 text-gray-900 hover:opacity-70 transition-opacity dark:text-white"
-          >
+          <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-gray-900 hover:opacity-70 transition-opacity dark:text-white">
             <FontAwesomeIcon icon={faBars} className="h-6 w-6" />
           </button>
           <span className="font-cinzel text-xl font-medium tracking-[0.2em] text-gray-900 dark:text-white uppercase">Admin.</span>
           <div className="flex items-center gap-4">
             {mounted && (
-              <button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="p-2 text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-900 dark:hover:text-white"
-              >
+              <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="p-2 text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-900 dark:hover:text-white">
                 {theme === "dark" ? <FontAwesomeIcon icon={faSun} className="h-5 w-5" /> : <FontAwesomeIcon icon={faMoon} className="h-5 w-5" />}
               </button>
             )}

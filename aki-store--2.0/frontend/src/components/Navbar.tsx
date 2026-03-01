@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faShoppingBag, faUser, faMoon, faSun, faBars } from '@fortawesome/free-solid-svg-icons';
 import { useCartStore } from "../store/useCartStore";
 import MobileMenu from "./MobileMenu";
+import ConfirmModal from "./ConfirmModal";
 
 export default function Navbar() {
   const { setTheme, resolvedTheme } = useTheme();
@@ -60,7 +61,7 @@ export default function Navbar() {
                 onClick={() => setIsMobileMenuOpen(true)}
                 className={`p-2 transition-colors ${!scrolled && isLandingPage ? "hover:text-gray-600 dark:hover:text-gray-300" : "hover:text-black dark:hover:text-white"}`}
               >
-                <FontAwesomeIcon icon={faBars}  className="h-5 w-5"  />
+                <FontAwesomeIcon icon={faBars} className="h-5 w-5" />
               </button>
             )}
 
@@ -81,7 +82,7 @@ export default function Navbar() {
                 placeholder="Search collections..."
                 className="w-full rounded-none border-b border-gray-300 bg-transparent px-2 py-2 pl-8 text-sm text-gray-900 focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-gray-100 dark:focus:border-white transition-colors duration-300 tracking-wide font-light placeholder-gray-400"
               />
-              <FontAwesomeIcon icon={faSearch}  className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 transition-colors"  />
+              <FontAwesomeIcon icon={faSearch} className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 transition-colors" />
             </form>
           </div>
 
@@ -95,7 +96,7 @@ export default function Navbar() {
                 className="text-gray-900 hover:text-gray-500 dark:text-white dark:hover:text-gray-400 transition-colors"
                 aria-label="Toggle Dark Mode"
               >
-                {resolvedTheme === "dark" ? <FontAwesomeIcon icon={faSun}  className="h-4 w-4"  /> : <FontAwesomeIcon icon={faMoon}  className="h-4 w-4"  />}
+                {resolvedTheme === "dark" ? <FontAwesomeIcon icon={faSun} className="h-4 w-4" /> : <FontAwesomeIcon icon={faMoon} className="h-4 w-4" />}
               </button>
             )}
 
@@ -110,7 +111,7 @@ export default function Navbar() {
                 className="text-gray-900 hover:text-gray-500 dark:text-white dark:hover:text-gray-400 transition-colors"
                 title="Store Owner Profile"
               >
-                <FontAwesomeIcon icon={faUser}  className="h-4 w-4"  />
+                <FontAwesomeIcon icon={faUser} className="h-4 w-4" />
               </Link>
             )}
 
@@ -120,7 +121,7 @@ export default function Navbar() {
                 onClick={toggleCart}
                 className="relative text-gray-900 hover:text-gray-500 dark:text-white dark:hover:text-gray-400 transition-colors"
               >
-                <FontAwesomeIcon icon={faShoppingBag}  className="h-4 w-4"  />
+                <FontAwesomeIcon icon={faShoppingBag} className="h-4 w-4" />
                 {totalItems > 0 && (
                   <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-gray-900 text-[9px] font-bold text-white dark:bg-white dark:text-black">
                     {totalItems}
@@ -142,33 +143,16 @@ export default function Navbar() {
       />
 
       {/* Exit Store Warning Modal */}
-      {showExitWarning && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm px-4 animate-in fade-in duration-300">
-          <div className="bg-[#fcfcfc] dark:bg-[#050505] border border-gray-200 dark:border-white/10 p-8 max-w-md w-full text-center shadow-2xl">
-            <h3 className="font-cinzel text-xl text-gray-900 dark:text-white mb-4 uppercase tracking-widest">Leave Storefront?</h3>
-            <p className="text-sm font-light tracking-wide leading-relaxed text-gray-600 dark:text-gray-400 mb-8">
-              You are about to exit this personalized store and return to the main platform directory. Are you sure you wish to proceed?
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                onClick={() => setShowExitWarning(false)}
-                className="flex-1 border border-gray-300 dark:border-gray-700 py-3 text-xs font-semibold uppercase tracking-widest text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
-              >
-                Stay Here
-              </button>
-              <button
-                onClick={() => {
-                  setShowExitWarning(false);
-                  router("/");
-                }}
-                className="flex-1 border border-gray-900 bg-gray-900 dark:border-white dark:bg-white dark:text-black py-3 text-xs font-semibold uppercase tracking-widest text-white hover:bg-transparent hover:text-gray-900 dark:hover:bg-transparent dark:hover:text-white transition-all"
-              >
-                Exit Store
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        isOpen={showExitWarning}
+        title="Leave Storefront?"
+        message="You are about to exit this personalized store and return to the main platform directory. Are you sure you wish to proceed?"
+        confirmLabel="Exit Store"
+        cancelLabel="Stay Here"
+        variant="warning"
+        onConfirm={() => { setShowExitWarning(false); router('/'); }}
+        onCancel={() => setShowExitWarning(false)}
+      />
     </>
   );
 }

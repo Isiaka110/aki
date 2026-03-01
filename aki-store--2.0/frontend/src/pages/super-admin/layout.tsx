@@ -1,9 +1,12 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faStore, faExclamationTriangle, faCog, faSignOutAlt, faBars, faSun, faMoon, faShieldAlt } from '@fortawesome/free-solid-svg-icons';
 import SuperAdminMobileMenu from "./SuperAdminMobileMenu";
 import { useTheme } from "next-themes";
+import ConfirmModal from "../../components/ConfirmModal";
+import { useAuthStore } from "../../store/useAuthStore";
+import { apiLogout } from "../../services/api";
 
 const navigation = [
     { name: "Overview", href: "/super-admin", icon: faTachometerAlt },
@@ -14,15 +17,36 @@ const navigation = [
 
 export default function SuperAdminLayout() {
     const pathname = useLocation().pathname;
+    const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [showLockModal, setShowLockModal] = useState(false);
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
+    const { clearAuth } = useAuthStore();
 
     useEffect(() => setMounted(true), []);
+
+    const handleLockConfirm = async () => {
+        try { await apiLogout(); } catch (_) { /* ignore */ }
+        clearAuth();
+        setShowLockModal(false);
+        navigate('/auth/super-login');
+    };
 
     return (
         <div className="flex h-screen bg-[#fcfcfc] dark:bg-[#050505] transition-colors overflow-hidden">
             <SuperAdminMobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+
+            <ConfirmModal
+                isOpen={showLockModal}
+                title="Lock System Core?"
+                message="You are about to lock the AKI administrative core. All active sessions will be terminated. Are you certain you wish to proceed?"
+                confirmLabel="Lock System"
+                cancelLabel="Stay"
+                variant="danger"
+                onConfirm={handleLockConfirm}
+                onCancel={() => setShowLockModal(false)}
+            />
 
             {/* Sidebar Navigation */}
             <aside className="hidden h-full w-64 flex-col border-r border-gray-200 bg-transparent dark:border-white/10 md:flex">
@@ -36,7 +60,6 @@ export default function SuperAdminLayout() {
                 <nav className="flex-1 space-y-2 py-6 px-4 overflow-y-auto custom-scrollbar">
                     {navigation.map((item) => {
                         const isActive = item.href === '/super-admin' ? pathname === '/super-admin' : pathname.startsWith(item.href);
-
                         return (
                             <Link
                                 key={item.name}
@@ -63,7 +86,10 @@ export default function SuperAdminLayout() {
                             {theme === "dark" ? "Light Mode" : "Dark Mode"}
                         </button>
                     )}
-                    <button onClick={() => { if (window.confirm('Are you certain you wish to lock the system core?')) { window.location.href = '/auth/super-login'; } }} className="flex w-full items-center gap-4 bg-transparent px-4 py-3 text-xs font-semibold uppercase tracking-widest text-red-600 transition-colors hover:bg-red-50 dark:text-red-500 dark:hover:bg-red-950/20">
+                    <button
+                        onClick={() => setShowLockModal(true)}
+                        className="flex w-full items-center gap-4 bg-transparent px-4 py-3 text-xs font-semibold uppercase tracking-widest text-red-600 transition-colors hover:bg-red-50 dark:text-red-500 dark:hover:bg-red-950/20"
+                    >
                         <FontAwesomeIcon icon={faSignOutAlt} className="h-4 w-4" />
                         Lock System
                     </button>
@@ -73,10 +99,7 @@ export default function SuperAdminLayout() {
             {/* Main Content Area */}
             <main className="flex-1 h-full overflow-y-auto custom-scrollbar">
                 <header className="flex h-20 shrink-0 items-center justify-between border-b border-gray-200 bg-[#fcfcfc] px-6 dark:border-white/10 dark:bg-[#050505] md:hidden">
-                    <button
-                        onClick={() => setIsMobileMenuOpen(true)}
-                        className="p-2 text-gray-900 hover:opacity-70 transition-opacity dark:text-white"
-                    >
+                    <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-gray-900 hover:opacity-70 transition-opacity dark:text-white">
                         <FontAwesomeIcon icon={faBars} className="h-6 w-6" />
                     </button>
                     <span className="font-cinzel text-xl font-medium tracking-[0.2em] text-red-900 dark:text-red-500 uppercase flex items-center gap-2">
@@ -84,10 +107,7 @@ export default function SuperAdminLayout() {
                     </span>
                     <div className="flex items-center gap-4">
                         {mounted && (
-                            <button
-                                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                                className="p-2 text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-900 dark:hover:text-white"
-                            >
+                            <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="p-2 text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-900 dark:hover:text-white">
                                 {theme === "dark" ? <FontAwesomeIcon icon={faSun} className="h-5 w-5" /> : <FontAwesomeIcon icon={faMoon} className="h-5 w-5" />}
                             </button>
                         )}
