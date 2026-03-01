@@ -1,48 +1,11 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faCheckCircle, faTimesCircle, faComment } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faCheckCircle, faTimesCircle, faComment, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { useAuthStore } from '../../../store/useAuthStore';
+import { apiGetReviews, apiUpdateReviewStatus } from "../../../services/api";
 
-// Dummy review data
-const dummyReviews = [
-  {
-    id: "REV-01",
-    customer: "Elena R.",
-    product: "Vintage Leather Jacket",
-    rating: 5,
-    date: "Oct 24, 2025",
-    comment: "Absolutely in love with this jacket! The quality is amazing and it arrived exactly as described. Will definitely be buying from this store again.",
-    status: "Pending"
-  },
-  {
-    id: "REV-02",
-    customer: "James T.",
-    product: "Classic White Sneakers",
-    rating: 4,
-    date: "Oct 22, 2025",
-    comment: "Great shoes, very comfortable. Shipping took a little longer than expected, but the seller was very communicative.",
-    status: "Approved"
-  },
-  {
-    id: "REV-03",
-    customer: "Anonymous",
-    product: "Minimalist Watch",
-    rating: 1,
-    date: "Oct 20, 2025",
-    comment: "Terrible. Do not buy.",
-    status: "Rejected"
-  },
-  {
-    id: "REV-04",
-    customer: "Fatima A.",
-    product: "Vintage Leather Jacket",
-    rating: 5,
-    date: "Oct 19, 2025",
-    comment: "The packaging was so cute and the jacket fits perfectly. Highly recommend ThriftElegance to anyone looking for unique pieces!",
-    status: "Pending"
-  },
-];
+// Reviews moderation page for store administrators.
 
 export default function ReviewsPage() {
   const { user } = useAuthStore();
@@ -51,14 +14,41 @@ export default function ReviewsPage() {
   const [activeTab, setActiveTab] = useState("All");
   const tabs = ["All", "Pending", "Approved", "Rejected"];
 
-  const [reviews, setReviews] = useState(dummyReviews);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleAuthorize = (id: string) => {
-    setReviews(prev => prev.map(r => r.id === id ? { ...r, status: "Approved" } : r));
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  const fetchReviews = async () => {
+    try {
+      setLoading(true);
+      const data = await apiGetReviews();
+      setReviews(data);
+    } catch (err) {
+      console.error("Failed to fetch reviews:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDecline = (id: string) => {
-    setReviews(prev => prev.map(r => r.id === id ? { ...r, status: "Rejected" } : r));
+  const handleAuthorize = async (id: string) => {
+    try {
+      await apiUpdateReviewStatus(id, "Approved");
+      setReviews(prev => prev.map(r => (r._id === id || r.id === id) ? { ...r, status: "Approved" } : r));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDecline = async (id: string) => {
+    try {
+      await apiUpdateReviewStatus(id, "Rejected");
+      setReviews(prev => prev.map(r => (r._id === id || r.id === id) ? { ...r, status: "Rejected" } : r));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const pendingCount = reviews.filter(r => r.status === "Pending").length;
@@ -133,8 +123,16 @@ export default function ReviewsPage() {
 
       {/* Reviews List */}
       <div className="flex flex-col gap-6">
-        {reviews.filter(r => activeTab === "All" || r.status === activeTab).map((review) => (
-          <div key={review.id} className="flex flex-col justify-between gap-6 border border-gray-200 bg-transparent p-8 transition-colors hover:border-gray-300 dark:border-white/10 dark:hover:border-white/20 sm:flex-row sm:items-start group">
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <FontAwesomeIcon icon={faSpinner} className="h-8 w-8 animate-spin text-gray-400" />
+          </div>
+        ) : reviews.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-gray-200 dark:border-white/10">
+            <p className="font-cinzel text-sm text-gray-500 uppercase tracking-widest">No evaluations found in this category.</p>
+          </div>
+        ) : reviews.filter(r => activeTab === "All" || r.status === activeTab).map((review) => (
+          <div key={review._id || review.id} className="flex flex-col justify-between gap-6 border border-gray-200 bg-transparent p-8 transition-colors hover:border-gray-300 dark:border-white/10 dark:hover:border-white/20 sm:flex-row sm:items-start group">
 
             {/* Review Content */}
             <div className="flex-1 space-y-4">
@@ -154,11 +152,11 @@ export default function ReviewsPage() {
               </p>
 
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-light text-gray-500 tracking-wide uppercase">
-                <span className="font-semibold text-gray-900 dark:text-white tracking-widest">{review.customer}</span>
+                <span className="font-semibold text-gray-900 dark:text-white tracking-widest">{review.customerName}</span>
                 <span className="text-gray-300 dark:text-gray-700">|</span>
-                <span>{review.date}</span>
+                <span>{review.date ? new Date(review.date).toLocaleDateString() : 'Recent'}</span>
                 <span className="text-gray-300 dark:text-gray-700">|</span>
-                <span>Piece: <span className="font-medium text-gray-700 dark:text-gray-300">{review.product}</span></span>
+                <span>Piece: <span className="font-medium text-gray-700 dark:text-gray-300">{review.productName}</span></span>
               </div>
             </div>
 
@@ -166,13 +164,13 @@ export default function ReviewsPage() {
             {review.status === "Pending" && (
               <div className="flex w-full shrink-0 flex-row gap-3 sm:w-auto sm:flex-col opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                 <button
-                  onClick={() => handleAuthorize(review.id)}
+                  onClick={() => handleAuthorize(review._id || review.id)}
                   className="flex flex-1 items-center justify-center gap-2 border border-gray-900 bg-gray-900 px-6 py-2.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white cursor-pointer"
                 >
                   <FontAwesomeIcon icon={faCheckCircle} className="h-3 w-3" /> Authorize
                 </button>
                 <button
-                  onClick={() => handleDecline(review.id)}
+                  onClick={() => handleDecline(review._id || review.id)}
                   className="flex flex-1 items-center justify-center gap-2 border border-gray-300 bg-transparent px-6 py-2.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500 hover:border-gray-900 hover:text-gray-900 dark:border-gray-700 dark:text-gray-400 dark:hover:border-white dark:hover:text-white transition-all cursor-pointer"
                 >
                   <FontAwesomeIcon icon={faTimesCircle} className="h-3 w-3" /> Decline
@@ -183,7 +181,7 @@ export default function ReviewsPage() {
             {/* Info for already moderated reviews */}
             {review.status !== "Pending" && (
               <div className="flex shrink-0 items-center sm:h-full">
-                <p className="text-[9px] tracking-[0.2em] uppercase text-gray-400">Processed {review.date}</p>
+                <p className="text-[9px] tracking-[0.2em] uppercase text-gray-400">Processed {review.updatedAt ? new Date(review.updatedAt).toLocaleDateString() : 'Now'}</p>
               </div>
             )}
 

@@ -14,8 +14,13 @@ export async function getAllStores() {
  */
 export async function getStoreById(storeId: string) {
     await connectToDatabase();
-    // Try both the custom storeId (slug) and the MongoDB _id
-    const store = await Store.findOne({ storeId });
+    // Try the custom storeId (STR-xxxx), the slug (like 'official'), and the MongoDB _id
+    const store = await Store.findOne({
+        $or: [
+            { storeId: storeId },
+            { slug: storeId }
+        ]
+    });
     if (store) return store;
 
     // If storeId is a valid ObjectId, try finding by _id

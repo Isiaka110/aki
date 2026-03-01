@@ -101,33 +101,6 @@ export default function StorePage() {
     return matchesQuery && matchesCategory && product.status !== 'Archived';
   });
 
-  const storeReviews = [
-    {
-      id: "REV-01",
-      customer: "Elena R.",
-      product: "Vintage Leather Jacket",
-      rating: 5,
-      date: "Oct 24, 2025",
-      comment: "Absolutely in love with this jacket! The quality is amazing and it arrived exactly as described. Will definitely be buying from this store again.",
-    },
-    {
-      id: "REV-02",
-      customer: "James T.",
-      product: "Classic White Sneakers",
-      rating: 4,
-      date: "Oct 22, 2025",
-      comment: "Great shoes, very comfortable. Shipping took a little longer than expected, but the seller was very communicative.",
-    },
-    {
-      id: "REV-04",
-      customer: "Fatima A.",
-      product: "Vintage Leather Jacket",
-      rating: 5,
-      date: "Oct 19, 2025",
-      comment: "The packaging was so cute and the jacket fits perfectly. Highly recommend to anyone looking for unique pieces!",
-    },
-  ];
-
   const renderStars = (rating: number) => {
     return (
       <div className="flex gap-1 mb-4">
@@ -141,6 +114,8 @@ export default function StorePage() {
       </div>
     );
   };
+
+  const storeReviews = store?.reviews || [];
 
   return (
     <div className="min-h-screen bg-[#fcfcfc] dark:bg-[#050505] p-4 sm:p-8 pt-24 lg:pt-32">
@@ -225,15 +200,15 @@ export default function StorePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {storeReviews.map((review) => (
-            <div key={review.id} className="border border-gray-200 dark:border-white/10 p-8 hover:border-gray-900 dark:hover:border-white transition-colors bg-transparent">
+          {storeReviews.map((review: any) => (
+            <div key={review._id || review.id} className="border border-gray-200 dark:border-white/10 p-8 hover:border-gray-900 dark:hover:border-white transition-colors bg-transparent">
               {renderStars(review.rating)}
               <p className="font-cinzel text-sm leading-relaxed text-gray-900 dark:text-white mb-8 italic">
                 &quot;{review.comment}&quot;
               </p>
               <div className="flex flex-col gap-1 border-t border-gray-100 dark:border-white/5 pt-6 mt-auto">
-                <span className="text-xs font-semibold tracking-widest text-gray-900 dark:text-white uppercase">{review.customer}</span>
-                <span className="text-[10px] font-light tracking-[0.2em] text-gray-400 uppercase">Acquired: {review.product}</span>
+                <span className="text-xs font-semibold tracking-widest text-gray-900 dark:text-white uppercase">{review.customerName}</span>
+                <span className="text-[10px] font-light tracking-[0.2em] text-gray-400 uppercase">Acquired: {review.productName}</span>
               </div>
             </div>
           ))}
@@ -241,7 +216,7 @@ export default function StorePage() {
       </div>
 
       {/* Leave Feedback Section */}
-      <ClientFeedbackForm />
+      <ClientFeedbackForm storeId={store?._id} />
 
     </div>
   );

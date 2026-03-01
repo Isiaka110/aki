@@ -11,6 +11,7 @@ import { registerStoreAdmin, loginUser, requestPasswordReset, verifyResetCode, c
 import { getStoreProducts, createProduct, updateProduct, deleteProduct } from './services/product.service';
 import { getStoreCategories, createCategory, updateCategory, deleteCategory } from './services/category.service';
 import { createStoreOrder, getStoreOrders, updateOrderStatusAdmin, getStoreOrderStats } from './services/order.service';
+import { createReview, getStoreReviews, updateReviewStatus } from './services/review.service';
 import { protect, AuthRequest } from './middleware/auth';
 import Store from './models/Store';
 import Product from './models/Product';
@@ -203,12 +204,14 @@ app.get('/api/store/:storeId', async (req, res) => {
         }
         const products = await getStoreProducts(req.params.storeId);
         const categories = await getStoreCategories(req.params.storeId);
+        const reviews = await getStoreReviews(store._id.toString(), { status: 'Approved' });
         res.status(200).json({
             success: true,
             data: {
                 ...store.toObject(),
                 products,
-                categories
+                categories,
+                reviews
             }
         });
     } catch (error: any) {
@@ -374,6 +377,43 @@ app.put('/api/store-admin/settings', protect, async (req: any, res) => {
         const storeId = req.user.storeId;
         const updatedStore = await updateStoreSettings(storeId, req.body);
         res.status(200).json({ success: true, data: updatedStore });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// --- Review Routes ---
+app.post('/api/store/reviews', async (req, res) => {
+    try {
+        const { storeId, customerName, productName, rating, comment } = req.body;
+        if (!storeId || !customerName || !productName || !rating || !comment) {
+            return res.status(400).json({ success: false, error: 'All fields are required.' });
+        }
+        const review = await createReview(req.body);
+        res.status(201).json({ success: true, data: review });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.get('/api/store-admin/reviews', protect, async (req: any, res) => {
+    try {
+        const storeId = req.user.storeId;
+        const reviews = await getStoreReviews(storeId);
+        res.status(200).json({ success: true, data: reviews });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.put('/api/store-admin/reviews/:reviewId', protect, async (req: any, res) => {
+    try {
+        const { status } = req.body;
+        if (!['Approved', 'Rejected'].includes(status)) {
+            return res.status(400).json({ success: false, error: 'Invalid status' });
+        }
+        const review = await updateReviewStatus(req.params.reviewId, status);
+        res.status(200).json({ success: true, data: review });
     } catch (error: any) {
         res.status(500).json({ success: false, error: error.message });
     }

@@ -128,6 +128,17 @@ export async function apiLogout() {
     return apiRequest<void>('/api/auth/logout', { method: 'POST' });
 }
 
+export async function apiGetReviews() {
+    return apiRequest<any[]>('/api/store-admin/reviews');
+}
+
+export async function apiUpdateReviewStatus(reviewId: string, status: string) {
+    return apiRequest<any>(`/api/store-admin/reviews/${reviewId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ status }),
+    });
+}
+
 // ─── Orders ──────────────────────────────────────────────────────────────────
 
 export async function apiGetStoreOrders() {
@@ -192,6 +203,19 @@ export async function apiUpdateComplaint(payload: {
 }
 
 // ─── Store (Customer-facing) ──────────────────────────────────────────────────
+
+export async function apiSubmitReview(payload: {
+    storeId: string;
+    customerName: string;
+    productName: string;
+    rating: number;
+    comment: string;
+}) {
+    return apiRequest<any>('/api/store/reviews', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+    });
+}
 
 export async function apiSubmitComplaint(payload: {
     storeId: string;

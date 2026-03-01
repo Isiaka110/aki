@@ -27,8 +27,9 @@ export async function registerStoreAdmin(payload: any) {
     try {
         const newUser = await User.create([{ email, passwordHash, role: "store-admin", firstName, lastName }], { session });
         const storeId = `STR-${Math.floor(Math.random() * 90000) + 10000}`;
+        const slug = storeName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
         const newStore = await Store.create([{
-            storeId, name: storeName, ownerName: `${firstName} ${lastName}`,
+            storeId, slug, name: storeName, ownerName: `${firstName} ${lastName}`,
             email, adminId: newUser[0]._id, status: "Pending", riskScore: "Low", revenue: 0
         }], { session });
 

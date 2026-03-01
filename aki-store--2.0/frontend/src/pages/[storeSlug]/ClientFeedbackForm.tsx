@@ -2,21 +2,22 @@
 
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faIcons } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faIcons, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { useCartStore } from "../../store/useCartStore";
+import { apiSubmitReview } from "../../services/api";
 
-export default function ClientFeedbackForm() {
+export default function ClientFeedbackForm({ storeId }: { storeId?: string }) {
     const { lastOrder } = useCartStore();
     const [rating, setRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
     const [comment, setComment] = useState("");
+    const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [canSubmit, setCanSubmit] = useState(true);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
-        // Check if the user dropped a review today based on localStorage
         const lastReviewDate = localStorage.getItem("aki_last_review_date");
         if (lastReviewDate) {
             const today = new Date().toDateString();
@@ -28,15 +29,27 @@ export default function ClientFeedbackForm() {
 
     if (!mounted) return null;
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!lastOrder) return;
-        if (!canSubmit) return;
+        if (!lastOrder || !storeId || !canSubmit) return;
 
-        // Save submission state
-        localStorage.setItem("aki_last_review_date", new Date().toDateString());
-        setSubmitted(true);
-        setCanSubmit(false);
+        setLoading(true);
+        try {
+            await apiSubmitReview({
+                storeId,
+                customerName: (lastOrder as any).customerName || "Verified Client",
+                productName: lastOrder.items?.[0]?.title || "Aki Collection Piece",
+                rating,
+                comment
+            });
+            localStorage.setItem("aki_last_review_date", new Date().toDateString());
+            setSubmitted(true);
+            setCanSubmit(false);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     // User has to be verified (has an order)
@@ -99,10 +112,11 @@ export default function ClientFeedbackForm() {
 
                     <button
                         type="submit"
-                        disabled={rating === 0 || comment.trim() === ""}
+                        disabled={rating === 0 || comment.trim() === "" || loading}
                         className="flex items-center justify-center gap-2 border border-gray-900 bg-gray-900 py-4 text-xs font-semibold uppercase tracking-widest text-white hover:bg-transparent hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white transition-all duration-300"
                     >
-                        Submit Feedback <FontAwesomeIcon icon={faIcons} className="h-4 w-4" />
+                        {loading && <FontAwesomeIcon icon={faSpinner} className="animate-spin" />}
+                        {loading ? 'Submitting...' : 'Submit Feedback'} <FontAwesomeIcon icon={faIcons} className="h-4 w-4" />
                     </button>
                 </form>
             )}

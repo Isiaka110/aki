@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, models } from "mongoose";
 
 export interface IStore extends Document {
     storeId: string;
+    slug: string;
     name: string;
     ownerName: string;
     email: string;
@@ -27,6 +28,7 @@ export interface IStore extends Document {
 const StoreSchema = new Schema<IStore>(
     {
         storeId: { type: String, required: true, unique: true },
+        slug: { type: String, required: true, unique: true },
         name: { type: String, required: true },
         ownerName: { type: String, required: true },
         email: { type: String, required: true, unique: true },
