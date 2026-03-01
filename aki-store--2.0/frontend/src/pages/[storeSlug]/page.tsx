@@ -64,7 +64,7 @@ export default function StorePage() {
   if (!canView) {
     return (
       <div className="min-h-screen bg-[#fcfcfc] dark:bg-[#050505] flex flex-col items-center justify-center p-4">
-        <div className="max-w-md w-full text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="max-w-md w-full text-center space-y-8">
           <h1 className="text-6xl font-cinzel text-gray-900 dark:text-white uppercase tracking-widest font-medium">404</h1>
           <div className="space-y-4">
             <h2 className="text-xl font-cinzel tracking-wider text-gray-700 dark:text-gray-300 uppercase">Vendor Unreachable</h2>

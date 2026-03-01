@@ -1,15 +1,14 @@
 
 
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faShoppingBag, faCreditCard, faTruck, faSync } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faShoppingBag, faCreditCard, faSync } from '@fortawesome/free-solid-svg-icons';
 import { useCartStore } from "../store/useCartStore";
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function CartDrawer() {
-  const router = useNavigate();
   const { storeSlug } = useParams();
   const { items, isOpen, toggleCart, removeItem, getTotal, clearCart } = useCartStore();
 

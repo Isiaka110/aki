@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStore, faImage, faSave, faPalette, faMoon, faSun, faDesktop, faCheckCircle, faCreditCard, faExclamationTriangle, faTimes, faShieldAlt } from '@fortawesome/free-solid-svg-icons';
+import { faStore, faImage, faPalette, faMoon, faSun, faDesktop, faCheckCircle, faCreditCard, faExclamationTriangle, faTimes, faShieldAlt } from '@fortawesome/free-solid-svg-icons';
 import { useTheme } from "next-themes";
 import { useStoreSettings } from "../../../store/useCartStore";
 import { apiUpdateStoreSettings } from "../../../services/api";

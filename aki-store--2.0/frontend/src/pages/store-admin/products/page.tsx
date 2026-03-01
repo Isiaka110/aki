@@ -369,7 +369,7 @@ export default function ProductsPage() {
                 <button onClick={() => openEditBuilder(viewedProduct)} className="flex-1 border border-gray-300 px-4 py-3 text-xs font-semibold uppercase tracking-widest text-gray-500 hover:border-gray-900 hover:text-gray-900 dark:border-gray-700 dark:text-gray-400 dark:hover:border-white dark:hover:text-white transition-all">
                   Edit Piece
                 </button>
-                <button onClick={() => handleDelete(viewedProduct.productId)} className="flex-1 border border-gray-900 bg-gray-900 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white">
+                <button onClick={() => handleDeleteRequest(viewedProduct.productId)} className="flex-1 border border-gray-900 bg-gray-900 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white">
                   Delete
                 </button>
               </div>
