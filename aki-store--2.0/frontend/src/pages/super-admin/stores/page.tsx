@@ -1,6 +1,7 @@
 
 
 import { useState, useEffect } from "react";
+import { apiGetAllStores, apiUpdateStoreIntegrity } from "../../../services/api";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faStore, faExclamationTriangle, faCheckCircle, faBan, faExternalLinkAlt, faTimes, faSync } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
@@ -15,8 +16,7 @@ export default function StoresIntegrityPage() {
 
     const fetchStores = async () => {
         try {
-            const res = await fetch("/api/super-admin/stores");
-            const { data } = await res.json();
+            const data = await apiGetAllStores();
             if (data) setStores(data);
         } catch (e) {
             console.error(e);
@@ -31,11 +31,7 @@ export default function StoresIntegrityPage() {
 
     const handleStatusUpdate = async (storeId: string, status: string, riskScore?: string) => {
         try {
-            await fetch("/api/super-admin/stores", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ storeId, status, riskScore })
-            });
+            await apiUpdateStoreIntegrity({ storeId, status, riskScore });
             fetchStores();
             setIsApproveOpen(false);
             setIsSuspendOpen(false);
@@ -79,7 +75,7 @@ export default function StoresIntegrityPage() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="w-full border border-gray-300 bg-gray-50 px-4 py-3 pl-11 text-xs tracking-wide focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-white"
                         />
-                        <FontAwesomeIcon icon={faSearch}  className="absolute left-4 top-3 h-4 w-4 text-gray-400" />
+                        <FontAwesomeIcon icon={faSearch} className="absolute left-4 top-3 h-4 w-4 text-gray-400" />
                     </div>
                     <div className="flex gap-2">
                         <button className="border border-gray-200 px-4 py-3 text-[10px] font-semibold tracking-widest uppercase text-gray-600 hover:border-gray-900 dark:border-white/10 dark:text-gray-400 dark:hover:border-white transition-colors">
@@ -103,7 +99,7 @@ export default function StoresIntegrityPage() {
                             {isLoading ? (
                                 <tr>
                                     <td colSpan={5} className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
-                                        <FontAwesomeIcon icon={faSync}  className="h-4 w-4 mx-auto animate-spin mb-2" /> Loading records...
+                                        <FontAwesomeIcon icon={faSync} className="h-4 w-4 mx-auto animate-spin mb-2" /> Loading records...
                                     </td>
                                 </tr>
                             ) : filteredStores.length === 0 ? (
@@ -117,7 +113,7 @@ export default function StoresIntegrityPage() {
                                     <td className="p-6">
                                         <div className="flex items-center gap-4">
                                             <div className="flex h-10 w-10 items-center justify-center border border-gray-200 dark:border-white/10 bg-white dark:bg-black">
-                                                <FontAwesomeIcon icon={faStore}  className="h-4 w-4 text-gray-500"  />
+                                                <FontAwesomeIcon icon={faStore} className="h-4 w-4 text-gray-500" />
                                             </div>
                                             <div>
                                                 <p className="font-cinzel font-semibold tracking-wider text-gray-900 dark:text-white uppercase">{store.name}</p>
@@ -144,7 +140,7 @@ export default function StoresIntegrityPage() {
                                                     className="text-green-600 hover:text-green-800 transition-colors"
                                                     title="Approve Store"
                                                 >
-                                                    <FontAwesomeIcon icon={faCheckCircle}  className="h-4 w-4"  />
+                                                    <FontAwesomeIcon icon={faCheckCircle} className="h-4 w-4" />
                                                 </button>
                                             )}
                                             {store.status !== 'Suspended' && (
@@ -153,11 +149,11 @@ export default function StoresIntegrityPage() {
                                                     className="text-red-600 hover:text-red-800 transition-colors"
                                                     title="Suspend Store"
                                                 >
-                                                    <FontAwesomeIcon icon={faBan}  className="h-4 w-4"  />
+                                                    <FontAwesomeIcon icon={faBan} className="h-4 w-4" />
                                                 </button>
                                             )}
                                             <Link to={`/${store.storeId}`} className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="View Storefront">
-                                                <FontAwesomeIcon icon={faExternalLinkAlt}  className="h-4 w-4"  />
+                                                <FontAwesomeIcon icon={faExternalLinkAlt} className="h-4 w-4" />
                                             </Link>
                                         </div>
                                     </td>
@@ -173,7 +169,7 @@ export default function StoresIntegrityPage() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-300">
                     <div className="w-full max-w-md bg-[#fcfcfc] dark:bg-[#050505] border border-gray-200 dark:border-white/10 p-8 relative">
                         <button onClick={() => setIsApproveOpen(false)} className="absolute right-6 top-6 text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                            <FontAwesomeIcon icon={faTimes}  className="h-5 w-5"  />
+                            <FontAwesomeIcon icon={faTimes} className="h-5 w-5" />
                         </button>
                         <h2 className="font-cinzel text-2xl tracking-wider text-gray-900 dark:text-white uppercase mb-4">Approve Store</h2>
                         <p className="text-sm font-light text-gray-500 mb-8">
@@ -196,10 +192,10 @@ export default function StoresIntegrityPage() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-300">
                     <div className="w-full max-w-md bg-[#fcfcfc] dark:bg-[#050505] border border-gray-200 dark:border-white/10 p-8 relative">
                         <button onClick={() => setIsSuspendOpen(false)} className="absolute right-6 top-6 text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                            <FontAwesomeIcon icon={faTimes}  className="h-5 w-5"  />
+                            <FontAwesomeIcon icon={faTimes} className="h-5 w-5" />
                         </button>
                         <h2 className="font-cinzel text-2xl tracking-wider text-red-600 dark:text-red-500 uppercase mb-4 flex items-center gap-3">
-                            <FontAwesomeIcon icon={faExclamationTriangle}  className="h-6 w-6" /> Suspend Store
+                            <FontAwesomeIcon icon={faExclamationTriangle} className="h-6 w-6" /> Suspend Store
                         </h2>
                         <p className="text-sm font-light text-gray-500 mb-2">
                             You are about to suspend <span className="font-semibold text-gray-900 dark:text-white">{selectedStore.name}</span>.

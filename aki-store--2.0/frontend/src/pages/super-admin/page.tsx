@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartBar, faUsers, faDollarSign, faStore, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from "react";
+import { apiGetSuperAdminOverview } from "../../services/api";
 
 export default function SuperAdminDashboard() {
     const [stats, setStats] = useState({
@@ -17,8 +18,7 @@ export default function SuperAdminDashboard() {
     useEffect(() => {
         async function fetchOverview() {
             try {
-                const res = await fetch("/api/super-admin/overview");
-                const { data } = await res.json();
+                const data = await apiGetSuperAdminOverview();
                 if (data) {
                     setStats(data);
                 }

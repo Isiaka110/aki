@@ -66,7 +66,7 @@ export async function apiGetAllStores() {
 export async function apiUpdateStoreIntegrity(payload: {
     storeId: string;
     status: string;
-    riskScore?: number;
+    riskScore?: string;
 }) {
     return apiRequest<any>('/api/super-admin/stores', {
         method: 'PUT',
@@ -74,7 +74,7 @@ export async function apiUpdateStoreIntegrity(payload: {
     });
 }
 
-export async function apiGetcomplaints() {
+export async function apiGetComplaints() {
     return apiRequest<any[]>('/api/super-admin/complaints');
 }
 

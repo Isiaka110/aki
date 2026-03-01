@@ -1,6 +1,7 @@
 
 
 import { useState, useEffect } from "react";
+import { apiGetComplaints, apiUpdateComplaint } from "../../../services/api";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationCircle, faArrowRight, faTimes, faExclamationTriangle, faSync } from '@fortawesome/free-solid-svg-icons';
 
@@ -13,8 +14,7 @@ export default function ComplaintsPage() {
 
     const fetchComplaints = async () => {
         try {
-            const res = await fetch("/api/super-admin/complaints");
-            const { data } = await res.json();
+            const data = await apiGetComplaints();
             if (data) setComplaints(data);
         } catch (e) {
             console.error(e);
@@ -29,11 +29,7 @@ export default function ComplaintsPage() {
 
     const handleAction = async (complaintId: string, status: string) => {
         try {
-            await fetch("/api/super-admin/complaints", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ complaintId, status })
-            });
+            await apiUpdateComplaint({ complaintId, status });
             fetchComplaints();
             setIsModalOpen(false);
         } catch (e) {
@@ -82,13 +78,13 @@ export default function ComplaintsPage() {
                             {isLoading ? (
                                 <tr>
                                     <td colSpan={5} className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
-                                        <FontAwesomeIcon icon={faSync}  className="h-4 w-4 mx-auto animate-spin mb-2" /> Loading records...
+                                        <FontAwesomeIcon icon={faSync} className="h-4 w-4 mx-auto animate-spin mb-2" /> Loading records...
                                     </td>
                                 </tr>
                             ) : complaints.filter(c => c.status === activeTab).length === 0 ? (
                                 <tr>
                                     <td colSpan={5} className="p-12 text-center">
-                                        <FontAwesomeIcon icon={faExclamationCircle}  className="h-8 w-8 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
+                                        <FontAwesomeIcon icon={faExclamationCircle} className="h-8 w-8 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
                                         <p className="font-cinzel tracking-widest text-gray-400 uppercase">No complaints found</p>
                                     </td>
                                 </tr>
@@ -110,7 +106,7 @@ export default function ComplaintsPage() {
                                             onClick={() => { setSelectedComplaint(complaint); setIsModalOpen(true); }}
                                             className="flex items-center gap-2 border border-gray-200 px-4 py-2 text-[10px] font-semibold uppercase tracking-widest text-gray-900 hover:border-gray-900 dark:border-white/20 dark:text-white dark:hover:border-white transition-all"
                                         >
-                                            Review <FontAwesomeIcon icon={faArrowRight}  className="h-3 w-3" />
+                                            Review <FontAwesomeIcon icon={faArrowRight} className="h-3 w-3" />
                                         </button>
                                     </td>
                                 </tr>
@@ -125,10 +121,10 @@ export default function ComplaintsPage() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-300">
                     <div className="w-full max-w-lg bg-[#fcfcfc] dark:bg-[#050505] border border-gray-200 dark:border-white/10 p-8 relative">
                         <button onClick={() => setIsModalOpen(false)} className="absolute right-6 top-6 text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                            <FontAwesomeIcon icon={faTimes}  className="h-5 w-5"  />
+                            <FontAwesomeIcon icon={faTimes} className="h-5 w-5" />
                         </button>
                         <h2 className="font-cinzel text-2xl tracking-wider text-gray-900 dark:text-white uppercase mb-6 flex items-center gap-3">
-                            <FontAwesomeIcon icon={faExclamationTriangle}  className="h-6 w-6 text-red-600 dark:text-red-500" /> Case {selectedComplaint.complaintId}
+                            <FontAwesomeIcon icon={faExclamationTriangle} className="h-6 w-6 text-red-600 dark:text-red-500" /> Case {selectedComplaint.complaintId}
                         </h2>
 
                         <div className="space-y-4 mb-8 text-sm font-light tracking-wide text-gray-600 dark:text-gray-400">
