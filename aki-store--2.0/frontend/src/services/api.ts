@@ -228,3 +228,7 @@ export async function apiSubmitComplaint(payload: {
         body: JSON.stringify(payload),
     });
 }
+
+export async function apiGetStoreBySlug(slug: string) {
+    return apiRequest<any>(`/api/stores/details/${slug}`);
+}

@@ -1,82 +1,51 @@
-
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBox, faIcons, faEnvelope, faBookOpen } from '@fortawesome/free-solid-svg-icons';
+import { faBox, faIcons, faEnvelope, faBookOpen, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-import { useStoreSettings } from "../../../store/useCartStore";
+import { apiGetStoreBySlug } from "../../../services/api";
 import ProductCard from "../../../components/ProductCard";
 
-// Consolidating dummy data for display
-const dummyProducts = [
-    {
-        id: "1",
-        title: "Vintage Leather Jacket",
-        price: 120.00,
-        slashedPrice: 150.00,
-        image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&q=80",
-        images: [
-            "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&q=80",
-            "https://images.unsplash.com/photo-1520975954732-57dd22299614?w=800&q=80",
-            "https://images.unsplash.com/photo-1552835848-6178a2e1d713?w=800&q=80"
-        ],
-        rating: 4.8,
-        reviewsCount: 12,
-        category: "Outerwear"
-    },
-    {
-        id: "2",
-        title: "Minimalist Watch",
-        price: 85.00,
-        image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80",
-        images: [
-            "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80",
-            "https://images.unsplash.com/photo-1542496658-e32689c19e59?w=800&q=80"
-        ],
-        rating: 5.0,
-        reviewsCount: 34,
-        category: "Accessories"
-    },
-    {
-        id: "3",
-        title: "Classic White Sneakers",
-        price: 65.00,
-        slashedPrice: 80.00,
-        image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&q=80",
-        images: [
-            "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&q=80",
-            "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&q=80"
-        ],
-        rating: 4.6,
-        reviewsCount: 8,
-        category: "Shoes"
-    },
-    {
-        id: "4",
-        title: "Wireless Headphones",
-        price: 199.99,
-        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80",
-        images: [
-            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80",
-            "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=800&q=80",
-            "https://images.unsplash.com/photo-1524678606370-a47ad25cb82a?w=800&q=80"
-        ],
-        rating: 4.9,
-        reviewsCount: 128,
-        category: "Tech"
-    },
-];
-
 export default function StoreOwnerProfilePage() {
+    const { storeSlug } = useParams();
     const [activeTab, setActiveTab] = useState("pieces");
-    const [mounted, setMounted] = useState(false);
+    const [store, setStore] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
 
-    // Connect to Store Settings (from Store Admin)
-    const { ownerName, designation, manifesto, contactEmail, socialInstagram, socialTwitter } = useStoreSettings();
+    useEffect(() => {
+        const fetchStore = async () => {
+            try {
+                if (storeSlug) {
+                    const data = await apiGetStoreBySlug(storeSlug);
+                    setStore(data);
+                }
+            } catch (err) {
+                console.error("Failed to fetch store:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchStore();
+    }, [storeSlug]);
 
-    useEffect(() => setMounted(true), []);
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-[#fcfcfc] dark:bg-[#050505]">
+                <FontAwesomeIcon icon={faSpinner} className="h-8 w-8 animate-spin text-gray-400" />
+            </div>
+        );
+    }
 
-    if (!mounted) return null;
+    if (!store) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-[#fcfcfc] dark:bg-[#050505]">
+                <p className="font-cinzel text-gray-500 uppercase tracking-widest">Architect not found.</p>
+            </div>
+        );
+    }
 
+    const { ownerName, designation, manifesto, contactEmail, socialInstagram, socialTwitter, logo, products } = store;
+    const curatedProducts = products?.slice(0, 4) || [];
     return (
         <div className="min-h-screen bg-[#fcfcfc] dark:bg-[#050505] px-4 py-24 sm:px-6 lg:px-8 transition-colors">
             <div className="mx-auto max-w-6xl">
@@ -85,7 +54,7 @@ export default function StoreOwnerProfilePage() {
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-16 pb-12 border-b border-gray-200 dark:border-white/10 transition-colors">
                     <div className="flex items-center gap-8">
                         <div className="relative h-28 w-28 overflow-hidden bg-gray-100 dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-white/10">
-                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&q=80" alt={ownerName || "Owner"} className="object-cover w-full h-full" />
+                            <img src={logo || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&q=80"} alt={ownerName || "Owner"} className="object-cover w-full h-full" />
                         </div>
                         <div>
                             <h1 className="font-cinzel text-4xl tracking-widest text-gray-900 dark:text-white uppercase mb-2">{ownerName}</h1>
@@ -122,8 +91,8 @@ export default function StoreOwnerProfilePage() {
                                 <h2 className="font-cinzel text-2xl tracking-widest uppercase text-gray-900 dark:text-white mb-10">Curated Pieces by {ownerName}</h2>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                                    {dummyProducts.map((product) => (
-                                        <ProductCard key={product.id} {...product} />
+                                    {curatedProducts.map((product: any) => (
+                                        <ProductCard key={product._id || product.id} {...product} />
                                     ))}
                                 </div>
                             </div>

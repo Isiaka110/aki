@@ -39,7 +39,7 @@ export default function StoreFooter() {
 
                     <nav className="flex flex-wrap justify-center gap-x-12 gap-y-4">
                         {mainLinks.map((item) => (
-                            <Link to={item.path} className="font-cinzel text-xs font-semibold tracking-widest text-gray-500 uppercase hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                            <Link key={item.name} to={item.path} className="font-cinzel text-xs font-semibold tracking-widest text-gray-500 uppercase hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                                 {item.name}
                             </Link>
                         ))}
@@ -48,17 +48,17 @@ export default function StoreFooter() {
                     <div className="flex gap-6">
                         {socialInstagram && (
                             <a href={`https://instagram.com/${socialInstagram.replace('@', '')}`} target="_blank" rel="noreferrer" className="p-2 border border-transparent hover:border-gray-900 text-gray-400 hover:text-gray-900 dark:hover:border-white dark:hover:text-white transition-all duration-300">
-                                <FontAwesomeIcon icon={faIcons}  className="h-4 w-4"  />
+                                <FontAwesomeIcon icon={faIcons} className="h-4 w-4" />
                             </a>
                         )}
                         {socialTwitter && (
                             <a href={`https://twitter.com/${socialTwitter.replace('@', '')}`} target="_blank" rel="noreferrer" className="p-2 border border-transparent hover:border-gray-900 text-gray-400 hover:text-gray-900 dark:hover:border-white dark:hover:text-white transition-all duration-300">
-                                <FontAwesomeIcon icon={faIcons}  className="h-4 w-4"  />
+                                <FontAwesomeIcon icon={faIcons} className="h-4 w-4" />
                             </a>
                         )}
                         {contactEmail && (
                             <a href={`mailto:${contactEmail}`} className="p-2 border border-transparent hover:border-gray-900 text-gray-400 hover:text-gray-900 dark:hover:border-white dark:hover:text-white transition-all duration-300">
-                                <FontAwesomeIcon icon={faEnvelope}  className="h-4 w-4"  />
+                                <FontAwesomeIcon icon={faEnvelope} className="h-4 w-4" />
                             </a>
                         )}
                     </div>
@@ -71,7 +71,7 @@ export default function StoreFooter() {
                         <Link to={`${basePath}/policy/terms`} className="hover:text-gray-900 dark:hover:text-white transition-colors">Terms</Link>
                         {storeSlug && (
                             <button onClick={() => setIsReportOpen(true)} className="flex items-center gap-1.5 hover:text-red-900 dark:hover:text-red-500 transition-colors">
-                                <FontAwesomeIcon icon={faExclamationTriangle}  className="h-3 w-3" /> Report Store
+                                <FontAwesomeIcon icon={faExclamationTriangle} className="h-3 w-3" /> Report Store
                             </button>
                         )}
                     </div>
@@ -83,10 +83,10 @@ export default function StoreFooter() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-300">
                     <div className="w-full max-w-md bg-[#fcfcfc] dark:bg-[#050505] border border-gray-200 dark:border-white/10 p-8 relative">
                         <button onClick={() => setIsReportOpen(false)} className="absolute right-6 top-6 text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                            <FontAwesomeIcon icon={faTimes}  className="h-5 w-5"  />
+                            <FontAwesomeIcon icon={faTimes} className="h-5 w-5" />
                         </button>
                         <h2 className="font-cinzel text-2xl tracking-wider text-red-600 dark:text-red-500 uppercase mb-4 flex items-center gap-3">
-                            <FontAwesomeIcon icon={faExclamationTriangle}  className="h-6 w-6" /> Report {ownerName}
+                            <FontAwesomeIcon icon={faExclamationTriangle} className="h-6 w-6" /> Report {ownerName}
                         </h2>
                         <p className="text-sm font-light text-gray-500 mb-6">
                             If you believe this store is violating platform policies or you are experiencing dispute resolution issues, submit a secure report directly to the AKI Commerce core integrity team.

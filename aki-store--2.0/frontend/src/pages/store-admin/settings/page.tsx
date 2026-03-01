@@ -30,6 +30,7 @@ export default function SettingsPage() {
     paystackSecretKey, setPaystackSecretKey,
     logo, setLogo,
     bannerUrl, setBannerUrl,
+    storeId,
   } = useStoreSettings();
 
   const [localPhone, setLocalPhone] = useState(whatsappNumber);
@@ -215,10 +216,16 @@ export default function SettingsPage() {
 
             <div className="sm:col-span-2">
               <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Digital Presence (URL)</label>
-              <div className="flex items-center border-b border-gray-300 dark:border-gray-700 focus-within:border-gray-900 dark:focus-within:border-white">
-                <span className="text-sm font-light tracking-wide text-gray-500 pr-2">aki.com/</span>
-                <input type="text" defaultValue="official" className="w-full bg-transparent px-0 py-3 text-sm dark:text-white focus:outline-none focus:ring-0" />
+              <div className="flex items-center border-b border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-white/5 opacity-80">
+                <span className="text-sm font-light tracking-wide text-gray-500 px-4">aki.com/</span>
+                <input
+                  type="text"
+                  value={storeId || "STR-XXXXX"}
+                  readOnly
+                  className="w-full bg-transparent px-0 py-3 text-sm dark:text-white focus:outline-none focus:ring-0 cursor-not-allowed font-medium"
+                />
               </div>
+              <p className="mt-2 text-[9px] font-light tracking-wide text-gray-400 italic">This identifier is permanently assigned by AKI Core and cannot be altered by vendors.</p>
             </div>
 
             <div className="sm:col-span-2">

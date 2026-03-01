@@ -118,46 +118,57 @@ export default function StorePage() {
   const storeReviews = store?.reviews || [];
 
   return (
-    <div className="min-h-screen bg-[#fcfcfc] dark:bg-[#050505] p-4 sm:p-8 pt-24 lg:pt-32">
+    <div className="min-h-screen bg-[#fcfcfc] dark:bg-[#050505] pb-24 transition-colors">
 
-      {/* Hero Banner / Header */}
-      <div className={`relative mb-20 w-full max-w-7xl mx-auto overflow-hidden border border-gray-200 dark:border-white/10 ${store?.bannerUrl ? 'min-h-[40vh] flex items-center justify-center' : 'border-b pb-12 text-center'}`}>
-        {store?.bannerUrl && (
+      {/* Hero Banner / Header - Full Width Eye-Catching */}
+      <div className={`relative w-full overflow-hidden border-b border-gray-200 dark:border-white/10 ${store?.bannerUrl ? 'min-h-[60vh] flex items-center justify-center' : 'pt-32 pb-20 text-center'}`}>
+        {store?.bannerUrl ? (
           <div className="absolute inset-0 z-0">
-            <img src={store.bannerUrl} alt="Store Banner" className="h-full w-full object-cover opacity-60 dark:opacity-40" />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#fcfcfc] dark:to-[#050505]" />
+            <img src={store.bannerUrl} alt="Store Banner" className="h-full w-full object-cover opacity-70 dark:opacity-40" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#fcfcfc] dark:to-[#050505]" />
+          </div>
+        ) : (
+          <div className="absolute inset-0 z-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="font-cinzel text-[20vw] font-black uppercase tracking-tighter select-none">{storeSlug}</span>
+            </div>
           </div>
         )}
 
-        <div className="relative z-10 space-y-6 flex flex-col items-center px-6 text-center">
+        <div className="relative z-10 space-y-8 flex flex-col items-center px-6 text-center max-w-4xl mx-auto">
           {store?.logo ? (
-            <div className="mb-4 h-24 w-24 overflow-hidden border border-gray-900 bg-white dark:border-white">
-              <img src={store.logo} alt="Store Logo" className="h-full w-full object-contain p-2" />
+            <div className="mb-2 h-28 w-28 overflow-hidden border-2 border-gray-900 bg-white dark:border-white p-1 shadow-2xl">
+              <img src={store.logo} alt="Store Logo" className="h-full w-full object-contain" />
             </div>
           ) : (
-            <span className="mb-4 block text-[10px] font-semibold tracking-[0.3em] text-gray-400 uppercase">
-              {store?.designation || 'Atelier'}
-            </span>
+            <div className="mb-2 border border-gray-900 dark:border-white px-4 py-1">
+              <span className="text-[10px] font-bold tracking-[0.4em] text-gray-900 dark:text-white uppercase">
+                {store?.designation || 'EST. 2026'}
+              </span>
+            </div>
           )}
 
-          <h1 className="text-5xl sm:text-7xl font-cinzel text-gray-900 dark:text-white uppercase tracking-widest font-medium animate-in fade-in slide-in-from-bottom-4 duration-1000">
-            {store?.name || storeSlug}
-          </h1>
+          <div className="space-y-4">
+            <h1 className="text-5xl sm:text-8xl font-cinzel text-gray-900 dark:text-white uppercase tracking-[0.15em] font-medium animate-in fade-in slide-in-from-bottom-8 duration-1000 leading-tight">
+              {store?.name || storeSlug}
+            </h1>
+            <div className="h-0.5 w-24 bg-gray-900 dark:bg-white mx-auto" />
+          </div>
 
           {isOwner && store?.status !== 'Active' && (
-            <span className="mt-4 inline-block bg-amber-500/10 text-amber-600 dark:text-amber-400 px-4 py-1 text-[10px] font-bold tracking-[0.2em] uppercase border border-amber-500/20">
-              Preview Mode: Store is {store?.status}
+            <span className="inline-block bg-amber-500 text-white px-4 py-1 text-[10px] font-bold tracking-[0.3em] uppercase">
+              Preview Mode • {store?.status}
             </span>
           )}
 
-          <p className="mt-4 max-w-2xl text-sm font-light tracking-widest text-gray-500 dark:text-gray-400 uppercase leading-relaxed">
-            {store?.manifesto || 'Curated Exclusively For You'}
+          <p className="mt-6 max-w-2xl text-base sm:text-lg font-light tracking-wide text-gray-700 dark:text-gray-300 italic leading-relaxed animate-in fade-in duration-1000 delay-300">
+            &quot;{store?.manifesto || 'Crafting the future of curated digital commerce experiences.'}&quot;
           </p>
         </div>
       </div>
 
       {/* Main Container */}
-      <div className="mx-auto flex max-w-7xl items-start gap-12">
+      <div className="mx-auto flex max-w-7xl items-start gap-12 mt-20">
 
         {/* Left Column: Sidebar */}
         <StoreSidebar categories={store?.categories} totalProducts={store?.products?.length} />

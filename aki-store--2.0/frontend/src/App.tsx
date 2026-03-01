@@ -20,6 +20,7 @@ import TermsPage from './pages/terms/page';
 // Storefront Pages
 import ExplorePage from './pages/explore/page';
 import StorePage from './pages/[storeSlug]/page';
+import StorefrontAccountPage from './pages/[storeSlug]/account/page';
 
 // Auth
 import LoginPage from './pages/auth/login/page';
@@ -95,6 +96,7 @@ export default function App() {
         {/* ── Storefront (store-specific pages with Navbar) ─────────────── */}
         <Route element={<StorefrontLayout />}>
           <Route path="/:storeSlug" element={<StorePage />} />
+          <Route path="/:storeSlug/account" element={<StorefrontAccountPage />} />
         </Route>
 
       </Routes>

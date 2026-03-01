@@ -59,7 +59,7 @@ export default function Navbar() {
             {!isLandingPage && (
               <button
                 onClick={() => setIsMobileMenuOpen(true)}
-                className={`p-2 transition-colors ${!scrolled && isLandingPage ? "hover:text-gray-600 dark:hover:text-gray-300" : "hover:text-black dark:hover:text-white"}`}
+                className={`p-2 transition-colors md:hidden ${!scrolled && isLandingPage ? "hover:text-gray-600 dark:hover:text-gray-300" : "hover:text-black dark:hover:text-white"}`}
               >
                 <FontAwesomeIcon icon={faBars} className="h-5 w-5" />
               </button>
@@ -72,8 +72,14 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Center: Search Bar */}
-          <div className={`${isLandingPage ? 'hidden' : 'hidden md:flex'} flex-1 items-center justify-center px-8`}>
+          {/* Center: Search Bar & Nav Links */}
+          <div className={`${isLandingPage ? 'hidden' : 'hidden lg:flex'} flex-1 items-center justify-center gap-12 px-8`}>
+            {storeSlug && (
+              <div className="flex items-center gap-8">
+                <Link to={`/${storeSlug}`} className="font-cinzel text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">Catalogue</Link>
+                <Link to={`/${storeSlug}/account`} className="font-cinzel text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">Architect</Link>
+              </div>
+            )}
             <form onSubmit={handleSearch} className="relative w-full max-w-sm group">
               <input
                 type="text"
