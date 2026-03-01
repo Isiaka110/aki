@@ -61,7 +61,7 @@ export default function FeaturedStores() {
                 {/* Grid */}
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
                     {featuredShops.map((shop) => (
-                        <Link to={`/${shop.slug}`}
+                        <Link key={shop.id} to={`/${shop.slug}`}
                             className="group flex flex-col"
                         >
                             <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100 dark:bg-gray-900">

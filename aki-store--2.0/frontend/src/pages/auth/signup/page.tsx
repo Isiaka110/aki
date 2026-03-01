@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faSpinner, faShieldAlt, faBolt, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { apiRegister } from '../../../services/api';
+import { useAuthStore } from '../../../store/useAuthStore';
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ export default function SignupPage() {
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   const set = (field: string, value: string) => setForm((prev) => ({ ...prev, [field]: value }));
 
@@ -20,8 +22,9 @@ export default function SignupPage() {
     setError('');
     setLoading(true);
     try {
-      await apiRegister(form);
-      navigate('/onboarding');
+      const { user, token } = await apiRegister(form);
+      setAuth(user, token);
+      navigate('/store-admin');
     } catch (err: any) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {

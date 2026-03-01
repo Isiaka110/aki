@@ -1,23 +1,50 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faIcons, faDollarSign, faBox, faShoppingCart, faArrowTrendUp, faFilter, faClock, faTruck, faCheckCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-
-// Dummy data for the initial layout
-const stats = [
-  { name: "Total Revenue", value: "$4,209.00", change: "+12.5%", icon: faDollarSign },
-  { name: "Active Orders", value: "12", change: "+4.1%", icon: faShoppingCart },
-  { name: "Total Products", value: "48", change: "0%", icon: faBox },
-  { name: "Store Views", value: "1,204", change: "+24.3%", icon: faArrowTrendUp },
-];
-
-const recentOrders = [
-  { id: "ORD-001", customer: "Sarah Jenkins", date: "Today, 10:24 AM", total: "$120.00", status: "Pending" },
-  { id: "ORD-002", customer: "Michael Chen", date: "Yesterday, 3:45 PM", total: "$85.00", status: "Shipped" },
-  { id: "ORD-004", customer: "Chinedu Eze", date: "Yesterday, 1:15 PM", total: "$350.00", status: "Active" },
-  { id: "ORD-003", customer: "Amaka Okafor", date: "Yesterday, 1:12 PM", total: "$210.50", status: "Delivered" },
-];
+import { faIcons, faDollarSign, faBox, faShoppingCart, faArrowTrendUp, faFilter, faClock, faTruck, faCheckCircle, faExclamationTriangle, faSync } from '@fortawesome/free-solid-svg-icons';
+import { apiGetStoreAdminOverview } from "../../services/api";
 
 export default function DashboardOverview() {
+  const [statsData, setStatsData] = useState({
+    storeName: "Your Store",
+    totalRevenue: 0,
+    activeOrders: 0,
+    totalProducts: 0,
+    storeViews: 0,
+  });
+  const [recentOrders, setRecentOrders] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchOverview() {
+      try {
+        const data = await apiGetStoreAdminOverview();
+        if (data) {
+          setStatsData({
+            storeName: data.storeName || "Your Store",
+            totalRevenue: data.totalRevenue || 0,
+            activeOrders: data.activeOrders || 0,
+            totalProducts: data.totalProducts || 0,
+            storeViews: data.storeViews || 0,
+          });
+          setRecentOrders(data.recentOrders || []);
+        }
+      } catch (err) {
+        console.error("Failed to load overview data", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchOverview();
+  }, []);
+
+  const stats = [
+    { name: "Total Revenue", value: `$${statsData.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, change: "+0.0%", icon: faDollarSign },
+    { name: "Active Orders", value: statsData.activeOrders.toString(), change: "0%", icon: faShoppingCart },
+    { name: "Total Products", value: statsData.totalProducts.toString(), change: "0%", icon: faBox },
+    { name: "Store Views", value: statsData.storeViews.toLocaleString(), change: "0%", icon: faArrowTrendUp },
+  ];
+
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
 
@@ -38,7 +65,7 @@ export default function DashboardOverview() {
           Atelier Overview
         </h1>
         <p className="text-sm font-light tracking-wide text-gray-500">
-          Executive summary for ThriftElegance.
+          Executive summary for {statsData.storeName}.
         </p>
       </div>
 
@@ -83,18 +110,31 @@ export default function DashboardOverview() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5 text-sm font-light tracking-wide">
-              {recentOrders.map((order) => (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={5} className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
+                    <FontAwesomeIcon icon={faSync} className="h-4 w-4 mx-auto animate-spin mb-2" /> Loading records...
+                  </td>
+                </tr>
+              ) : recentOrders.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
+                    No recent orders found.
+                  </td>
+                </tr>
+              ) : recentOrders.map((order) => (
                 <tr key={order.id} className="transition-colors hover:bg-gray-50 dark:hover:bg-white/5">
                   <td className="px-8 py-5 font-cinzel text-gray-900 dark:text-white uppercase tracking-widest">{order.id}</td>
-                  <td className="px-8 py-5 text-gray-600 dark:text-gray-300">{order.customer}</td>
-                  <td className="px-8 py-5 text-gray-400">{order.date}</td>
-                  <td className="px-8 py-5 font-cinzel text-gray-900 dark:text-white tracking-widest">{order.total}</td>
+                  <td className="px-8 py-5 text-gray-600 dark:text-gray-300">{order.customerName}</td>
+                  <td className="px-8 py-5 text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</td>
+                  <td className="px-8 py-5 font-cinzel text-gray-900 dark:text-white tracking-widest">${order.totalAmount?.toLocaleString()}</td>
                   <td className="px-8 py-5">
                     <span className={`inline-flex items-center gap-2 border px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.2em]
                       ${order.status === 'Active' ? 'border-indigo-200 text-indigo-600 dark:border-indigo-900/50 dark:text-indigo-400' : ''}
                       ${order.status === 'Pending' ? 'border-amber-200 text-amber-600 dark:border-amber-900/50 dark:text-amber-500' : ''}
                       ${order.status === 'Shipped' ? 'border-sky-200 text-sky-600 dark:border-sky-900/50 dark:text-sky-400' : ''}
                       ${order.status === 'Delivered' ? 'border-emerald-200 text-emerald-600 dark:border-emerald-900/50 dark:text-emerald-500' : ''}
+                      ${!['Active', 'Pending', 'Shipped', 'Delivered'].includes(order.status) ? 'border-gray-200 text-gray-600 dark:border-gray-700 dark:text-gray-400' : ''}
                     `}>
                       {order.status === 'Active' && <FontAwesomeIcon icon={faFilter} className="h-3 w-3" />}
                       {order.status === 'Pending' && <FontAwesomeIcon icon={faClock} className="h-3 w-3" />}

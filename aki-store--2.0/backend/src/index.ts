@@ -8,6 +8,10 @@ import connectToDatabase from './lib/mongodb';
 import { getAllStores, updateStoreIntegrity } from './services/store.service';
 import { getAllComplaints, updateComplaintStatus, dispatchComplaint } from './services/complaint.service';
 import { registerStoreAdmin, loginUser, requestPasswordReset, verifyResetCode, confirmPasswordReset } from './services/auth.service';
+import { getStoreProducts, createProduct, updateProduct, deleteProduct } from './services/product.service';
+import { protect, AuthRequest } from './middleware/auth';
+import Store from './models/Store';
+import Product from './models/Product';
 
 dotenv.config({ path: '../.env.local' }); // Load from root during dev
 const app = express();
@@ -31,7 +35,14 @@ app.post('/api/auth/register', async (req, res) => {
             return res.status(400).json({ success: false, error: 'Please fill out all fields' });
         }
         await registerStoreAdmin(req.body);
-        res.status(201).json({ success: true, message: 'Store registered successfully.' });
+        const data = await loginUser(email, password, 'store-admin');
+        res.cookie('aki_ecommerce_session', data.token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 24 * 1000 // 1 Day
+        });
+        res.status(201).json({ success: true, message: 'Store registered successfully.', user: data.user, token: data.token });
     } catch (error: any) {
         res.status(500).json({ success: false, error: error.message });
     }
@@ -153,6 +164,70 @@ app.post('/api/store/complaints', async (req, res) => {
         const complaintId = `CPL-${Math.floor(Math.random() * 90000) + 10000}`;
         const newDispute = await dispatchComplaint({ complaintId, storeId, customerEmail, issueType, description });
         res.status(201).json({ success: true, data: newDispute });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// --- Store Admin Routes ---
+app.get('/api/store-admin/overview', protect, async (req: any, res) => {
+    try {
+        const storeId = req.user.storeId;
+        const myStore = await Store.findById(storeId);
+
+        const totalProducts = await Product.countDocuments({ storeId: myStore?._id.toString() });
+
+        res.status(200).json({
+            success: true,
+            data: {
+                storeName: myStore?.name || 'Your Store',
+                totalRevenue: myStore?.revenue || 0,
+                activeOrders: 0,
+                totalProducts: totalProducts || 0,
+                storeViews: 0,
+                recentOrders: []
+            }
+        });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.get('/api/store-admin/products', protect, async (req: any, res) => {
+    try {
+        const storeId = req.user.storeId;
+        const products = await getStoreProducts(storeId);
+        res.status(200).json({ success: true, data: products });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.post('/api/store-admin/products', protect, async (req: any, res) => {
+    try {
+        const storeId = req.user.storeId;
+        const newProduct = await createProduct(storeId, req.body);
+        res.status(201).json({ success: true, data: newProduct });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.put('/api/store-admin/products/:productId', protect, async (req: any, res) => {
+    try {
+        const storeId = req.user.storeId;
+        const updatedProduct = await updateProduct(storeId, req.params.productId, req.body);
+        res.status(200).json({ success: true, data: updatedProduct });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.delete('/api/store-admin/products/:productId', protect, async (req: any, res) => {
+    try {
+        const storeId = req.user.storeId;
+        await deleteProduct(storeId, req.params.productId);
+        res.status(200).json({ success: true, message: 'Product deleted' });
     } catch (error: any) {
         res.status(500).json({ success: false, error: error.message });
     }

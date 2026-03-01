@@ -38,9 +38,46 @@ export async function apiRegister(payload: {
     lastName: string;
     storeName: string;
 }) {
-    return apiRequest<void>('/api/auth/register', {
+    return apiRequest<{ user: any; token: string }>('/api/auth/register', {
         method: 'POST',
         body: JSON.stringify(payload),
+    });
+}
+
+// ─── Store Admin ─────────────────────────────────────────────────────────────
+
+export async function apiGetStoreAdminOverview() {
+    return apiRequest<{
+        storeName: string;
+        totalRevenue: number;
+        activeOrders: number;
+        totalProducts: number;
+        storeViews: number;
+        recentOrders: any[];
+    }>('/api/store-admin/overview');
+}
+
+export async function apiGetProducts() {
+    return apiRequest<any[]>('/api/store-admin/products');
+}
+
+export async function apiCreateProduct(payload: any) {
+    return apiRequest<any>('/api/store-admin/products', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+    });
+}
+
+export async function apiUpdateProduct(productId: string, payload: any) {
+    return apiRequest<any>(`/api/store-admin/products/${productId}`, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+    });
+}
+
+export async function apiDeleteProduct(productId: string) {
+    return apiRequest<void>(`/api/store-admin/products/${productId}`, {
+        method: 'DELETE',
     });
 }
 
