@@ -46,8 +46,8 @@ app.post('/api/auth/register', async (req, res) => {
         const data = await loginUser(email, password, 'store-admin');
         res.cookie('aki_ecommerce_session', data.token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            secure: true, // Required for sameSite: 'none'
+            sameSite: 'none', // Allows cross-site cookie usage
             maxAge: 60 * 60 * 24 * 1000 // 1 Day
         });
         res.status(201).json({ success: true, message: 'Store registered successfully.', user: data.user, token: data.token });
@@ -63,8 +63,8 @@ app.post('/api/auth/login', async (req, res) => {
         const data = await loginUser(email, password, role);
         res.cookie('aki_ecommerce_session', data.token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            secure: true, // Required for sameSite: 'none'
+            sameSite: 'none', // Allows cross-site cookie usage
             maxAge: 60 * 60 * 24 * 1000 // 1 Day
         });
         res.status(200).json({ success: true, user: data.user, token: data.token });
