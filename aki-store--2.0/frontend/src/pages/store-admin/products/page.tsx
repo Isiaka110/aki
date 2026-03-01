@@ -1,18 +1,8 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash, faTimes, faIcons, faTruck, faCheck } from '@fortawesome/free-solid-svg-icons';
-
-type Product = {
-  id: string;
-  title: string;
-  category: string;
-  price: number;
-  stock: number;
-  status: string;
-  images: string[];
-};
 
 import { apiGetProducts, apiGetCategories, apiCreateProduct, apiUpdateProduct, apiDeleteProduct } from "../../../services/api";
 
@@ -258,7 +248,7 @@ export default function ProductsPage() {
                 <div>
                   <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500 mb-4 border-b border-gray-200 dark:border-white/10 pb-2">Visual Media</h3>
                   <div className="flex items-start gap-4 overflow-x-auto pb-4 custom-scrollbar snap-x">
-                    {viewedProduct.images.map((imgUrl, idx) => (
+                    {viewedProduct.images.map((imgUrl: string, idx: number) => (
                       <div key={idx} className="relative h-64 w-48 shrink-0 snap-center overflow-hidden bg-gray-50 dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-white/10">
                         <img src={imgUrl} alt={`${viewedProduct.title} view ${idx + 1}`} className="object-cover w-full h-full" />
                       </div>
