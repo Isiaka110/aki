@@ -34,18 +34,26 @@ npm run dev
 
 ## Environment Variables (`.env.local`)
 
-Place this file at the **project root** (`aki-store--2.0/.env.local`):
+The backend relies on environment variables to connect to MongoDB and sign JWTs. **If `.env.local` is not available**, you must create it at the **project root** (`aki-store--2.0/.env.local`).
+
+Create a new file named `.env.local` in the root folder and paste the following template:
 
 ```env
+# ─── MongoDB ──────────────────────────────────────────────────
+# Paste your MongoDB Atlas connection string below.
+# Format: mongodb+srv://<user>:<password>@<cluster>.mongodb.net/<dbname>?retryWrites=true&w=majority
 MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/aki-official-database?appName=Cluster0
+
+# ─── App URLs ─────────────────────────────────────────────────
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# ─── Auth (JWT) ───────────────────────────────────────────────
+# Generate a secret: node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 JWT_SECRET=<your-64-byte-hex-secret>
+
+# ─── Server Configuration ─────────────────────────────────────
 PORT=5000
 NODE_ENV=development
-```
-
-Generate a secure JWT secret:
-```bash
-node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 ```
 
 ---
