@@ -1,76 +1,20 @@
 import ProductCard from "../../components/ProductCard";
 import StoreSidebar from "../../components/StoreSidebar";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Star, Send } from "lucide-react";
 import ClientFeedbackForm from "./ClientFeedbackForm";
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
 
-export default function StorePage() {
-  const { storeSlug } = useParams<{ storeSlug: string }>();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const query = searchParams.get('q')?.toLowerCase();
-  const category = searchParams.get('category')?.toLowerCase();
-
-  const [store, setStore] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchStore = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/super-admin/stores'); // Publicly accessible for now
-        const data = await response.json();
-        if (data.success) {
-          const found = data.data.find((s: any) => s.storeName === storeSlug || s.adminId === storeSlug); // Simple heuristic
-          setStore(found || null);
-        }
-      } catch (error) {
-        console.error("Failed to fetch store:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStore();
-  }, [storeSlug]);
-
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center p-4 bg-[#fcfcfc] dark:bg-[#050505]">
-      <div className="w-8 h-8 rounded-full border-t-2 border-r-2 border-gray-900 border-solid animate-spin dark:border-white"></div>
-    </div>;
-  }
-
-  if (!store || store.status !== 'Active') {
-    return (
-      <div className="min-h-screen bg-[#fcfcfc] dark:bg-[#050505] flex flex-col items-center justify-center p-4">
-        <div className="max-w-md w-full text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <h1 className="text-6xl font-cinzel text-gray-900 dark:text-white uppercase tracking-widest font-medium">404</h1>
-          <div className="space-y-4">
-            <h2 className="text-xl font-cinzel tracking-wider text-gray-700 dark:text-gray-300 uppercase">Vendor Unreachable</h2>
-            <p className="text-xs font-light tracking-wide text-gray-500">
-              The storefront you are trying to access ({storeSlug}) does not exist or has been suspended by the platform.
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-4 mt-12 w-full max-w-xs mx-auto">
-            <Link
-              to="/auth/signup"
-              className="flex items-center justify-center gap-2 border border-gray-900 bg-gray-900 px-6 py-4 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white"
-            >
-              <FontAwesomeIcon icon={faPlus} className="h-4 w-4" /> Start Your Own Store
-            </Link>
-            <Link
-              to="/"
-              className="flex items-center justify-center gap-2 border border-gray-200 px-6 py-4 text-xs font-semibold uppercase tracking-widest text-gray-900 hover:border-gray-900 dark:border-white/20 dark:text-white dark:hover:border-white transition-all"
-            >
-              <FontAwesomeIcon icon={faArrowLeft} className="h-4 w-4" /> Back to Platform
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
+export default async function StorePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ storeSlug: string }>;
+  searchParams: Promise<{ q?: string; category?: string; filter?: string }>;
+}) {
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+  const storeSlug = resolvedParams.storeSlug;
+  const query = resolvedSearchParams.q?.toLowerCase();
+  const category = resolvedSearchParams.category?.toLowerCase();
 
   const dummyProducts = [
     {
@@ -168,10 +112,10 @@ export default function StorePage() {
     return (
       <div className="flex gap-1 mb-4">
         {[...Array(5)].map((_, i) => (
-          <FontAwesomeIcon icon={faStar}
+          <Star
             key={i}
-            className={`h-3 w-3 ${i < rating ? "text-gray-900 dark:text-white" : "text-gray-300 dark:text-gray-700"}`}
-
+            className={`h-3 w-3 ${i < rating ? "fill-gray-900 text-gray-900 dark:fill-white dark:text-white" : "fill-transparent text-gray-300 dark:text-gray-700"}`}
+            strokeWidth={1}
           />
         ))}
       </div>

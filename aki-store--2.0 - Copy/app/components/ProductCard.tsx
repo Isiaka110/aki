@@ -1,7 +1,7 @@
+"use client";
 
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
+import Image from "next/image";
+import { Star } from "lucide-react";
 import { useCartStore } from "../store/useCartStore";
 
 interface ProductCardProps {
@@ -48,10 +48,12 @@ export default function ProductCard({
         </div>
 
         {/* Next.js Optimized Image */}
-        <img
+        <Image
           src={image}
           alt={title}
-          className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
         />
 
         {/* Subtle overlay */}
@@ -64,7 +66,7 @@ export default function ProductCard({
         {/* Rating Row (Absolute positioned to top right) */}
         <div className="absolute top-0 right-1 flex flex-col items-end gap-0.5">
           <div className="flex items-center gap-1">
-            <FontAwesomeIcon icon={faStar} className="h-3 w-3 fill-gray-900 text-gray-900 dark:fill-white dark:text-white" />
+            <Star className="h-3 w-3 fill-gray-900 text-gray-900 dark:fill-white dark:text-white" strokeWidth={1} />
             <span className="font-semibold text-xs tracking-wide text-gray-900 dark:text-white">{rating.toFixed(1)}</span>
           </div>
           <span className="text-[10px] text-gray-400 font-light tracking-wide">({reviewsCount})</span>

@@ -1,7 +1,7 @@
 
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faShieldAlt, faEnvelope, faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faShieldAlt, faGlobe } from '@fortawesome/free-solid-svg-icons';
 
 export default function SuperAdminSettings() {
     return (
@@ -15,7 +15,7 @@ export default function SuperAdminSettings() {
                 {/* Global Info */}
                 <div className="border border-gray-200 bg-transparent p-8 dark:border-white/10">
                     <h2 className="mb-8 font-cinzel text-lg font-medium tracking-widest text-gray-900 dark:text-white uppercase flex items-center gap-3">
-                        <FontAwesomeIcon icon={faGlobe}  className="h-4 w-4" /> Global Parameters
+                        <FontAwesomeIcon icon={faGlobe} className="h-4 w-4" /> Global Parameters
                     </h2>
                     <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                         <div>
@@ -40,7 +40,7 @@ export default function SuperAdminSettings() {
                 {/* Security Setup */}
                 <div className="border border-gray-200 bg-transparent p-8 dark:border-white/10">
                     <h2 className="mb-8 font-cinzel text-lg font-medium tracking-widest text-gray-900 dark:text-white uppercase flex items-center gap-3">
-                        <FontAwesomeIcon icon={faShieldAlt}  className="h-4 w-4" /> Super Admin Access
+                        <FontAwesomeIcon icon={faShieldAlt} className="h-4 w-4" /> Super Admin Access
                     </h2>
                     <div className="space-y-6">
                         <div>
@@ -65,7 +65,7 @@ export default function SuperAdminSettings() {
                 <div className="flex justify-end">
                     <button className="group flex items-center gap-3 border border-red-900 bg-red-900 px-8 py-4 text-xs font-semibold tracking-widest text-white uppercase transition-all hover:bg-transparent hover:text-red-900 dark:border-red-900 dark:bg-red-900 dark:text-white dark:hover:bg-transparent dark:hover:text-red-500">
                         Commit Changes
-                        <FontAwesomeIcon icon={faSave}  className="h-4 w-4 transition-transform group-hover:scale-110"  />
+                        <FontAwesomeIcon icon={faSave} className="h-4 w-4 transition-transform group-hover:scale-110" />
                     </button>
                 </div>
             </div>

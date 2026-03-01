@@ -1,8 +1,8 @@
+"use client";
 
 import { useState, useEffect } from "react";
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faShieldAlt, faTruck } from '@fortawesome/free-solid-svg-icons';
+import Image from "next/image";
+import { X, ShieldCheck, Truck } from "lucide-react";
 import { useCartStore } from "../store/useCartStore";
 
 export default function QuickViewModal() {
@@ -46,7 +46,7 @@ export default function QuickViewModal() {
                         onClick={() => setQuickView(null)}
                         className="absolute right-4 top-4 z-10 bg-transparent p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
                     >
-                        <FontAwesomeIcon icon={faTimes} className="h-6 w-6" />
+                        <X className="h-6 w-6" strokeWidth={1} />
                     </button>
 
                     <div className="grid grid-cols-1 md:grid-cols-2">
@@ -59,10 +59,13 @@ export default function QuickViewModal() {
                                 <div className="absolute left-6 top-6 z-10 border border-gray-900 bg-white/50 px-4 py-2 text-[9px] font-semibold uppercase tracking-[0.2em] text-gray-900 backdrop-blur-md dark:border-white dark:bg-black/50 dark:text-white">
                                     PREVIEW
                                 </div>
-                                <img
+                                <Image
                                     src={images[activeImageIdx]}
                                     alt={`${quickViewProduct.title} primary view`}
-                                    className="object-cover w-full h-full transition-opacity duration-500"
+                                    fill
+                                    className="object-cover transition-opacity duration-500"
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                    priority
                                 />
                             </div>
 
@@ -74,14 +77,16 @@ export default function QuickViewModal() {
                                             key={idx}
                                             onClick={() => setActiveImageIdx(idx)}
                                             className={`relative h-14 w-10 sm:h-16 sm:w-12 shrink-0 overflow-hidden transition-all duration-300 ${activeImageIdx === idx
-                                                ? 'ring-1 ring-gray-900 dark:ring-white scale-100 opacity-100'
-                                                : 'opacity-50 hover:opacity-100 hover:scale-95'
+                                                    ? 'ring-1 ring-gray-900 dark:ring-white scale-100 opacity-100'
+                                                    : 'opacity-50 hover:opacity-100 hover:scale-95'
                                                 }`}
                                         >
-                                            <img
+                                            <Image
                                                 src={img}
                                                 alt={`Thumbnail ${idx + 1}`}
-                                                className="object-cover w-full h-full"
+                                                fill
+                                                className="object-cover"
+                                                sizes="80px"
                                             />
                                         </button>
                                     ))}
@@ -123,14 +128,14 @@ export default function QuickViewModal() {
                             {/* Trust Badges */}
                             <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div className="flex items-start gap-4 p-4 border border-gray-200 dark:border-white/10 bg-transparent">
-                                    <FontAwesomeIcon icon={faTruck} className="h-5 w-5 text-gray-900 dark:text-white mt-1" />
+                                    <Truck className="h-5 w-5 text-gray-900 dark:text-white mt-1" strokeWidth={1} />
                                     <div className="flex flex-col">
                                         <span className="font-cinzel text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-900 dark:text-white mb-1">Logistics</span>
                                         <span className="text-[10px] font-light tracking-wide text-gray-500">Complimentary Global Delivery</span>
                                     </div>
                                 </div>
                                 <div className="flex items-start gap-4 p-4 border border-gray-200 dark:border-white/10 bg-transparent">
-                                    <FontAwesomeIcon icon={faShieldAlt} className="h-5 w-5 text-gray-900 dark:text-white mt-1" />
+                                    <ShieldCheck className="h-5 w-5 text-gray-900 dark:text-white mt-1" strokeWidth={1} />
                                     <div className="flex flex-col">
                                         <span className="font-cinzel text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-900 dark:text-white mb-1">Guarantee</span>
                                         <span className="text-[10px] font-light tracking-wide text-gray-500">Authenticity Verified</span>

@@ -1,18 +1,18 @@
+"use client";
 
-import { Link } from 'react-router-dom';
-import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import Link from "next/link";
+import { useRouter, usePathname, useParams } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faShoppingBag, faUser, faMoon, faSun, faBars } from '@fortawesome/free-solid-svg-icons';
+import { Search, ShoppingBag, User, Moon, Sun, Menu } from "lucide-react";
 import { useCartStore } from "../store/useCartStore";
 import MobileMenu from "./MobileMenu";
 
 export default function Navbar() {
   const { setTheme, resolvedTheme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
-  const router = useNavigate();
-  const pathname = useLocation().pathname;
+  const router = useRouter();
+  const pathname = usePathname();
   const isLandingPage = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
 
@@ -30,7 +30,7 @@ export default function Navbar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router(`/explore?q=${encodeURIComponent(searchQuery)}`);
+      router.push(`/explore?q=${encodeURIComponent(searchQuery)}`);
     }
   };
 
@@ -60,11 +60,11 @@ export default function Navbar() {
                 onClick={() => setIsMobileMenuOpen(true)}
                 className={`p-2 transition-colors ${!scrolled && isLandingPage ? "hover:text-gray-600 dark:hover:text-gray-300" : "hover:text-black dark:hover:text-white"}`}
               >
-                <FontAwesomeIcon icon={faBars}  className="h-5 w-5"  />
+                <Menu className="h-5 w-5" strokeWidth={1} />
               </button>
             )}
 
-            <Link to="/" onClick={handleLogoClick} className="flex items-center group">
+            <Link href="/" onClick={handleLogoClick} className="flex items-center group">
               <span className={`font-cinzel text-xl sm:text-2xl font-medium tracking-[0.2em] uppercase transition-opacity hover:opacity-70 ${!scrolled && isLandingPage ? "text-gray-900 dark:text-white" : "text-gray-900 dark:text-white"}`}>
                 AKI.
               </span>
@@ -81,7 +81,7 @@ export default function Navbar() {
                 placeholder="Search collections..."
                 className="w-full rounded-none border-b border-gray-300 bg-transparent px-2 py-2 pl-8 text-sm text-gray-900 focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-gray-100 dark:focus:border-white transition-colors duration-300 tracking-wide font-light placeholder-gray-400"
               />
-              <FontAwesomeIcon icon={faSearch}  className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 transition-colors"  />
+              <Search className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 transition-colors" strokeWidth={1} />
             </form>
           </div>
 
@@ -95,22 +95,24 @@ export default function Navbar() {
                 className="text-gray-900 hover:text-gray-500 dark:text-white dark:hover:text-gray-400 transition-colors"
                 aria-label="Toggle Dark Mode"
               >
-                {resolvedTheme === "dark" ? <FontAwesomeIcon icon={faSun}  className="h-4 w-4"  /> : <FontAwesomeIcon icon={faMoon}  className="h-4 w-4"  />}
+                {resolvedTheme === "dark" ? <Sun className="h-4 w-4" strokeWidth={1.5} /> : <Moon className="h-4 w-4" strokeWidth={1.5} />}
               </button>
             )}
 
             {isLandingPage ? (
-              <Link to="/auth/signup"
+              <Link
+                href="/auth/signup"
                 className="border border-gray-900 bg-transparent px-6 py-2.5 text-[10px] sm:text-xs font-semibold tracking-widest text-gray-900 transition-all duration-300 hover:bg-gray-900 hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-black uppercase"
               >
                 Start Shop
               </Link>
             ) : (
-              <Link to={storeSlug ? `/${storeSlug}/account` : "/explore"}
+              <Link
+                href={storeSlug ? `/${storeSlug}/account` : "/explore"}
                 className="text-gray-900 hover:text-gray-500 dark:text-white dark:hover:text-gray-400 transition-colors"
                 title="Store Owner Profile"
               >
-                <FontAwesomeIcon icon={faUser}  className="h-4 w-4"  />
+                <User className="h-4 w-4" strokeWidth={1} />
               </Link>
             )}
 
@@ -120,7 +122,7 @@ export default function Navbar() {
                 onClick={toggleCart}
                 className="relative text-gray-900 hover:text-gray-500 dark:text-white dark:hover:text-gray-400 transition-colors"
               >
-                <FontAwesomeIcon icon={faShoppingBag}  className="h-4 w-4"  />
+                <ShoppingBag className="h-4 w-4" strokeWidth={1} />
                 {totalItems > 0 && (
                   <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-gray-900 text-[9px] font-bold text-white dark:bg-white dark:text-black">
                     {totalItems}
@@ -159,7 +161,7 @@ export default function Navbar() {
               <button
                 onClick={() => {
                   setShowExitWarning(false);
-                  router("/");
+                  router.push("/");
                 }}
                 className="flex-1 border border-gray-900 bg-gray-900 dark:border-white dark:bg-white dark:text-black py-3 text-xs font-semibold uppercase tracking-widest text-white hover:bg-transparent hover:text-gray-900 dark:hover:bg-transparent dark:hover:text-white transition-all"
               >

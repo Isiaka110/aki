@@ -1,19 +1,19 @@
+"use client";
 
-
-import { useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { X, ShoppingBag } from "lucide-react";
 import { useCartStore } from "../store/useCartStore";
 
 export default function CartDrawer() {
-  const router = useNavigate();
+  const router = useRouter();
   const { items, isOpen, toggleCart, removeItem, getTotal } = useCartStore();
 
   if (!isOpen) return null;
 
   const handleCheckout = () => {
     toggleCart(); // Close drawer
-    router("/checkout"); // Route to true checkout page
+    router.push("/checkout"); // Route to true checkout page
   };
 
   return (
@@ -33,7 +33,7 @@ export default function CartDrawer() {
             Curated Collection
           </h2>
           <button onClick={toggleCart} className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-            <FontAwesomeIcon icon={faTimes} className="h-5 w-5" />
+            <X className="h-5 w-5" strokeWidth={1} />
           </button>
         </div>
 
@@ -41,7 +41,7 @@ export default function CartDrawer() {
         <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
           {items.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center">
-              <FontAwesomeIcon icon={faShoppingBag} className="mb-6 h-12 w-12 text-gray-200 dark:text-gray-800" />
+              <ShoppingBag className="mb-6 h-12 w-12 text-gray-200 dark:text-gray-800" strokeWidth={1} />
               <p className="font-cinzel text-lg tracking-widest uppercase text-gray-400 mb-2">No Acquisitions</p>
               <p className="text-xs font-light tracking-wide text-gray-500">Your collection awaits.</p>
             </div>
@@ -50,7 +50,7 @@ export default function CartDrawer() {
               {items.map((item) => (
                 <div key={item.id} className="group relative flex items-start gap-6 border-b border-gray-100 dark:border-white/5 pb-8 last:border-0 last:pb-0">
                   <div className="relative h-28 w-20 overflow-hidden bg-gray-50 dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-white/10">
-                    <img src={item.image} alt={item.title} className="object-cover w-full h-full" />
+                    <Image src={item.image} alt={item.title} fill className="object-cover" />
                   </div>
                   <div className="flex flex-1 flex-col justify-between min-h-[7rem]">
                     <div className="pr-4">

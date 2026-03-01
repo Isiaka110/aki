@@ -1,8 +1,8 @@
+"use client";
 
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight, faStar } from '@fortawesome/free-solid-svg-icons';
-
+import Link from "next/link";
+import { ArrowRight, Star } from "lucide-react";
+import Image from "next/image";
 
 const featuredShops = [
     {
@@ -50,32 +50,37 @@ export default function FeaturedStores() {
                         </h2>
                     </div>
 
-                    <Link to="/explore"
+                    <Link
+                        href="/explore"
                         className="group flex items-center justify-center gap-3 border border-gray-900 dark:border-white bg-transparent px-8 py-3 text-xs font-semibold tracking-widest text-gray-900 dark:text-white uppercase transition-all duration-500 hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-black mb-2"
                     >
                         View All Shops
-                        <FontAwesomeIcon icon={faArrowRight} className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </Link>
                 </div>
 
                 {/* Grid */}
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
                     {featuredShops.map((shop) => (
-                        <Link to={`/${shop.slug}`}
+                        <Link
+                            key={shop.id}
+                            href={`/${shop.slug}`}
                             className="group flex flex-col"
                         >
                             <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100 dark:bg-gray-900">
-                                <img
+                                <Image
                                     src={shop.image}
                                     alt={shop.name}
-                                    className="object-cover w-full h-full transition-transform duration-1000 group-hover:scale-110"
+                                    fill
+                                    className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                                    sizes="(max-width: 768px) 100vw, 33vw"
                                 />
                                 {/* Overlay on hover */}
                                 <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/20" />
 
                                 <div className="absolute top-4 right-4 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                                     <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-md px-3 py-1.5 text-xs font-medium text-white tracking-widest uppercase">
-                                        <FontAwesomeIcon icon={faStar} className="h-3 w-3 fill-white text-white" />
+                                        <Star className="h-3 w-3 fill-white text-white" />
                                         <span>{shop.rating}</span>
                                     </div>
                                 </div>

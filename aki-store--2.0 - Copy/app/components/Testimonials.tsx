@@ -1,6 +1,5 @@
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
+import Image from "next/image";
+import { Star } from "lucide-react";
 
 const testimonials = [
   {
@@ -35,7 +34,7 @@ export default function Testimonials() {
             <div key={index} className="flex flex-col group items-center text-center">
               <div className="flex gap-2 mb-8 text-gray-900 dark:text-white">
                 {[...Array(5)].map((_, i) => (
-                  <FontAwesomeIcon icon={faStar} key={i} className="h-4 w-4 fill-current transition-transform duration-700 group-hover:rotate-180" />
+                  <Star key={i} className="h-4 w-4 fill-current transition-transform duration-700 group-hover:rotate-180" />
                 ))}
               </div>
               <p className="text-xl sm:text-2xl font-light text-gray-800 dark:text-gray-200 leading-relaxed tracking-wide mb-10 decoration-gray-200 dark:decoration-gray-800">
@@ -45,7 +44,7 @@ export default function Testimonials() {
               <div className="flex flex-col items-center mt-auto">
                 <div className="relative h-20 w-20 overflow-hidden rounded-full mb-6 border border-gray-200 dark:border-white/20 p-1">
                   <div className="relative w-full h-full rounded-full overflow-hidden">
-                    <img src={item.image} alt={item.author} className="object-cover w-full h-full grayscale transition-transform duration-1000 group-hover:scale-110" />
+                    <Image src={item.image} alt={item.author} fill className="object-cover grayscale transition-transform duration-1000 group-hover:scale-110" />
                   </div>
                 </div>
                 <h4 className="font-cinzel text-lg text-gray-900 dark:text-white tracking-widest uppercase">{item.author}</h4>
