@@ -22,6 +22,7 @@ import StorePage from './pages/[storeSlug]/page';
 import LoginPage from './pages/auth/login/page';
 import SuperLoginPage from './pages/auth/super-login/page';
 import SignupPage from './pages/auth/signup/page';
+import ResetPasswordPage from './pages/auth/reset-password/page';
 
 // Onboarding
 import OnboardingPage from './pages/onboarding/page';
@@ -59,6 +60,7 @@ export default function App() {
         <Route path="/auth/login" element={<LoginPage />} />
         <Route path="/auth/super-login" element={<SuperLoginPage />} />
         <Route path="/auth/signup" element={<SignupPage />} />
+        <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
         <Route path="/onboarding" element={<OnboardingPage />} />
 
         {/* ── Super Admin ───────────────────────────────────────────────── */}
