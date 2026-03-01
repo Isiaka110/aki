@@ -50,6 +50,7 @@ export async function apiGetStoreAdminOverview() {
     return apiRequest<{
         storeName: string;
         storeId: string;
+        slug: string;
         totalRevenue: number;
         activeOrders: number;
         totalProducts: number;
@@ -230,5 +231,5 @@ export async function apiSubmitComplaint(payload: {
 }
 
 export async function apiGetStoreBySlug(slug: string) {
-    return apiRequest<any>(`/api/stores/details/${slug}`);
+    return apiRequest<any>(`/api/store/${slug}`);
 }

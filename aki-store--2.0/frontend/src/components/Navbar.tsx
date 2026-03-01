@@ -8,6 +8,7 @@ import { faSearch, faShoppingBag, faUser, faMoon, faSun, faBars } from '@fortawe
 import { useCartStore } from "../store/useCartStore";
 import MobileMenu from "./MobileMenu";
 import ConfirmModal from "./ConfirmModal";
+import { apiGetStoreBySlug } from "../services/api";
 
 export default function Navbar() {
   const { setTheme, resolvedTheme } = useTheme();
@@ -20,6 +21,7 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showExitWarning, setShowExitWarning] = useState(false);
+  const [storeData, setStoreData] = useState<any>(null);
 
   // Extract store slug from params to know if we are in a personalized store
   const params = useParams();
@@ -41,6 +43,25 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (storeSlug) {
+      const fetchStore = async () => {
+        try {
+          const data = await apiGetStoreBySlug(storeSlug);
+          setStoreData(data);
+        } catch (err) {
+          console.error("Navbar failed to fetch store details", err);
+          setStoreData(null);
+        }
+      };
+      fetchStore();
+    } else {
+      setStoreData(null);
+    }
+  }, [storeSlug]);
+
+
 
   const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (storeSlug) {
@@ -146,6 +167,7 @@ export default function Navbar() {
       <MobileMenu
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
+        storeData={storeData}
       />
 
       {/* Exit Store Warning Modal */}

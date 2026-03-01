@@ -30,7 +30,7 @@ export default function SettingsPage() {
     paystackSecretKey, setPaystackSecretKey,
     logo, setLogo,
     bannerUrl, setBannerUrl,
-    storeId,
+    storeId, slug,
   } = useStoreSettings();
 
   const [localPhone, setLocalPhone] = useState(whatsappNumber);
@@ -215,17 +215,32 @@ export default function SettingsPage() {
             </div>
 
             <div className="sm:col-span-2">
-              <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Digital Presence (URL)</label>
-              <div className="flex items-center border-b border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-white/5 opacity-80">
-                <span className="text-sm font-light tracking-wide text-gray-500 px-4">aki.com/</span>
-                <input
-                  type="text"
-                  value={storeId || "STR-XXXXX"}
-                  readOnly
-                  className="w-full bg-transparent px-0 py-3 text-sm dark:text-white focus:outline-none focus:ring-0 cursor-not-allowed font-medium"
-                />
+              <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Digital Presence (URL Slugs)</label>
+              <div className="space-y-4">
+                <div className="flex items-center border-b border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 opacity-80 group">
+                  <span className="text-sm font-light tracking-wide text-gray-400 px-4 w-24">Core ID:</span>
+                  <span className="text-sm font-light tracking-wide text-gray-500 pr-2">aki.com/</span>
+                  <input
+                    type="text"
+                    value={storeId || "STR-XXXXX"}
+                    readOnly
+                    className="w-full bg-transparent px-0 py-3 text-sm dark:text-white focus:outline-none focus:ring-0 cursor-not-allowed font-medium"
+                  />
+                  <FontAwesomeIcon icon={faShieldAlt} className="mr-4 text-gray-400" />
+                </div>
+                <div className="flex items-center border-b border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 opacity-80 group">
+                  <span className="text-sm font-light tracking-wide text-gray-400 px-4 w-24">Slug:</span>
+                  <span className="text-sm font-light tracking-wide text-gray-500 pr-2">aki.com/</span>
+                  <input
+                    type="text"
+                    value={slug || "loading..."}
+                    readOnly
+                    className="w-full bg-transparent px-0 py-3 text-sm dark:text-white focus:outline-none focus:ring-0 cursor-not-allowed font-medium"
+                  />
+                  <FontAwesomeIcon icon={faShieldAlt} className="mr-4 text-gray-400" />
+                </div>
               </div>
-              <p className="mt-2 text-[9px] font-light tracking-wide text-gray-400 italic">This identifier is permanently assigned by AKI Core and cannot be altered by vendors.</p>
+              <p className="mt-2 text-[9px] font-light tracking-wide text-gray-400 italic">Both your Core ID and Store Slug are permanently assigned for platform stability and cannot be altered.</p>
             </div>
 
             <div className="sm:col-span-2">

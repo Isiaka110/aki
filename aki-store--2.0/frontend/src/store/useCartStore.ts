@@ -72,6 +72,8 @@ interface StoreSettings {
   setStoreName: (name: string) => void;
   storeId: string;
   setStoreId: (id: string) => void;
+  slug: string;
+  setSlug: (slug: string) => void;
   whatsappNumber: string;
   setWhatsappNumber: (number: string) => void;
   ownerName: string;
@@ -106,6 +108,8 @@ export const useStoreSettings = create<StoreSettings>()(
       setStoreName: (name) => set({ storeName: name }),
       storeId: '',
       setStoreId: (id) => set({ storeId: id }),
+      slug: '',
+      setSlug: (slug) => set({ slug }),
       whatsappNumber: '1234567890',
       setWhatsappNumber: (number) => set({ whatsappNumber: number }),
       ownerName: 'AKI Admin',

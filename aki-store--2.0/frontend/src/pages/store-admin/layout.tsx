@@ -27,11 +27,11 @@ export default function StoreAdminLayout() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { clearAuth, user } = useAuthStore();
-  const { primaryColor, hydrateSettings, storeName, storeId } = useStoreSettings();
+  const { primaryColor, hydrateSettings, storeName, storeId, slug } = useStoreSettings();
 
   // Use the verified storeId slug from settings hydration (from DB)
   // Fallback to name-based slug only if storeId isn't yet available
-  const storefrontSlug = storeId || (user?.storeName ? user.storeName.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '-') : '');
+  const storefrontSlug = slug || storeId || (user?.storeName ? user.storeName.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '-') : '');
 
   useEffect(() => {
     setMounted(true);
@@ -48,6 +48,7 @@ export default function StoreAdminLayout() {
           hydrateSettings({
             storeName: data.storeName,
             storeId: data.storeId,
+            slug: data.slug,
             ...data.settings
           });
         }
