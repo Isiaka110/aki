@@ -1,17 +1,12 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faSearch, faEdit, faTrash, faTimes, faTags } from '@fortawesome/free-solid-svg-icons';
-
-// Dummy category data
-const initialCategories = [
-  { id: "1", name: "Outerwear", description: "Jackets, coats, and hoodies.", productCount: 14, status: "Active" },
-  { id: "2", name: "Accessories", description: "Watches, belts, and jewelry.", productCount: 8, status: "Active" },
-  { id: "3", name: "Vintage Denim", description: "Pre-loved jeans and denim jackets.", productCount: 22, status: "Active" },
-];
+import { faPlus, faSearch, faEdit, faTrash, faTimes, faTags, faSync } from '@fortawesome/free-solid-svg-icons';
+import { apiGetCategories, apiCreateCategory, apiUpdateCategory, apiDeleteCategory } from "../../../services/api";
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState(initialCategories);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   interface Category {
@@ -25,19 +20,69 @@ export default function CategoriesPage() {
   // State to track if we are editing an existing category or adding a new one
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
+  // Form State
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const fetchCategories = async () => {
+    setIsLoading(true);
+    try {
+      const data = await apiGetCategories();
+      setCategories(data || []);
+    } catch (error) {
+      console.error("Failed to load categories", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
   const openAddModal = () => {
     setEditingCategory(null);
+    setName("");
+    setDescription("");
     setIsModalOpen(true);
   };
 
   const openEditModal = (category: Category) => {
     setEditingCategory(category);
+    setName(category.name);
+    setDescription(category.description || "");
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id: string) => {
-    // In a real app, you'd want a confirmation prompt here!
-    setCategories(categories.filter(cat => cat.id !== id));
+  const handleDelete = async (id: string) => {
+    try {
+      await apiDeleteCategory(id);
+      setCategories(categories.filter(cat => cat.id !== id));
+    } catch (error) {
+      console.error("Failed to delete category", error);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+
+    setIsSubmitting(true);
+    try {
+      if (editingCategory) {
+        const updated = await apiUpdateCategory(editingCategory.id, { name, description });
+        setCategories(categories.map(cat => cat.id === updated.id ? updated : cat));
+      } else {
+        const created = await apiCreateCategory({ name, description });
+        setCategories([created, ...categories]);
+      }
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Failed to save category", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -53,14 +98,14 @@ export default function CategoriesPage() {
           onClick={openAddModal}
           className="flex items-center justify-center gap-2 border border-gray-900 bg-gray-900 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white"
         >
-          <FontAwesomeIcon icon={faPlus}  className="h-4 w-4"  /> Add Collection
+          <FontAwesomeIcon icon={faPlus} className="h-4 w-4" /> Add Collection
         </button>
       </div>
 
       {/* Toolbar */}
       <div className="flex items-center gap-4 border border-gray-200 bg-transparent p-2 dark:border-white/10">
         <div className="relative flex-1">
-          <FontAwesomeIcon icon={faSearch}  className="absolute left-4 top-3 h-4 w-4 text-gray-400"  />
+          <FontAwesomeIcon icon={faSearch} className="absolute left-4 top-3 h-4 w-4 text-gray-400" />
           <input
             type="text"
             placeholder="Search collections..."
@@ -82,10 +127,16 @@ export default function CategoriesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5 font-light tracking-wide text-sm">
-              {categories.length === 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={4} className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
+                    <FontAwesomeIcon icon={faSync} className="h-4 w-4 mx-auto animate-spin mb-2" /> Loading collections...
+                  </td>
+                </tr>
+              ) : categories.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="px-8 py-16 text-center text-gray-500">
-                    <FontAwesomeIcon icon={faTags}  className="mx-auto mb-4 h-8 w-8 opacity-20"  />
+                    <FontAwesomeIcon icon={faTags} className="mx-auto mb-4 h-8 w-8 opacity-20" />
                     <p className="tracking-widest uppercase text-xs">No collections found. Create one to organize your store.</p>
                   </td>
                 </tr>
@@ -104,13 +155,13 @@ export default function CategoriesPage() {
                         onClick={() => openEditModal(category)}
                         className="p-2 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white transition-colors"
                       >
-                        <FontAwesomeIcon icon={faEdit}  className="h-4 w-4"  />
+                        <FontAwesomeIcon icon={faEdit} className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(category.id)}
                         className="p-2 text-gray-400 hover:text-red-900 dark:text-gray-500 dark:hover:text-red-500 transition-colors"
                       >
-                        <FontAwesomeIcon icon={faTrash}  className="h-4 w-4"  />
+                        <FontAwesomeIcon icon={faTrash} className="h-4 w-4" />
                       </button>
                     </div>
                   </td>
@@ -131,17 +182,19 @@ export default function CategoriesPage() {
                 {editingCategory ? "Edit Collection" : "New Collection"}
               </h2>
               <button onClick={() => setIsModalOpen(false)} className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                <FontAwesomeIcon icon={faTimes}  className="h-5 w-5"  />
+                <FontAwesomeIcon icon={faTimes} className="h-5 w-5" />
               </button>
             </div>
 
             <div className="p-8">
-              <form className="space-y-8">
+              <form onSubmit={handleSubmit} className="space-y-8">
                 <div>
                   <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Collection Name</label>
                   <input
                     type="text"
-                    defaultValue={editingCategory?.name || ""}
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     placeholder="E.g. Summer Archives"
                     className="w-full border-b border-gray-300 bg-transparent px-0 py-3 text-sm dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white"
                   />
@@ -151,7 +204,8 @@ export default function CategoriesPage() {
                   <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Narrative (Optional)</label>
                   <textarea
                     rows={3}
-                    defaultValue={editingCategory?.description || ""}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     placeholder="A brief description of this collection's theme..."
                     className="w-full border border-gray-300 bg-transparent px-4 py-3 text-sm dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white resize-none"
                   />
@@ -161,8 +215,8 @@ export default function CategoriesPage() {
                   <button type="button" onClick={() => setIsModalOpen(false)} className="w-full sm:w-1/2 border border-gray-300 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-gray-500 hover:border-gray-900 hover:text-gray-900 dark:border-gray-700 dark:text-gray-400 dark:hover:border-white dark:hover:text-white transition-all">
                     Discard
                   </button>
-                  <button type="button" className="w-full sm:w-1/2 border border-gray-900 bg-gray-900 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white text-center">
-                    {editingCategory ? "Save" : "Create"}
+                  <button type="submit" disabled={isSubmitting} className="w-full sm:w-1/2 border border-gray-900 bg-gray-900 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white text-center disabled:opacity-50 disabled:cursor-not-allowed">
+                    {isSubmitting ? "Saving..." : editingCategory ? "Save Modifications" : "Create Collection"}
                   </button>
                 </div>
               </form>

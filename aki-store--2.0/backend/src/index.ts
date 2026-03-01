@@ -9,9 +9,11 @@ import { getAllStores, updateStoreIntegrity } from './services/store.service';
 import { getAllComplaints, updateComplaintStatus, dispatchComplaint } from './services/complaint.service';
 import { registerStoreAdmin, loginUser, requestPasswordReset, verifyResetCode, confirmPasswordReset } from './services/auth.service';
 import { getStoreProducts, createProduct, updateProduct, deleteProduct } from './services/product.service';
+import { getStoreCategories, createCategory, updateCategory, deleteCategory } from './services/category.service';
 import { protect, AuthRequest } from './middleware/auth';
 import Store from './models/Store';
 import Product from './models/Product';
+import Category from './models/Category';
 
 dotenv.config({ path: '../.env.local' }); // Load from root during dev
 const app = express();
@@ -228,6 +230,46 @@ app.delete('/api/store-admin/products/:productId', protect, async (req: any, res
         const storeId = req.user.storeId;
         await deleteProduct(storeId, req.params.productId);
         res.status(200).json({ success: true, message: 'Product deleted' });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.get('/api/store-admin/categories', protect, async (req: any, res) => {
+    try {
+        const storeId = req.user.storeId;
+        const categories = await getStoreCategories(storeId);
+        res.status(200).json({ success: true, data: categories });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.post('/api/store-admin/categories', protect, async (req: any, res) => {
+    try {
+        const storeId = req.user.storeId;
+        const newCategory = await createCategory(storeId, req.body);
+        res.status(201).json({ success: true, data: newCategory });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.put('/api/store-admin/categories/:categoryId', protect, async (req: any, res) => {
+    try {
+        const storeId = req.user.storeId;
+        const updatedCategory = await updateCategory(storeId, req.params.categoryId, req.body);
+        res.status(200).json({ success: true, data: updatedCategory });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.delete('/api/store-admin/categories/:categoryId', protect, async (req: any, res) => {
+    try {
+        const storeId = req.user.storeId;
+        await deleteCategory(storeId, req.params.categoryId);
+        res.status(200).json({ success: true, message: 'Category deleted' });
     } catch (error: any) {
         res.status(500).json({ success: false, error: error.message });
     }

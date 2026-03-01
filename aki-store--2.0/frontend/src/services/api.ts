@@ -81,6 +81,30 @@ export async function apiDeleteProduct(productId: string) {
     });
 }
 
+export async function apiGetCategories() {
+    return apiRequest<any[]>('/api/store-admin/categories');
+}
+
+export async function apiCreateCategory(payload: { name: string, description?: string }) {
+    return apiRequest<any>('/api/store-admin/categories', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+    });
+}
+
+export async function apiUpdateCategory(categoryId: string, payload: { name: string, description?: string }) {
+    return apiRequest<any>(`/api/store-admin/categories/${categoryId}`, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+    });
+}
+
+export async function apiDeleteCategory(categoryId: string) {
+    return apiRequest<void>(`/api/store-admin/categories/${categoryId}`, {
+        method: 'DELETE',
+    });
+}
+
 export async function apiLogout() {
     return apiRequest<void>('/api/auth/logout', { method: 'POST' });
 }

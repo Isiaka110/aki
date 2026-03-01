@@ -14,30 +14,105 @@ type Product = {
   images: string[];
 };
 
-import { apiGetProducts } from "../../../services/api";
+import { apiGetProducts, apiGetCategories, apiCreateProduct, apiUpdateProduct, apiDeleteProduct } from "../../../services/api";
 
 export default function ProductsPage() {
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("info"); // Tabs: info, media, pricing, delivery
   const [products, setProducts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [viewedProduct, setViewedProduct] = useState<any | null>(null);
+  const [editingProduct, setEditingProduct] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const fetchProducts = async () => {
+  const [formData, setFormData] = useState({
+    title: "",
+    category: "",
+    description: "",
+    price: "",
+    stock: "",
+    images: [] as string[],
+    status: "Active"
+  });
+
+  const fetchData = async () => {
     setIsLoading(true);
     try {
-      const data = await apiGetProducts();
-      setProducts(data || []);
+      const [prodsData, catsData] = await Promise.all([
+        apiGetProducts(),
+        apiGetCategories().catch(() => []) // fallback if fails
+      ]);
+      setProducts(prodsData || []);
+      setCategories(catsData || []);
     } catch (error) {
-      console.error("Failed to load products");
+      console.error("Failed to load data");
     } finally {
       setIsLoading(false);
     }
   };
 
-  useState(() => {
-    fetchProducts();
-  });
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const openAddBuilder = () => {
+    setFormData({ title: "", category: categories.length > 0 ? categories[0].name : "", description: "", price: "", stock: "", images: [], status: "Active" });
+    setEditingProduct(null);
+    setActiveTab("info");
+    setIsBuilderOpen(true);
+  };
+
+  const openEditBuilder = (product: any) => {
+    setFormData({
+      title: product.title,
+      category: product.category,
+      description: product.description || "",
+      price: product.price.toString(),
+      stock: product.stock.toString(),
+      images: product.images || [],
+      status: product.status
+    });
+    setEditingProduct(product);
+    setActiveTab("info");
+    setViewedProduct(null);
+    setIsBuilderOpen(true);
+  };
+
+  const handleDelete = async (productId: string) => {
+    try {
+      await apiDeleteProduct(productId);
+      setProducts(products.filter(p => p.productId !== productId));
+      if (viewedProduct?.productId === productId) setViewedProduct(null);
+    } catch (error) {
+      console.error("Failed to delete", error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.title || !formData.category || !formData.price || !formData.stock) return;
+    setIsSubmitting(true);
+    try {
+      const payload = {
+        ...formData,
+        price: Number(formData.price),
+        stock: Number(formData.stock)
+      };
+
+      if (editingProduct) {
+        const updated = await apiUpdateProduct(editingProduct.productId, payload);
+        setProducts(products.map(p => p.productId === updated.productId ? updated : p));
+      } else {
+        const created = await apiCreateProduct(payload);
+        setProducts([created, ...products]);
+      }
+      setIsBuilderOpen(false);
+    } catch (error) {
+      console.error("Failed to save product", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -49,7 +124,7 @@ export default function ProductsPage() {
           <p className="text-sm font-light tracking-wide text-gray-500">The definitive source for your atelier collection.</p>
         </div>
         <button
-          onClick={() => setIsBuilderOpen(true)}
+          onClick={openAddBuilder}
           className="flex items-center justify-center gap-2 border border-gray-900 bg-gray-900 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white"
         >
           <FontAwesomeIcon icon={faPlus} className="h-4 w-4" /> Add Piece
@@ -121,13 +196,13 @@ export default function ProductsPage() {
                         <FontAwesomeIcon icon={faIcons} className="h-4 w-4" />
                       </button>
                       <button
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => { e.stopPropagation(); openEditBuilder(product); }}
                         className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                       >
                         <FontAwesomeIcon icon={faEdit} className="h-4 w-4" />
                       </button>
                       <button
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => { e.stopPropagation(); handleDelete(product.productId); }}
                         className="p-2 text-gray-400 hover:text-red-900 dark:hover:text-red-500 transition-colors"
                       >
                         <FontAwesomeIcon icon={faTrash} className="h-4 w-4" />
@@ -213,11 +288,11 @@ export default function ProductsPage() {
               </div>
 
               <div className="border-t border-gray-200 dark:border-white/10 p-6 sm:p-8 shrink-0 flex gap-4">
-                <button className="flex-1 border border-gray-300 px-4 py-3 text-xs font-semibold uppercase tracking-widest text-gray-500 hover:border-gray-900 hover:text-gray-900 dark:border-gray-700 dark:text-gray-400 dark:hover:border-white dark:hover:text-white transition-all">
+                <button onClick={() => openEditBuilder(viewedProduct)} className="flex-1 border border-gray-300 px-4 py-3 text-xs font-semibold uppercase tracking-widest text-gray-500 hover:border-gray-900 hover:text-gray-900 dark:border-gray-700 dark:text-gray-400 dark:hover:border-white dark:hover:text-white transition-all">
                   Edit Piece
                 </button>
-                <button className="flex-1 border border-gray-900 bg-gray-900 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white">
-                  Unpublish
+                <button onClick={() => handleDelete(viewedProduct.productId)} className="flex-1 border border-gray-900 bg-gray-900 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white">
+                  Delete
                 </button>
               </div>
 
@@ -268,19 +343,20 @@ export default function ProductsPage() {
                     <div className="space-y-8 animate-in fade-in duration-500">
                       <div>
                         <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Title of Piece</label>
-                        <input type="text" placeholder="E.g. Vintage Leather Jacket" className="w-full border-b border-gray-300 bg-transparent px-0 py-3 text-sm dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white" />
+                        <input type="text" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} placeholder="E.g. Vintage Leather Jacket" className="w-full border-b border-gray-300 bg-transparent px-0 py-3 text-sm dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white" />
                       </div>
                       <div>
                         <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Collection</label>
-                        <select className="w-full border-b border-gray-300 bg-transparent px-0 py-3 text-sm dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white appearance-none">
-                          <option>Shoes</option>
-                          <option>Clothing</option>
-                          <option>Accessories</option>
+                        <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} className="w-full border-b border-gray-300 bg-transparent px-0 py-3 text-sm dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white appearance-none">
+                          <option value="">Select Collection...</option>
+                          {categories.map(c => (
+                            <option key={c.id} value={c.name}>{c.name}</option>
+                          ))}
                         </select>
                       </div>
                       <div>
                         <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Description</label>
-                        <textarea rows={5} placeholder="Describe the materials, provenance, and style..." className="w-full border border-gray-300 bg-transparent px-4 py-3 text-sm dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white resize-none" />
+                        <textarea rows={5} value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} placeholder="Describe the materials, provenance, and style..." className="w-full border border-gray-300 bg-transparent px-4 py-3 text-sm dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white resize-none" />
                       </div>
                     </div>
                   )}
@@ -314,11 +390,11 @@ export default function ProductsPage() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                         <div>
                           <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Valuation (USD)</label>
-                          <input type="number" placeholder="0.00" className="font-cinzel tracking-widest w-full border-b border-gray-300 bg-transparent px-0 py-3 text-lg dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white" />
+                          <input type="number" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} placeholder="0.00" className="font-cinzel tracking-widest w-full border-b border-gray-300 bg-transparent px-0 py-3 text-lg dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white" />
                         </div>
                         <div>
                           <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Inventory Allocation</label>
-                          <input type="number" placeholder="0" className="font-cinzel tracking-widest w-full border-b border-gray-300 bg-transparent px-0 py-3 text-lg dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white" />
+                          <input type="number" value={formData.stock} onChange={e => setFormData({ ...formData, stock: e.target.value })} placeholder="0" className="font-cinzel tracking-widest w-full border-b border-gray-300 bg-transparent px-0 py-3 text-lg dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white" />
                         </div>
                       </div>
 
@@ -400,8 +476,8 @@ export default function ProductsPage() {
                 <button onClick={() => setIsBuilderOpen(false)} className="flex-1 sm:flex-none border border-gray-300 px-8 py-3 text-xs font-semibold uppercase tracking-widest text-gray-500 hover:border-gray-900 hover:text-gray-900 dark:border-gray-700 dark:text-gray-400 dark:hover:border-white dark:hover:text-white transition-all">
                   Withdraw
                 </button>
-                <button className="flex items-center justify-center flex-1 sm:flex-none border border-gray-900 bg-gray-900 px-8 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white">
-                  Publish Piece
+                <button disabled={isSubmitting} onClick={handleSubmit} className="flex items-center justify-center flex-1 sm:flex-none border border-gray-900 bg-gray-900 px-8 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white disabled:opacity-50">
+                  {isSubmitting ? "Saving..." : editingProduct ? "Save Changes" : "Publish Piece"}
                 </button>
               </div>
             </div>
