@@ -9,6 +9,7 @@ interface AuthUser {
     lastName: string;
     role: 'store-admin' | 'super-admin';
     storeName?: string;
+    storeId?: string;
 }
 
 interface AuthStore {

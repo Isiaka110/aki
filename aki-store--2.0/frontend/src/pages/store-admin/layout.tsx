@@ -7,7 +7,8 @@ import AdminMobileMenu from "./AdminMobileMenu";
 import { useTheme } from "next-themes";
 import ConfirmModal from "../../components/ConfirmModal";
 import { useAuthStore } from "../../store/useAuthStore";
-import { apiLogout } from "../../services/api";
+import { useStoreSettings } from "../../store/useCartStore";
+import { apiGetStoreAdminOverview, apiLogout } from "../../services/api";
 
 const navigation = [
   { name: "Overview", href: "/store-admin", icon: faTachometerAlt },
@@ -25,9 +26,37 @@ export default function StoreAdminLayout() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const { clearAuth } = useAuthStore();
+  const { clearAuth, user } = useAuthStore();
+  const { primaryColor, hydrateSettings, storeName, storeId } = useStoreSettings();
 
-  useEffect(() => setMounted(true), []);
+  // Use the verified storeId slug from settings hydration (from DB)
+  // Fallback to name-based slug only if storeId isn't yet available
+  const storefrontSlug = storeId || (user?.storeName ? user.storeName.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '-') : '');
+
+  useEffect(() => {
+    setMounted(true);
+    if (primaryColor) {
+      document.documentElement.style.setProperty('--color-primary', primaryColor);
+    }
+  }, [primaryColor]);
+
+  useEffect(() => {
+    const syncDatabaseData = async () => {
+      try {
+        const data = await apiGetStoreAdminOverview();
+        if (data) {
+          hydrateSettings({
+            storeName: data.storeName,
+            storeId: data.storeId,
+            ...data.settings
+          });
+        }
+      } catch (e) {
+        console.error("Failed to sync admin store data");
+      }
+    };
+    syncDatabaseData();
+  }, [hydrateSettings]);
 
   const handleLogoutConfirm = async () => {
     try { await apiLogout(); } catch (_) { /* ignore */ }
@@ -55,7 +84,7 @@ export default function StoreAdminLayout() {
       <aside className="hidden h-full w-64 flex-col border-r border-gray-200 bg-transparent dark:border-white/10 md:flex">
         <div className="flex h-20 items-center justify-between border-b border-gray-200 px-8 dark:border-white/10 shrink-0">
           <Link to="/" className="flex items-center gap-2 group">
-            <span className="font-cinzel text-2xl font-medium tracking-[0.2em] text-gray-900 dark:text-white uppercase group-hover:opacity-70 transition-opacity">AKI.</span>
+            <span className="font-cinzel text-xl font-medium tracking-[0.2em] text-gray-900 dark:text-white uppercase group-hover:opacity-70 transition-opacity truncate max-w-[140px]">{storeName || "AKI."}</span>
             <span className="border border-gray-900 dark:border-white px-2 py-0.5 text-[8px] font-semibold uppercase tracking-widest text-gray-900 dark:text-white">Admin</span>
           </Link>
         </div>
@@ -80,6 +109,15 @@ export default function StoreAdminLayout() {
         </nav>
 
         <div className="border-t border-gray-200 p-6 dark:border-white/10 space-y-4 shrink-0">
+          <Link
+            to={`/${storefrontSlug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex w-full items-center gap-4 border border-gray-900 bg-gray-900 px-4 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white"
+          >
+            <FontAwesomeIcon icon={faStore} className="h-4 w-4" />
+            Visit Storefront
+          </Link>
           {mounted && (
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -105,14 +143,16 @@ export default function StoreAdminLayout() {
           <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-gray-900 hover:opacity-70 transition-opacity dark:text-white">
             <FontAwesomeIcon icon={faBars} className="h-6 w-6" />
           </button>
-          <span className="font-cinzel text-xl font-medium tracking-[0.2em] text-gray-900 dark:text-white uppercase">Admin.</span>
+          <span className="font-cinzel text-xl font-medium tracking-[0.2em] text-gray-900 dark:text-white uppercase truncate max-w-[150px]">{storeName || "Admin."}</span>
           <div className="flex items-center gap-4">
             {mounted && (
               <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="p-2 text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-900 dark:hover:text-white">
                 {theme === "dark" ? <FontAwesomeIcon icon={faSun} className="h-5 w-5" /> : <FontAwesomeIcon icon={faMoon} className="h-5 w-5" />}
               </button>
             )}
-            <Link to="/"><FontAwesomeIcon icon={faStore} className="h-5 w-5 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors" /></Link>
+            <Link to={`/${storefrontSlug}`} target="_blank" rel="noopener noreferrer">
+              <FontAwesomeIcon icon={faStore} className="h-5 w-5 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors" />
+            </Link>
           </div>
         </header>
 

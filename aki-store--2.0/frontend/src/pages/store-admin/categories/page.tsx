@@ -116,7 +116,7 @@ export default function CategoriesPage() {
 
       {/* Categories Table */}
       <div className="border border-gray-200 bg-transparent dark:border-white/10">
-        <div className="overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left">
             <thead className="border-b border-gray-100 bg-gray-50/50 dark:border-white/5 dark:bg-white/5">
               <tr>
@@ -169,6 +169,46 @@ export default function CategoriesPage() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile View: Cards */}
+        <div className="md:hidden flex flex-col divide-y divide-gray-100 dark:divide-white/5">
+          {isLoading ? (
+            <div className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
+              <FontAwesomeIcon icon={faSync} className="h-4 w-4 mx-auto animate-spin mb-2" /> Loading collections...
+            </div>
+          ) : categories.length === 0 ? (
+            <div className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
+              <FontAwesomeIcon icon={faTags} className="mx-auto mb-4 h-8 w-8 opacity-20" />
+              <p>No collections found. Create one to organize your store.</p>
+            </div>
+          ) : categories.map((category) => (
+            <div key={category.id} className="p-6 transition-colors hover:bg-gray-50 dark:hover:bg-white/5 flex flex-col gap-4">
+              <div>
+                <h3 className="font-cinzel text-gray-900 dark:text-white uppercase tracking-wider mb-1">{category.name}</h3>
+                <p className="text-sm font-light text-gray-500 max-w-xs">{category.description}</p>
+              </div>
+              <div className="flex items-center justify-between border-t border-gray-100 dark:border-white/5 pt-4">
+                <span className="inline-flex items-center border border-gray-200 px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-gray-600 dark:border-white/20 dark:text-gray-400">
+                  {category.productCount} pieces
+                </span>
+                <div className="flex justify-end gap-3">
+                  <button
+                    onClick={() => openEditModal(category)}
+                    className="p-2 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white transition-colors"
+                  >
+                    <FontAwesomeIcon icon={faEdit} className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(category.id)}
+                    className="p-2 text-gray-400 hover:text-red-900 dark:text-gray-500 dark:hover:text-red-500 transition-colors"
+                  >
+                    <FontAwesomeIcon icon={faTrash} className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

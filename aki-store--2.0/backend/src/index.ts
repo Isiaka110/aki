@@ -5,11 +5,12 @@ import cookieParser from 'cookie-parser';
 import connectToDatabase from './lib/mongodb';
 
 // Import Services
-import { getAllStores, updateStoreIntegrity } from './services/store.service';
+import { getAllStores, updateStoreIntegrity, updateStoreSettings, getStoreById } from './services/store.service';
 import { getAllComplaints, updateComplaintStatus, dispatchComplaint } from './services/complaint.service';
 import { registerStoreAdmin, loginUser, requestPasswordReset, verifyResetCode, confirmPasswordReset } from './services/auth.service';
 import { getStoreProducts, createProduct, updateProduct, deleteProduct } from './services/product.service';
 import { getStoreCategories, createCategory, updateCategory, deleteCategory } from './services/category.service';
+import { createStoreOrder, getStoreOrders, updateOrderStatusAdmin, getStoreOrderStats } from './services/order.service';
 import { protect, AuthRequest } from './middleware/auth';
 import Store from './models/Store';
 import Product from './models/Product';
@@ -23,11 +24,15 @@ app.use(cors({
     origin: ['http://localhost:5173', 'http://localhost:5174'],
     credentials: true
 }));
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 
 // Connect DB
 connectToDatabase();
+
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ success: true, status: 'UP', timestamp: new Date() });
+});
 
 // --- Auth Routes ---
 app.post('/api/auth/register', async (req, res) => {
@@ -141,6 +146,24 @@ app.put('/api/super-admin/stores', async (req, res) => {
     }
 });
 
+app.get('/api/super-admin/stores/:storeId/products', async (req, res) => {
+    try {
+        const products = await getStoreProducts(req.params.storeId);
+        res.status(200).json({ success: true, data: products });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.get('/api/super-admin/stores/:storeId/categories', async (req, res) => {
+    try {
+        const categories = await getStoreCategories(req.params.storeId);
+        res.status(200).json({ success: true, data: categories });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 app.get('/api/super-admin/complaints', async (req, res) => {
     try {
         const complaints = await getAllComplaints();
@@ -171,6 +194,40 @@ app.post('/api/store/complaints', async (req, res) => {
     }
 });
 
+// --- Public Store Detail ---
+app.get('/api/store/:storeId', async (req, res) => {
+    try {
+        const store = await getStoreById(req.params.storeId);
+        if (!store) {
+            return res.status(404).json({ success: false, error: 'Store not found' });
+        }
+        const products = await getStoreProducts(req.params.storeId);
+        const categories = await getStoreCategories(req.params.storeId);
+        res.status(200).json({
+            success: true,
+            data: {
+                ...store.toObject(),
+                products,
+                categories
+            }
+        });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// --- Public Store Orders API ---
+app.post('/api/store/orders', async (req, res) => {
+    try {
+        const payload = req.body;
+        // In a real implementation this would generate a payment session and return it
+        const newOrder = await createStoreOrder(payload);
+        res.status(201).json({ success: true, data: newOrder });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 // --- Store Admin Routes ---
 app.get('/api/store-admin/overview', protect, async (req: any, res) => {
     try {
@@ -178,16 +235,32 @@ app.get('/api/store-admin/overview', protect, async (req: any, res) => {
         const myStore = await Store.findById(storeId);
 
         const totalProducts = await Product.countDocuments({ storeId: myStore?._id.toString() });
+        const orderStats = await getStoreOrderStats(storeId);
 
         res.status(200).json({
             success: true,
             data: {
                 storeName: myStore?.name || 'Your Store',
-                totalRevenue: myStore?.revenue || 0,
-                activeOrders: 0,
+                storeId: myStore?.storeId || '',
+                totalRevenue: orderStats.totalRevenue || 0,
+                activeOrders: orderStats.activeOrders || 0,
                 totalProducts: totalProducts || 0,
-                storeViews: 0,
-                recentOrders: []
+                storeViews: myStore?.storeViews || 0, // Assuming a storeViews field might exist later
+                recentOrders: orderStats.recentOrders || [],
+                settings: {
+                    ownerName: myStore?.ownerName || '',
+                    designation: myStore?.designation || '',
+                    manifesto: myStore?.manifesto || '',
+                    whatsappNumber: myStore?.whatsappNumber || '',
+                    socialInstagram: myStore?.socialInstagram || '',
+                    socialTwitter: myStore?.socialTwitter || '',
+                    supportEmail: myStore?.supportEmail || myStore?.email || '',
+                    primaryColor: myStore?.primaryColor || '#000000',
+                    paystackPublicKey: myStore?.paystackPublicKey || '',
+                    paystackSecretKey: myStore?.paystackSecretKey || '',
+                    logo: myStore?.logo || '',
+                    bannerUrl: myStore?.bannerUrl || '',
+                }
             }
         });
     } catch (error: any) {
@@ -275,7 +348,47 @@ app.delete('/api/store-admin/categories/:categoryId', protect, async (req: any, 
     }
 });
 
+app.get('/api/store-admin/orders', protect, async (req: any, res) => {
+    try {
+        const storeId = req.user.storeId;
+        const orders = await getStoreOrders(storeId);
+        res.status(200).json({ success: true, data: orders });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.put('/api/store-admin/orders/:orderId', protect, async (req: any, res) => {
+    try {
+        const storeId = req.user.storeId;
+        const { status } = req.body;
+        const updatedOrder = await updateOrderStatusAdmin(storeId, req.params.orderId, status);
+        res.status(200).json({ success: true, data: updatedOrder });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.put('/api/store-admin/settings', protect, async (req: any, res) => {
+    try {
+        const storeId = req.user.storeId;
+        const updatedStore = await updateStoreSettings(storeId, req.body);
+        res.status(200).json({ success: true, data: updatedStore });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 // Start Server
-app.listen(PORT, () => {
-    console.log(`✅ Backend server running on port ${PORT}`);
+const server = app.listen(Number(PORT), '0.0.0.0', () => {
+    console.log(`✅ Backend server running on http://localhost:${PORT}`);
+    console.log(`✅ Operational on 0.0.0.0:${PORT}`);
+});
+
+server.on('error', (err: any) => {
+    if (err.code === 'EADDRINUSE') {
+        console.error(`❌ Port ${PORT} is already in use. Please terminate the conflicting process.`);
+    } else {
+        console.error(`❌ Server Initialization Error:`, err);
+    }
 });

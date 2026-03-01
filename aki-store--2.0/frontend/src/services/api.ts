@@ -49,12 +49,31 @@ export async function apiRegister(payload: {
 export async function apiGetStoreAdminOverview() {
     return apiRequest<{
         storeName: string;
+        storeId: string;
         totalRevenue: number;
         activeOrders: number;
         totalProducts: number;
         storeViews: number;
         recentOrders: any[];
+        settings?: {
+            designation: string;
+            manifesto: string;
+            whatsappNumber: string;
+            socialInstagram: string;
+            socialTwitter: string;
+            supportEmail: string;
+            primaryColor: string;
+            logo: string;
+            bannerUrl: string;
+        };
     }>('/api/store-admin/overview');
+}
+
+export async function apiUpdateStoreSettings(payload: any) {
+    return apiRequest<any>('/api/store-admin/settings', {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+    });
 }
 
 export async function apiGetProducts() {
@@ -109,6 +128,19 @@ export async function apiLogout() {
     return apiRequest<void>('/api/auth/logout', { method: 'POST' });
 }
 
+// ─── Orders ──────────────────────────────────────────────────────────────────
+
+export async function apiGetStoreOrders() {
+    return apiRequest<any[]>('/api/store-admin/orders');
+}
+
+export async function apiUpdateOrderStatusAdmin(orderId: string, status: string) {
+    return apiRequest<any>(`/api/store-admin/orders/${orderId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ status }),
+    });
+}
+
 // ─── Super Admin ─────────────────────────────────────────────────────────────
 
 export async function apiGetSuperAdminOverview() {
@@ -128,11 +160,20 @@ export async function apiUpdateStoreIntegrity(payload: {
     storeId: string;
     status: string;
     riskScore?: string;
+    reason?: string;
 }) {
     return apiRequest<any>('/api/super-admin/stores', {
         method: 'PUT',
         body: JSON.stringify(payload),
     });
+}
+
+export async function apiGetSuperAdminStoreProducts(storeId: string) {
+    return apiRequest<any[]>(`/api/super-admin/stores/${storeId}/products`);
+}
+
+export async function apiGetSuperAdminStoreCategories(storeId: string) {
+    return apiRequest<any[]>(`/api/super-admin/stores/${storeId}/categories`);
 }
 
 export async function apiGetComplaints() {

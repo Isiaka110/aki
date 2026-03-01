@@ -226,9 +226,9 @@ export default function DashboardOverview() {
               <button onClick={() => setSelectedOrder(null)} className="w-full border border-gray-300 dark:border-gray-700 py-3 text-xs font-semibold uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:border-gray-900 hover:text-gray-900 dark:hover:border-white dark:hover:text-white transition-colors">
                 Close View
               </button>
-              <button className="w-full border border-gray-900 dark:border-white bg-gray-900 dark:bg-white text-white dark:text-black py-3 text-xs font-semibold uppercase tracking-widest hover:bg-transparent hover:text-gray-900 dark:hover:bg-transparent dark:hover:text-white transition-colors">
+              <Link to="/store-admin/orders" className="w-full border border-gray-900 dark:border-white bg-gray-900 dark:bg-white text-white dark:text-black py-3 text-xs font-semibold uppercase tracking-widest hover:bg-transparent hover:text-gray-900 dark:hover:bg-transparent dark:hover:text-white transition-colors flex items-center justify-center">
                 Manage Order
-              </button>
+              </Link>
             </div>
           </div>
         </div>

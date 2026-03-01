@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash, faTimes, faIcons, faTruck, faCheck } from '@fortawesome/free-solid-svg-icons';
+import ConfirmModal from "../../../components/ConfirmModal";
 
 import { apiGetProducts, apiGetCategories, apiCreateProduct, apiUpdateProduct, apiDeleteProduct } from "../../../services/api";
 
@@ -15,6 +16,7 @@ export default function ProductsPage() {
   const [editingProduct, setEditingProduct] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -69,13 +71,21 @@ export default function ProductsPage() {
     setIsBuilderOpen(true);
   };
 
-  const handleDelete = async (productId: string) => {
+  const handleDeleteRequest = (productId: string) => {
+    setPendingDeleteId(productId);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!pendingDeleteId) return;
     try {
-      await apiDeleteProduct(productId);
-      setProducts(products.filter(p => p.productId !== productId));
-      if (viewedProduct?.productId === productId) setViewedProduct(null);
+      await apiDeleteProduct(pendingDeleteId);
+      setProducts(prev => prev.filter(p => p.productId !== pendingDeleteId));
+      if (viewedProduct?.productId === pendingDeleteId) setViewedProduct(null);
     } catch (error) {
       console.error("Failed to delete", error);
+      alert("Could not remove piece. Please try again.");
+    } finally {
+      setPendingDeleteId(null);
     }
   };
 
@@ -107,6 +117,18 @@ export default function ProductsPage() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
 
+      {/* Soft Delete Confirmation */}
+      <ConfirmModal
+        isOpen={!!pendingDeleteId}
+        title="Archive this Piece?"
+        message="This action will permanently remove the piece from your collection and cannot be undone. Are you sure you want to proceed?"
+        confirmLabel="Remove Piece"
+        cancelLabel="Keep It"
+        variant="danger"
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setPendingDeleteId(null)}
+      />
+
       {/* --- PAGE HEADER & TABLE --- */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -122,7 +144,7 @@ export default function ProductsPage() {
       </div>
 
       <div className="border border-gray-200 bg-transparent dark:border-white/10">
-        <div className="overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left">
             <thead className="border-b border-gray-100 bg-gray-50/50 dark:border-white/5 dark:bg-white/5">
               <tr>
@@ -192,8 +214,9 @@ export default function ProductsPage() {
                         <FontAwesomeIcon icon={faEdit} className="h-4 w-4" />
                       </button>
                       <button
-                        onClick={(e) => { e.stopPropagation(); handleDelete(product.productId); }}
+                        onClick={(e) => { e.stopPropagation(); handleDeleteRequest(product.productId); }}
                         className="p-2 text-gray-400 hover:text-red-900 dark:hover:text-red-500 transition-colors"
+                        title="Archive Piece"
                       >
                         <FontAwesomeIcon icon={faTrash} className="h-4 w-4" />
                       </button>
@@ -203,6 +226,71 @@ export default function ProductsPage() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile View: Cards */}
+        <div className="md:hidden flex flex-col divide-y divide-gray-100 dark:divide-white/5">
+          {isLoading ? (
+            <div className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
+              Loading products...
+            </div>
+          ) : products.length === 0 ? (
+            <div className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
+              No products found.
+            </div>
+          ) : products.map((product) => (
+            <div
+              key={product.productId}
+              onClick={() => setViewedProduct(product)}
+              className="p-6 transition-colors hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer flex flex-col gap-4"
+            >
+              <div className="flex items-center gap-4">
+                <div className="relative h-16 w-12 shrink-0 overflow-hidden bg-gray-50 dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-white/10">
+                  {product.images?.[0] ? (
+                    <img src={product.images[0]} alt={product.title} className="object-cover w-full h-full" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-gray-100 dark:bg-gray-800">
+                      <FontAwesomeIcon icon={faIcons} className="text-gray-300 dark:text-gray-600" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-cinzel text-gray-900 dark:text-white uppercase tracking-wider mb-1">{product.title}</h3>
+                  <p className="text-[10px] uppercase tracking-widest text-gray-500">{product.category}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between border-t border-gray-100 dark:border-white/5 pt-4">
+                <div className="font-cinzel text-gray-900 dark:text-white tracking-widest">
+                  ${product.price.toFixed(2)}
+                </div>
+                <span className={`inline-flex items-center border px-2 py-0.5 text-[8px] font-semibold uppercase tracking-[0.2em]
+                   ${product.status === 'Active' ? 'border-gray-900 text-gray-900 dark:border-white dark:text-white' : 'border-gray-300 text-gray-500 dark:border-gray-700 dark:text-gray-400'}
+                `}>
+                  {product.status}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between border-t border-gray-100 dark:border-white/5 pt-4">
+                <span className="text-[10px] text-gray-500">{product.stock} Units</span>
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); openEditBuilder(product); }}
+                    className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                  >
+                    <FontAwesomeIcon icon={faEdit} className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleDeleteRequest(product.productId); }}
+                    className="p-2 text-gray-400 hover:text-red-900 dark:hover:text-red-500 transition-colors"
+                    title="Archive Piece"
+                  >
+                    <FontAwesomeIcon icon={faTrash} className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

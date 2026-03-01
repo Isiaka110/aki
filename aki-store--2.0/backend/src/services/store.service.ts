@@ -14,7 +14,15 @@ export async function getAllStores() {
  */
 export async function getStoreById(storeId: string) {
     await connectToDatabase();
-    return await Store.findOne({ storeId });
+    // Try both the custom storeId (slug) and the MongoDB _id
+    const store = await Store.findOne({ storeId });
+    if (store) return store;
+
+    // If storeId is a valid ObjectId, try finding by _id
+    if (storeId.match(/^[0-9a-fA-F]{24}$/)) {
+        return await Store.findById(storeId);
+    }
+    return null;
 }
 
 /**
@@ -29,6 +37,12 @@ export async function updateStoreIntegrity(storeId: string, status: string, risk
         updatePayload.riskScore = riskScore;
     }
 
+    // Try finding by internal ID first (Super Admin dashboard often passes _id)
+    if (storeId.match(/^[0-9a-fA-F]{24}$/)) {
+        return await Store.findByIdAndUpdate(storeId, updatePayload, { new: true });
+    }
+
+    // Fallback to custom storeId (slug)
     return await Store.findOneAndUpdate(
         { storeId },
         updatePayload,
@@ -42,4 +56,16 @@ export async function updateStoreIntegrity(storeId: string, status: string, risk
 export async function createStore(payload: { storeId: string, name: string, ownerName: string, email: string }) {
     await connectToDatabase();
     return await Store.create(payload);
+}
+
+/**
+ * Updates the store administration settings (branding, theme, etc)
+ */
+export async function updateStoreSettings(storeId: string, payload: any) {
+    await connectToDatabase();
+    return await Store.findByIdAndUpdate(
+        storeId,
+        payload,
+        { new: true }
+    );
 }

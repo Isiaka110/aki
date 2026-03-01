@@ -68,6 +68,10 @@ export const useCartStore = create<CartStore>((set, get) => ({
 }));
 
 interface StoreSettings {
+  storeName: string;
+  setStoreName: (name: string) => void;
+  storeId: string;
+  setStoreId: (id: string) => void;
   whatsappNumber: string;
   setWhatsappNumber: (number: string) => void;
   ownerName: string;
@@ -82,11 +86,26 @@ interface StoreSettings {
   setSocialInstagram: (handle: string) => void;
   socialTwitter: string;
   setSocialTwitter: (handle: string) => void;
+  primaryColor: string;
+  setPrimaryColor: (color: string) => void;
+  paystackPublicKey: string;
+  setPaystackPublicKey: (key: string) => void;
+  paystackSecretKey: string;
+  setPaystackSecretKey: (key: string) => void;
+  logo: string;
+  setLogo: (url: string) => void;
+  bannerUrl: string;
+  setBannerUrl: (url: string) => void;
+  hydrateSettings: (settings: Partial<StoreSettings>) => void;
 }
 
 export const useStoreSettings = create<StoreSettings>()(
   persist(
     (set) => ({
+      storeName: 'AKI Store',
+      setStoreName: (name) => set({ storeName: name }),
+      storeId: '',
+      setStoreId: (id) => set({ storeId: id }),
       whatsappNumber: '1234567890',
       setWhatsappNumber: (number) => set({ whatsappNumber: number }),
       ownerName: 'AKI Admin',
@@ -101,6 +120,17 @@ export const useStoreSettings = create<StoreSettings>()(
       setSocialInstagram: (handle) => set({ socialInstagram: handle }),
       socialTwitter: '@aki_commerce',
       setSocialTwitter: (handle) => set({ socialTwitter: handle }),
+      primaryColor: '#000000',
+      setPrimaryColor: (color) => set({ primaryColor: color }),
+      paystackPublicKey: '',
+      setPaystackPublicKey: (key) => set({ paystackPublicKey: key }),
+      paystackSecretKey: '',
+      setPaystackSecretKey: (key) => set({ paystackSecretKey: key }),
+      logo: '',
+      setLogo: (url) => set({ logo: url }),
+      bannerUrl: '',
+      setBannerUrl: (url) => set({ bannerUrl: url }),
+      hydrateSettings: (data) => set((state) => ({ ...state, ...data })),
     }),
     {
       name: 'aki-store-settings',

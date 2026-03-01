@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faTachometerAlt, faBox, faShoppingBag, faStar, faCog, faTags, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { useStoreSettings } from "../../store/useCartStore";
 
 const navigation = [
     { name: "Overview", href: "/store-admin", icon: faTachometerAlt },
@@ -20,6 +21,7 @@ interface AdminMobileMenuProps {
 
 export default function AdminMobileMenu({ isOpen, onClose }: AdminMobileMenuProps) {
     const pathname = useLocation().pathname;
+    const { storeName } = useStoreSettings();
 
     if (!isOpen) return null;
 
@@ -31,7 +33,7 @@ export default function AdminMobileMenu({ isOpen, onClose }: AdminMobileMenuProp
             />
             <div className="fixed inset-y-0 left-0 z-[110] w-[85%] max-w-sm bg-[#fcfcfc] dark:bg-[#050505] p-6 border-r border-gray-200 dark:border-white/10 md:hidden animate-in slide-in-from-left duration-500">
                 <div className="flex items-center justify-between mb-12 pb-6 border-b border-gray-200 dark:border-white/10">
-                    <span className="font-cinzel text-xl font-medium tracking-[0.2em] text-gray-900 dark:text-white uppercase">Admin.</span>
+                    <span className="font-cinzel text-xl font-medium tracking-[0.2em] text-gray-900 dark:text-white uppercase truncate max-w-[200px]">{storeName || "Admin."}</span>
                     <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <FontAwesomeIcon icon={faTimes} className="h-6 w-6" />
                     </button>

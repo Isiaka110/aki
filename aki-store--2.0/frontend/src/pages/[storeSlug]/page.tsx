@@ -6,8 +6,12 @@ import ClientFeedbackForm from "./ClientFeedbackForm";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
+import { useAuthStore } from "../../store/useAuthStore";
+
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function StorePage() {
+  const { user } = useAuthStore();
   const { storeSlug } = useParams<{ storeSlug: string }>();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -20,14 +24,19 @@ export default function StorePage() {
   useEffect(() => {
     const fetchStore = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/super-admin/stores'); // Publicly accessible for now
+        const response = await fetch(`${API_BASE}/api/store/${storeSlug}`);
         const data = await response.json();
         if (data.success) {
-          const found = data.data.find((s: any) => s.storeName === storeSlug || s.adminId === storeSlug); // Simple heuristic
-          setStore(found || null);
+          setStore(data.data);
+          if (data.data.primaryColor) {
+            document.documentElement.style.setProperty('--color-primary', data.data.primaryColor);
+          }
+        } else {
+          setStore(null);
         }
       } catch (error) {
         console.error("Failed to fetch store:", error);
+        setStore(null);
       } finally {
         setLoading(false);
       }
@@ -35,13 +44,24 @@ export default function StorePage() {
     fetchStore();
   }, [storeSlug]);
 
+  // Clean up theme or other globals when component unmounts
+  useEffect(() => {
+    return () => {
+      document.documentElement.style.removeProperty('--color-primary');
+    };
+  }, []);
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center p-4 bg-[#fcfcfc] dark:bg-[#050505]">
       <div className="w-8 h-8 rounded-full border-t-2 border-r-2 border-gray-900 border-solid animate-spin dark:border-white"></div>
     </div>;
   }
 
-  if (!store || store.status !== 'Active') {
+  // Security/Status Check: Allow if Active, or if current user is the owner (Preview mode)
+  const isOwner = user && store && (user.storeId === store._id || user.id === store.adminId);
+  const canView = store && (store.status === 'Active' || isOwner);
+
+  if (!canView) {
     return (
       <div className="min-h-screen bg-[#fcfcfc] dark:bg-[#050505] flex flex-col items-center justify-center p-4">
         <div className="max-w-md w-full text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -57,6 +77,7 @@ export default function StorePage() {
             <Link
               to="/auth/signup"
               className="flex items-center justify-center gap-2 border border-gray-900 bg-gray-900 px-6 py-4 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white"
+              style={{ borderColor: 'var(--color-primary, #000)', backgroundColor: 'var(--color-primary, #000)' }}
             >
               <FontAwesomeIcon icon={faPlus} className="h-4 w-4" /> Start Your Own Store
             </Link>
@@ -72,69 +93,12 @@ export default function StorePage() {
     );
   }
 
-  const dummyProducts = [
-    {
-      id: "1",
-      title: "Vintage Leather Jacket",
-      price: 120.00,
-      slashedPrice: 150.00,
-      image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&q=80",
-      images: [
-        "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&q=80",
-        "https://images.unsplash.com/photo-1520975954732-57dd22299614?w=800&q=80",
-        "https://images.unsplash.com/photo-1552835848-6178a2e1d713?w=800&q=80"
-      ],
-      rating: 4.8,
-      reviewsCount: 12,
-      category: "Outerwear"
-    },
-    {
-      id: "2",
-      title: "Minimalist Watch",
-      price: 85.00,
-      image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80",
-      images: [
-        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80",
-        "https://images.unsplash.com/photo-1542496658-e32689c19e59?w=800&q=80"
-      ],
-      rating: 5.0,
-      reviewsCount: 34,
-      category: "Accessories"
-    },
-    {
-      id: "3",
-      title: "Classic White Sneakers",
-      price: 65.00,
-      slashedPrice: 80.00,
-      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&q=80",
-      images: [
-        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&q=80",
-        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&q=80"
-      ],
-      rating: 4.6,
-      reviewsCount: 8,
-      category: "Shoes"
-    },
-    {
-      id: "4",
-      title: "Wireless Headphones",
-      price: 199.99,
-      image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80",
-      images: [
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80",
-        "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=800&q=80",
-        "https://images.unsplash.com/photo-1524678606370-a47ad25cb82a?w=800&q=80"
-      ],
-      rating: 4.9,
-      reviewsCount: 128,
-      category: "Tech"
-    },
-  ];
+  const products = store?.products || [];
 
-  const filteredProducts = dummyProducts.filter((product) => {
-    const matchesQuery = !query || product.title.toLowerCase().includes(query) || product.category.toLowerCase().includes(query);
-    const matchesCategory = !category || product.category.toLowerCase() === category || (category === "home" && product.category === "Outerwear"); // Logic fallback for demo
-    return matchesQuery && matchesCategory;
+  const filteredProducts = products.filter((product: any) => {
+    const matchesQuery = !query || product.title.toLowerCase().includes(query) || (product.category && product.category.toLowerCase().includes(query));
+    const matchesCategory = !category || (product.category && product.category.toLowerCase() === category);
+    return matchesQuery && matchesCategory && product.status !== 'Archived';
   });
 
   const storeReviews = [
@@ -181,30 +145,64 @@ export default function StorePage() {
   return (
     <div className="min-h-screen bg-[#fcfcfc] dark:bg-[#050505] p-4 sm:p-8 pt-24 lg:pt-32">
 
-      {/* Store Header Banner */}
-      <div className="mb-20 text-center border-b border-gray-200 dark:border-white/10 pb-12 w-full max-w-7xl mx-auto">
-        <span className="mb-4 block text-[10px] font-semibold tracking-[0.3em] text-gray-400 uppercase">
-          Home
-        </span>
-        <h1 className="text-5xl sm:text-7xl font-cinzel text-gray-900 dark:text-white uppercase tracking-widest font-medium">
-          {storeSlug}
-        </h1>
-        <p className="mt-4 text-sm font-light tracking-widest text-gray-500 dark:text-gray-400 uppercase">
-          Curated Exclusively For You
-        </p>
+      {/* Hero Banner / Header */}
+      <div className={`relative mb-20 w-full max-w-7xl mx-auto overflow-hidden border border-gray-200 dark:border-white/10 ${store?.bannerUrl ? 'min-h-[40vh] flex items-center justify-center' : 'border-b pb-12 text-center'}`}>
+        {store?.bannerUrl && (
+          <div className="absolute inset-0 z-0">
+            <img src={store.bannerUrl} alt="Store Banner" className="h-full w-full object-cover opacity-60 dark:opacity-40" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#fcfcfc] dark:to-[#050505]" />
+          </div>
+        )}
+
+        <div className="relative z-10 space-y-6 flex flex-col items-center px-6 text-center">
+          {store?.logo ? (
+            <div className="mb-4 h-24 w-24 overflow-hidden border border-gray-900 bg-white dark:border-white">
+              <img src={store.logo} alt="Store Logo" className="h-full w-full object-contain p-2" />
+            </div>
+          ) : (
+            <span className="mb-4 block text-[10px] font-semibold tracking-[0.3em] text-gray-400 uppercase">
+              {store?.designation || 'Atelier'}
+            </span>
+          )}
+
+          <h1 className="text-5xl sm:text-7xl font-cinzel text-gray-900 dark:text-white uppercase tracking-widest font-medium animate-in fade-in slide-in-from-bottom-4 duration-1000">
+            {store?.name || storeSlug}
+          </h1>
+
+          {isOwner && store?.status !== 'Active' && (
+            <span className="mt-4 inline-block bg-amber-500/10 text-amber-600 dark:text-amber-400 px-4 py-1 text-[10px] font-bold tracking-[0.2em] uppercase border border-amber-500/20">
+              Preview Mode: Store is {store?.status}
+            </span>
+          )}
+
+          <p className="mt-4 max-w-2xl text-sm font-light tracking-widest text-gray-500 dark:text-gray-400 uppercase leading-relaxed">
+            {store?.manifesto || 'Curated Exclusively For You'}
+          </p>
+        </div>
       </div>
 
       {/* Main Container */}
       <div className="mx-auto flex max-w-7xl items-start gap-12">
 
         {/* Left Column: Sidebar */}
-        <StoreSidebar />
+        <StoreSidebar categories={store?.categories} totalProducts={store?.products?.length} />
 
         {/* Right Column: Product Grid */}
         <div className="flex-1 grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => (
-              <ProductCard key={product.id} {...product} />
+            filteredProducts.map((product: any) => (
+              <ProductCard
+                key={product.productId}
+                id={product.productId}
+                title={product.title}
+                price={product.price}
+                slashedPrice={product.slashedPrice}
+                image={product.images?.[0] || 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&q=80'}
+                rating={product.rating || 5.0} // Defaults for now
+                reviewsCount={product.reviewsCount || 0} // Defaults for now
+                category={product.category}
+                images={product.images}
+              />
             ))
           ) : (
             <div className="col-span-full py-32 text-center border-t border-gray-200 dark:border-white/10">

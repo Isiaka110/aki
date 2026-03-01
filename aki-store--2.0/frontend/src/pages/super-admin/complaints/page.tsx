@@ -63,7 +63,8 @@ export default function ComplaintsPage() {
             </div>
 
             <div className="border border-gray-200 bg-transparent dark:border-white/10">
-                <div className="overflow-x-auto">
+                {/* Desktop view */}
+                <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left text-sm">
                         <thead className="border-b border-gray-200 bg-gray-50 dark:border-white/10 dark:bg-gray-900/50">
                             <tr>
@@ -113,6 +114,48 @@ export default function ComplaintsPage() {
                             ))}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile view */}
+                <div className="md:hidden flex flex-col divide-y divide-gray-100 dark:divide-white/5">
+                    {isLoading ? (
+                        <div className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
+                            <FontAwesomeIcon icon={faSync} className="h-4 w-4 mx-auto animate-spin mb-2 block" /> Loading records...
+                        </div>
+                    ) : complaints.filter(c => c.status === activeTab).length === 0 ? (
+                        <div className="p-12 text-center">
+                            <FontAwesomeIcon icon={faExclamationCircle} className="h-8 w-8 text-gray-300 dark:text-gray-700 mx-auto mb-4 block" />
+                            <p className="font-cinzel tracking-widest text-gray-400 uppercase text-[10px]">No complaints found</p>
+                        </div>
+                    ) : complaints.filter(c => c.status === activeTab).map((complaint) => (
+                        <div key={complaint.complaintId} className="p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors space-y-4">
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500 block mb-1">Case {complaint.complaintId}</span>
+                                    <p className="font-cinzel font-semibold tracking-wider text-gray-900 dark:text-white uppercase text-sm truncate max-w-[150px]">{complaint.storeId}</p>
+                                    <p className="text-[10px] text-gray-500 tracking-widest truncate max-w-[150px]">{complaint.customerEmail}</p>
+                                </div>
+                                <div className="text-right">
+                                    <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Severity</span>
+                                    <span className={`text-[10px] font-bold uppercase tracking-widest ${complaint.severity === 'Critical' ? 'text-red-600' : complaint.severity === 'High' ? 'text-orange-500' : 'text-gray-500'}`}>
+                                        {complaint.severity}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="bg-gray-50 dark:bg-white/5 p-3 flex flex-col gap-1 rounded-none border border-gray-100 dark:border-white/5">
+                                <span className="text-[9px] text-gray-500 uppercase tracking-widest">Issue</span>
+                                <span className="text-sm text-gray-900 dark:text-white font-medium truncate">{complaint.issueType}</span>
+                            </div>
+
+                            <button
+                                onClick={() => { setSelectedComplaint(complaint); setIsModalOpen(true); }}
+                                className="w-full flex items-center justify-center gap-2 border border-gray-200 px-4 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-900 hover:border-gray-900 dark:border-white/20 dark:text-white dark:hover:border-white transition-all"
+                            >
+                                Review Case <FontAwesomeIcon icon={faArrowRight} className="h-3 w-3" />
+                            </button>
+                        </div>
+                    ))}
                 </div>
             </div>
 
