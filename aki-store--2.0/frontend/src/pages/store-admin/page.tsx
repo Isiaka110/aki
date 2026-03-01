@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faIcons, faDollarSign, faBox, faShoppingCart, faArrowTrendUp, faFilter, faClock, faTruck, faCheckCircle, faExclamationTriangle, faSync } from '@fortawesome/free-solid-svg-icons';
+import { faIcons, faDollarSign, faBox, faShoppingCart, faArrowTrendUp, faFilter, faClock, faTruck, faCheckCircle, faExclamationTriangle, faSync, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { apiGetStoreAdminOverview } from "../../services/api";
 
 export default function DashboardOverview() {
@@ -14,6 +14,7 @@ export default function DashboardOverview() {
   });
   const [recentOrders, setRecentOrders] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
 
   useEffect(() => {
     async function fetchOverview() {
@@ -99,7 +100,8 @@ export default function DashboardOverview() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
+          {/* Desktop Table View */}
+          <table className="hidden md:table w-full text-left">
             <thead className="border-b border-gray-100 bg-gray-50/50 dark:border-white/5 dark:bg-white/5">
               <tr>
                 <th className="px-8 py-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-gray-500">Order ID</th>
@@ -123,7 +125,7 @@ export default function DashboardOverview() {
                   </td>
                 </tr>
               ) : recentOrders.map((order) => (
-                <tr key={order.id} className="transition-colors hover:bg-gray-50 dark:hover:bg-white/5">
+                <tr key={order.id} onClick={() => setSelectedOrder(order)} className="transition-colors hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer">
                   <td className="px-8 py-5 font-cinzel text-gray-900 dark:text-white uppercase tracking-widest">{order.id}</td>
                   <td className="px-8 py-5 text-gray-600 dark:text-gray-300">{order.customerName}</td>
                   <td className="px-8 py-5 text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</td>
@@ -147,8 +149,90 @@ export default function DashboardOverview() {
               ))}
             </tbody>
           </table>
+
+          {/* Mobile Card View */}
+          <div className="grid grid-cols-1 md:hidden divide-y divide-gray-100 dark:divide-white/5">
+            {isLoading ? (
+              <div className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
+                <FontAwesomeIcon icon={faSync} className="h-4 w-4 mx-auto animate-spin mb-2" /> Loading records...
+              </div>
+            ) : recentOrders.length === 0 ? (
+              <div className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
+                No recent orders found.
+              </div>
+            ) : recentOrders.map((order) => (
+              <div key={order.id} onClick={() => setSelectedOrder(order)} className="p-6 transition-colors hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer flex flex-col gap-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <span className="font-cinzel text-gray-900 dark:text-white uppercase tracking-widest text-lg">{order.id}</span>
+                    <span className="block text-gray-600 dark:text-gray-300 text-sm mt-1">{order.customerName}</span>
+                  </div>
+                  <span className={`inline-flex items-center gap-2 border px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.2em]
+                      ${order.status === 'Active' ? 'border-indigo-200 text-indigo-600 dark:border-indigo-900/50 dark:text-indigo-400' : ''}
+                      ${order.status === 'Pending' ? 'border-amber-200 text-amber-600 dark:border-amber-900/50 dark:text-amber-500' : ''}
+                      ${order.status === 'Shipped' ? 'border-sky-200 text-sky-600 dark:border-sky-900/50 dark:text-sky-400' : ''}
+                      ${order.status === 'Delivered' ? 'border-emerald-200 text-emerald-600 dark:border-emerald-900/50 dark:text-emerald-500' : ''}
+                      ${!['Active', 'Pending', 'Shipped', 'Delivered'].includes(order.status) ? 'border-gray-200 text-gray-600 dark:border-gray-700 dark:text-gray-400' : ''}
+                    `}>
+                    {order.status}
+                  </span>
+                </div>
+                <div className="flex justify-between items-end border-t border-gray-100 dark:border-white/5 pt-4">
+                  <span className="text-gray-400 text-xs font-light">{new Date(order.createdAt).toLocaleDateString()}</span>
+                  <span className="font-cinzel text-gray-900 dark:text-white tracking-widest">${order.totalAmount?.toLocaleString()}</span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+
+      {/* Order Details Modal */}
+      {selectedOrder && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="w-full max-w-md bg-[#fcfcfc] dark:bg-[#050505] shadow-2xl animate-in zoom-in-95 duration-300">
+            <div className="p-8 border-b border-gray-200 dark:border-white/10">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500 block mb-1">Order Summary</span>
+                  <h3 className="font-cinzel text-2xl font-medium tracking-widest text-gray-900 dark:text-white uppercase">{selectedOrder.id}</h3>
+                </div>
+                <button onClick={() => setSelectedOrder(null)} className="text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white transition-colors">
+                  <FontAwesomeIcon icon={faTimes} className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="space-y-4 text-sm font-light">
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Client</span>
+                  <span className="text-gray-900 dark:text-white font-medium">{selectedOrder.customerName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Date</span>
+                  <span className="text-gray-900 dark:text-white">{new Date(selectedOrder.createdAt).toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Status</span>
+                  <span className="text-gray-900 dark:text-white">{selectedOrder.status}</span>
+                </div>
+                <div className="flex justify-between pt-4 border-t border-gray-200 dark:border-white/10 mt-4">
+                  <span className="text-gray-500 uppercase tracking-widest text-[10px] font-semibold self-center">Total Value</span>
+                  <span className="font-cinzel text-xl text-gray-900 dark:text-white tracking-widest">${selectedOrder.totalAmount?.toLocaleString()}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-4 p-8">
+              <button onClick={() => setSelectedOrder(null)} className="w-full border border-gray-300 dark:border-gray-700 py-3 text-xs font-semibold uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:border-gray-900 hover:text-gray-900 dark:hover:border-white dark:hover:text-white transition-colors">
+                Close View
+              </button>
+              <button className="w-full border border-gray-900 dark:border-white bg-gray-900 dark:bg-white text-white dark:text-black py-3 text-xs font-semibold uppercase tracking-widest hover:bg-transparent hover:text-gray-900 dark:hover:bg-transparent dark:hover:text-white transition-colors">
+                Manage Order
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

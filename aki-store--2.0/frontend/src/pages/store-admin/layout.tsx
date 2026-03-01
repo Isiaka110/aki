@@ -101,7 +101,7 @@ export default function StoreAdminLayout() {
 
       {/* Main Content Area */}
       <main className="flex-1 h-full overflow-y-auto custom-scrollbar">
-        <header className="flex h-20 shrink-0 items-center justify-between border-b border-gray-200 bg-[#fcfcfc] px-6 dark:border-white/10 dark:bg-[#050505] md:hidden">
+        <header className="sticky top-0 z-50 flex h-20 shrink-0 items-center justify-between border-b border-gray-200 bg-[#fcfcfc] px-6 dark:border-white/10 dark:bg-[#050505] md:hidden">
           <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-gray-900 hover:opacity-70 transition-opacity dark:text-white">
             <FontAwesomeIcon icon={faBars} className="h-6 w-6" />
           </button>
