@@ -89,16 +89,16 @@ export default function SignupPage() {
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
-              <input type="text" required value={form.firstName} onChange={(e) => set('firstName', e.target.value)} placeholder="First Name"
+              <input type="text" required value={form.firstName} onChange={(e) => set('firstName', e.target.value)} placeholder="First Name" autoComplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other"
                 className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors tracking-wide font-light placeholder-gray-400" />
-              <input type="text" required value={form.lastName} onChange={(e) => set('lastName', e.target.value)} placeholder="Last Name"
+              <input type="text" required value={form.lastName} onChange={(e) => set('lastName', e.target.value)} placeholder="Last Name" autoComplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other"
                 className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors tracking-wide font-light placeholder-gray-400" />
             </div>
-            <input type="email" required value={form.email} onChange={(e) => set('email', e.target.value)} placeholder="Email Address"
+            <input type="email" required value={form.email} onChange={(e) => set('email', e.target.value)} placeholder="Email Address" autoComplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other"
               className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors tracking-wide font-light placeholder-gray-400" />
-            <input type="text" required value={form.storeName} onChange={(e) => set('storeName', e.target.value)} placeholder="Boutique Name"
+            <input type="text" required value={form.storeName} onChange={(e) => set('storeName', e.target.value)} placeholder="Boutique Name" autoComplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other"
               className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors tracking-wide font-light placeholder-gray-400" />
-            <input type="password" required value={form.password} onChange={(e) => set('password', e.target.value)} placeholder="Password"
+            <input type="password" required value={form.password} onChange={(e) => set('password', e.target.value)} placeholder="Password" autoComplete="new-password" data-lpignore="true" data-1p-ignore="true" data-form-type="other"
               className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors tracking-wide font-light placeholder-gray-400" />
 
             <div className="flex items-center gap-3 pt-2">
