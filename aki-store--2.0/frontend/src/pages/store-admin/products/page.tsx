@@ -14,40 +14,30 @@ type Product = {
   images: string[];
 };
 
-// Dummy data for the table
-const initialProducts: Product[] = [
-  {
-    id: "1",
-    title: "Vintage Leather Jacket",
-    category: "Outerwear",
-    price: 120.00,
-    stock: 14,
-    status: "Active",
-    images: [
-      "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&q=80",
-      "https://images.unsplash.com/photo-1520975954732-57dd22299614?w=500&q=80",
-      "https://images.unsplash.com/photo-1552835848-6178a2e1d713?w=500&q=80"
-    ]
-  },
-  {
-    id: "2",
-    title: "Oversized Blazer",
-    category: "Clothing",
-    price: 260.00,
-    stock: 8,
-    status: "Active",
-    images: [
-      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&q=80",
-      "https://images.unsplash.com/photo-1548624149-f9b1859aa7d0?w=500&q=80"
-    ]
-  }
-];
+import { apiGetProducts } from "../../../services/api";
 
 export default function ProductsPage() {
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("info"); // Tabs: info, media, pricing, delivery
-  const [products] = useState<Product[]>(initialProducts);
-  const [viewedProduct, setViewedProduct] = useState<Product | null>(null);
+  const [products, setProducts] = useState<any[]>([]);
+  const [viewedProduct, setViewedProduct] = useState<any | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchProducts = async () => {
+    setIsLoading(true);
+    try {
+      const data = await apiGetProducts();
+      setProducts(data || []);
+    } catch (error) {
+      console.error("Failed to load products");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useState(() => {
+    fetchProducts();
+  });
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -80,16 +70,34 @@ export default function ProductsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5 font-light tracking-wide text-sm">
-              {products.map((product) => (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={6} className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
+                    Loading products...
+                  </td>
+                </tr>
+              ) : products.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
+                    No products found.
+                  </td>
+                </tr>
+              ) : products.map((product) => (
                 <tr
-                  key={product.id}
+                  key={product.productId}
                   onClick={() => setViewedProduct(product)}
                   className="transition-colors hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer"
                 >
                   <td className="px-8 py-5">
                     <div className="flex items-center gap-6">
                       <div className="relative h-16 w-12 shrink-0 overflow-hidden bg-gray-50 dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-white/10">
-                        <img src={product.images[0]} alt={product.title} className="object-cover w-full h-full" />
+                        {product.images?.[0] ? (
+                          <img src={product.images[0]} alt={product.title} className="object-cover w-full h-full" />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center bg-gray-100 dark:bg-gray-800">
+                            <FontAwesomeIcon icon={faIcons} className="text-gray-300 dark:text-gray-600" />
+                          </div>
+                        )}
                       </div>
                       <span className="font-cinzel text-gray-900 dark:text-white uppercase tracking-wider">{product.title}</span>
                     </div>
@@ -98,7 +106,9 @@ export default function ProductsPage() {
                   <td className="px-8 py-5 font-cinzel text-gray-900 dark:text-white tracking-widest">${product.price.toFixed(2)}</td>
                   <td className="px-8 py-5 text-gray-500">{product.stock}</td>
                   <td className="px-8 py-5">
-                    <span className="inline-flex items-center border border-gray-900 px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-gray-900 dark:border-white dark:text-white">
+                    <span className={`inline-flex items-center border px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.2em]
+                       ${product.status === 'Active' ? 'border-gray-900 text-gray-900 dark:border-white dark:text-white' : 'border-gray-300 text-gray-500 dark:border-gray-700 dark:text-gray-400'}
+                    `}>
                       {product.status}
                     </span>
                   </td>
