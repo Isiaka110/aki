@@ -160,4 +160,14 @@ npm run preview  # Preview at http://localhost:4173
 
 ---
 
+## Production Run (monolith)
+
+```bash
+npm install
+npm run build    # Compiles both frontend and backend
+npm run start    # Starts the production backend
+```
+
+---
+
 MIT License

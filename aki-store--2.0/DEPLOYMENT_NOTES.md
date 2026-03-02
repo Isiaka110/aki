@@ -14,7 +14,13 @@ Because your Vercel frontend is public but your Express backend is on `localhost
 Real users should **never** see this. To fix this permanently:
 
 1. **Deploy your Node.js Backend:**
-   Your backend currently runs only on your local machine (`npm run dev`). You must deploy the `backend` folder to a cloud hosting provider such as:
+   Your backend currently runs in development mode (`npm run dev`). For production, you must use the build and start commands:
+   - **Build Command:** `npm run build`
+   - **Start Command:** `npm start`
+   
+   (Alternatively, run `npm run deploy` to build and start in one step).
+   
+   You should deploy the `backend` folder to a cloud hosting provider such as:
    - [Render](https://render.com/)
    - [Railway](https://railway.app/)
    - [Heroku](https://www.heroku.com/)

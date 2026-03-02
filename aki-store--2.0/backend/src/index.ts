@@ -17,7 +17,9 @@ import Store from './models/Store';
 import Product from './models/Product';
 import Category from './models/Category';
 
-dotenv.config({ path: '../.env.local' }); // Load from root during dev
+import path from 'path';
+dotenv.config(); // Try standard .env in CWD
+dotenv.config({ path: path.join(__dirname, '../../.env.local') }); // Try .env.local in root
 const app = express();
 const PORT = process.env.PORT || 5000;
 
