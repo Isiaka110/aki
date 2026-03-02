@@ -2,54 +2,62 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import path from "path";
 
-// In dev, calling dotenv.config here is redundant if it's called at the entry point,
-// but for standalone scripts/tests we can try to load it from the root.
-dotenv.config({ path: path.join(__dirname, '../../../.env.local') });
-dotenv.config(); // Also try current directory's .env
+// Environment Initialization:
+dotenv.config();
+dotenv.config({ path: path.join(process.cwd(), '.env') });
+dotenv.config({ path: path.join(process.cwd(), '.env.local') });
+dotenv.config({ path: path.join(process.cwd(), '../.env.local') });
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-    throw new Error(
-        "Please define the MONGODB_URI environment variable (e.g., in .env.local for dev or as a system variable in prod)."
-    );
+interface MongooseCache {
+    conn: mongoose.Mongoose | null;
+    promise: Promise<mongoose.Mongoose> | null;
 }
 
 /**
  * Global is used here to maintain a cached connection across hot reloads
- * in development. This prevents connections from growing exponentially
- * during API Route usage.
+ * in development.
  */
-let cached = (global as any).mongoose;
-
-if (!cached) {
-    cached = (global as any).mongoose = { conn: null, promise: null };
+declare global {
+    var mongoose: MongooseCache | undefined;
 }
 
-async function connectToDatabase() {
-    if (cached.conn) {
-        return cached.conn;
+let cached = global.mongoose;
+
+if (!cached) {
+    cached = global.mongoose = { conn: null, promise: null };
+}
+
+async function connectToDatabase(): Promise<mongoose.Mongoose> {
+    const MONGODB_URI = process.env.MONGODB_URI;
+
+    if (!MONGODB_URI) {
+        console.error("❌ CRITICAL: MONGODB_URI is not defined.");
+        throw new Error("Please define the MONGODB_URI environment variable in your hosting provider's dashboard or .env file.");
     }
 
-    if (!cached.promise) {
+    if (cached!.conn) {
+        return cached!.conn;
+    }
+
+    if (!cached!.promise) {
         const opts = {
             bufferCommands: false,
         };
 
-        cached.promise = mongoose.connect(MONGODB_URI as string, opts).then((mongoose) => {
+        cached!.promise = mongoose.connect(MONGODB_URI as string, opts).then((m: mongoose.Mongoose) => {
             console.log("✅ Successfully connected to MongoDB Atlas");
-            return mongoose;
+            return m;
         });
     }
 
     try {
-        cached.conn = await cached.promise;
+        cached!.conn = await cached!.promise;
     } catch (e) {
-        cached.promise = null;
+        cached!.promise = null;
         throw e;
     }
 
-    return cached.conn;
+    return cached!.conn;
 }
 
 export default connectToDatabase;
