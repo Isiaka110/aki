@@ -49,7 +49,7 @@ export default function FeaturedStores() {
                             Curated Selection
                         </span>
                         <h2 className="font-cinzel text-4xl sm:text-6xl text-gray-900 dark:text-white font-medium leading-[1.1] tracking-wide">
-                            Discover Iconic <br /> Boutiques
+                            Discover Iconic <br /> Ecommerce
                         </h2>
                     </div>
 

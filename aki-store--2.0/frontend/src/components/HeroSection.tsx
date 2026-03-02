@@ -21,7 +21,7 @@ export default function HeroSection() {
       {/* Content */}
       <div className="relative z-10 mx-auto max-w-5xl px-6 text-center sm:px-8 mt-20">
         <span className="mb-6 block text-xs font-semibold tracking-[0.3em] text-gray-600 dark:text-white/80 uppercase">
-          AKI COMMERCE
+          AKI ECOMMERCE
         </span>
 
         <h1 className="mb-8 font-cinzel text-5xl sm:text-7xl lg:text-8xl text-gray-900 dark:text-white font-medium leading-[1.1] tracking-wide drop-shadow-sm dark:drop-shadow-lg">
@@ -38,7 +38,7 @@ export default function HeroSection() {
             className="group flex w-full sm:w-auto items-center justify-center gap-3 border border-gray-900 bg-gray-900 px-10 py-4 text-sm font-semibold tracking-widest text-white uppercase transition-all duration-500 hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white"
           >
             Start For Free
-            <FontAwesomeIcon icon={faArrowRight}  className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            <FontAwesomeIcon icon={faArrowRight} className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
 
           <Link to="/explore"

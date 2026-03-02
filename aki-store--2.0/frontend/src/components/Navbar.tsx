@@ -9,6 +9,7 @@ import { useCartStore } from "../store/useCartStore";
 import MobileMenu from "./MobileMenu";
 import ConfirmationModal from "./ConfirmationModal";
 import { apiGetStoreBySlug } from "../services/api";
+import logo from "../assets/logo.png";
 
 export default function Navbar() {
   const { setTheme, resolvedTheme } = useTheme();
@@ -86,9 +87,14 @@ export default function Navbar() {
               </button>
             )}
 
-            <Link to="/" onClick={handleLogoClick} className="flex items-center group">
+            <Link to="/" onClick={handleLogoClick} className="flex items-center group gap-3">
+              <img
+                src={logo}
+                alt=""
+                className={`h-8 w-auto transition-all duration-300 group-hover:opacity-80 dark:invert`}
+              />
               <span className={`font-cinzel text-xl sm:text-2xl font-medium tracking-[0.2em] uppercase transition-opacity hover:opacity-70 ${!scrolled && isLandingPage ? "text-gray-900 dark:text-white" : "text-gray-900 dark:text-white"}`}>
-                AKI.
+                AKI
               </span>
             </Link>
           </div>

@@ -9,6 +9,7 @@ import ConfirmationModal from "../../components/ConfirmationModal";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useStoreSettings } from "../../store/useCartStore";
 import { apiGetStoreAdminOverview, apiLogout } from "../../services/api";
+import logo from "../../assets/logo.png";
 
 const navigation = [
   { name: "Overview", href: "/store-admin", icon: faTachometerAlt },
@@ -74,7 +75,7 @@ export default function StoreAdminLayout() {
       <ConfirmationModal
         isOpen={showLogoutModal}
         title="Terminate Session"
-        message="You are about to sign out of the secure AKI administrative portal. Any unsaved modifications to your boutique will not be committed. Proceed?"
+        message="You are about to sign out of the secure AKI administrative portal. Any unsaved modifications to your ecommerce store will not be committed. Proceed?"
         confirmLabel="Confirm Logout"
         cancelLabel="Continue Working"
         type="danger"
@@ -86,7 +87,11 @@ export default function StoreAdminLayout() {
       <aside className="hidden h-full w-64 flex-col border-r border-gray-200 bg-transparent dark:border-white/10 md:flex">
         <div className="flex h-20 items-center justify-between border-b border-gray-200 px-8 dark:border-white/10 shrink-0">
           <Link to="/" className="flex items-center gap-2 group">
-            <span className="font-cinzel text-xl font-medium tracking-[0.2em] text-gray-900 dark:text-white uppercase group-hover:opacity-70 transition-opacity truncate max-w-[140px]">{storeName || "AKI."}</span>
+            <img
+              src={logo}
+              alt="AKI Platform"
+              className="h-6 w-auto transition-all duration-300 group-hover:opacity-80 dark:invert"
+            />
             <span className="border border-gray-900 dark:border-white px-2 py-0.5 text-[8px] font-semibold uppercase tracking-widest text-gray-900 dark:text-white">Admin</span>
           </Link>
         </div>

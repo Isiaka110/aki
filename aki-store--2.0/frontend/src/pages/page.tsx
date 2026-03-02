@@ -8,7 +8,7 @@ import { useEffect } from "react";
 
 export default function Home() {
   useEffect(() => {
-    document.title = "AKI | Luxury Boutique Platform";
+    document.title = "AKI | Luxury Ecommerce Platform";
   }, []);
 
   return (

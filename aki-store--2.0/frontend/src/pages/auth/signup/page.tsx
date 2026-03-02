@@ -1,10 +1,11 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faSpinner, faShieldAlt, faBolt, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { apiRegister } from '../../../services/api';
 import { useAuthStore } from '../../../store/useAuthStore';
+import logo from '../../../assets/logo.png';
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ export default function SignupPage() {
   const setAuth = useAuthStore((state) => state.setAuth);
 
   useEffect(() => {
-    document.title = "Apply | AKI Boutique Platform";
+    document.title = "Apply | AKI Ecommerce Platform";
 
     // Detect fresh session for coach marks (one-time welcome)
     const isReturning = localStorage.getItem('aki_returning_vendor');
@@ -55,7 +56,7 @@ export default function SignupPage() {
       setAuth(user, token);
       navigate('/store-admin');
     } catch (err: any) {
-      setError(err.message || 'Registration failed. Check your boutique name availability.');
+      setError(err.message || 'Registration failed. Check your ecommerce name availability.');
     } finally {
       setLoading(false);
     }
@@ -73,13 +74,19 @@ export default function SignupPage() {
 
         <div className="relative z-20 flex flex-col justify-between p-16 w-full h-full">
           <div>
-            <Link to="/"><span className="font-cinzel text-3xl font-medium tracking-[0.2em] text-white uppercase hover:opacity-70 transition-opacity">AKI.</span></Link>
+            <Link to="/">
+              <img
+                src={logo}
+                alt="AKI Platform"
+                className="h-8 w-auto transition-opacity hover:opacity-70 invert"
+              />
+            </Link>
           </div>
           <div className="max-w-xl">
             <h1 className="font-cinzel text-6xl text-white tracking-wide mb-10 leading-[1.1]">Establish<br />Your <span className="text-gray-400">Legacy.</span></h1>
             <div className="space-y-8 pl-2">
               {[
-                { icon: faBolt, title: 'Immediate Prestige', desc: 'Launch your boutique instantly with pre-configured, architecturally designed templates.' },
+                { icon: faBolt, title: 'Immediate Prestige', desc: 'Launch your ecommerce instantly with pre-configured, architecturally designed templates.' },
                 { icon: faShieldAlt, title: 'Absolute Discretion', desc: 'Client data and transaction ledgers secured via enterprise-grade encryption.' },
                 { icon: faGlobe, title: 'Global Operations', desc: 'Transact locally while scaling your presence across international markets.' },
               ].map((item) => (

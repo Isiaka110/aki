@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { apiGetAllStores, apiUpdateStoreIntegrity, apiGetSuperAdminStoreProducts, apiGetSuperAdminStoreCategories } from "../../../services/api";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faStore, faExclamationTriangle, faCheckCircle, faBan, faExternalLinkAlt, faTimes, faSync, faBox, faFolder } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faStore, faCheckCircle, faBan, faExternalLinkAlt, faTimes, faSync, faBox, faFolder } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 

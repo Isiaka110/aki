@@ -8,7 +8,7 @@ const footerLinks = {
     { name: 'Contact', href: '/contact' },
   ],
   services: [
-    { name: 'Start a Boutique', href: '/auth/signup' },
+    { name: 'Start an Ecommerce', href: '/auth/signup' },
     { name: 'Client Login', href: '/auth/login' },
     { name: 'Vendor Portal', href: '/store-admin' },
     { name: 'System Admin', href: '/auth/super-login' },
@@ -39,7 +39,7 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-sm text-gray-500 dark:text-gray-400 font-light max-w-xs leading-relaxed tracking-wide">
-              The premier destination for highly curated, independent digital boutiques. Experience commerce elevated.
+              The premier destination for highly curated, independent digital marketplaces. Experience commerce elevated.
             </p>
           </div>
 

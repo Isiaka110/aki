@@ -7,6 +7,7 @@ import { useTheme } from "next-themes";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useAuthStore } from "../../store/useAuthStore";
 import { apiLogout } from "../../services/api";
+import logo from "../../assets/logo.png";
 
 const navigation = [
     { name: "Overview", href: "/super-admin", icon: faTachometerAlt },
@@ -52,7 +53,11 @@ export default function SuperAdminLayout() {
             <aside className="hidden h-full w-64 flex-col border-r border-gray-200 bg-transparent dark:border-white/10 md:flex">
                 <div className="flex h-20 items-center justify-between border-b border-gray-200 px-8 dark:border-white/10 shrink-0">
                     <Link to="/" className="flex items-center gap-2 group">
-                        <span className="font-cinzel text-2xl font-medium tracking-[0.2em] text-gray-900 dark:text-white uppercase group-hover:opacity-70 transition-opacity">AKI.</span>
+                        <img
+                            src={logo}
+                            alt="AKI Platform"
+                            className="h-7 w-auto transition-all duration-300 group-hover:opacity-80 dark:invert"
+                        />
                         <span className="border border-red-900 dark:border-red-500 px-2 py-0.5 text-[8px] font-semibold uppercase tracking-widest text-red-900 dark:text-red-500">Core</span>
                     </Link>
                 </div>

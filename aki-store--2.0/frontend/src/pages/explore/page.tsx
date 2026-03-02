@@ -4,17 +4,7 @@ import { faSearch, faStore, faArrowRight, faStar, faArrowTrendUp, faCheckCircle 
 import { useEffect } from "react";
 
 const featuredShops = [
-    {
-        id: "1",
-        name: "HUDEEN",
-        slug: "hudeen",
-        category: "Designer Wear",
-        rating: 5.0,
-        reviews: 24,
-        image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80",
-        description: "Bespoke elegance crafted for the modern individual.",
-        verified: true
-    },
+    { id: "1", name: "HUDEEN", slug: "hudeen", category: "Designer Wear", rating: 5.0, reviews: 24, image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80", description: "Bespoke elegance crafted for the modern individual.", verified: true },
     {
         id: "2",
         name: "Official",
@@ -54,7 +44,7 @@ export default function ExplorePage() {
                         The Directory
                     </span>
                     <h1 className="text-5xl font-cinzel text-gray-900 dark:text-white sm:text-7xl font-medium tracking-wide mb-6">
-                        Discover <br /> The Boutiques.
+                        Discover <br /> The Ecommerce.
                     </h1>
                     <p className="mx-auto mt-4 max-w-xl text-sm font-light tracking-wide text-gray-600 dark:text-gray-400 leading-relaxed">
                         Curated exceptional storefronts. Experience the pinnacle of local, independent curation.
@@ -124,7 +114,7 @@ export default function ExplorePage() {
                                     </p>
 
                                     <div className="inline-flex items-center gap-3 text-xs font-cinzel tracking-[0.2em] uppercase text-gray-900 dark:text-white group-hover:gap-5 transition-all border-b border-gray-900 dark:border-white pb-1 w-fit">
-                                        Enter Boutique <FontAwesomeIcon icon={faArrowRight} className="h-4 w-4" />
+                                        Explore Store <FontAwesomeIcon icon={faArrowRight} className="h-4 w-4" />
                                     </div>
                                 </div>
                             </Link>
