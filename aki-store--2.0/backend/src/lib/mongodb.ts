@@ -2,11 +2,12 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import path from "path";
 
-// Environment Initialization:
-dotenv.config();
-dotenv.config({ path: path.join(process.cwd(), '.env') });
-dotenv.config({ path: path.join(process.cwd(), '.env.local') });
-dotenv.config({ path: path.join(process.cwd(), '../.env.local') });
+// More aggressive env loading for containers & local use
+dotenv.config(); // Standard .env
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+dotenv.config({ path: path.resolve(__dirname, '../../../.env.local') }); // Local dev relative path
+dotenv.config({ path: path.resolve(__dirname, '../../.env') }); // Relative to dist or src
 
 interface MongooseCache {
     conn: mongoose.Mongoose | null;
