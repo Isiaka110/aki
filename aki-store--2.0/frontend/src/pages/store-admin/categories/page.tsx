@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSearch, faEdit, faTrash, faTimes, faTags, faSync } from '@fortawesome/free-solid-svg-icons';
 import { apiGetCategories, apiCreateCategory, apiUpdateCategory, apiDeleteCategory } from "../../../services/api";
+import ConfirmationModal from "../../../components/ConfirmationModal";
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -24,6 +25,7 @@ export default function CategoriesPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   const fetchCategories = async () => {
     setIsLoading(true);
@@ -55,12 +57,15 @@ export default function CategoriesPage() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDeleteConfirm = async () => {
+    if (!pendingDeleteId) return;
     try {
-      await apiDeleteCategory(id);
-      setCategories(categories.filter(cat => cat.id !== id));
+      await apiDeleteCategory(pendingDeleteId);
+      setCategories(categories.filter(cat => cat.id !== pendingDeleteId));
     } catch (error) {
       console.error("Failed to delete category", error);
+    } finally {
+      setPendingDeleteId(null);
     }
   };
 
@@ -87,6 +92,17 @@ export default function CategoriesPage() {
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+
+      <ConfirmationModal
+        isOpen={!!pendingDeleteId}
+        title="Dismantle Collection?"
+        message="You are about to disassemble this curation collection. While the pieces themselves will remain in your atelier, they will no longer be grouped under this narrative. Proceed?"
+        confirmLabel="Confirm Dismantle"
+        cancelLabel="Maintain Collection"
+        type="danger"
+        onConfirm={handleDeleteConfirm}
+        onClose={() => setPendingDeleteId(null)}
+      />
 
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -158,7 +174,7 @@ export default function CategoriesPage() {
                         <FontAwesomeIcon icon={faEdit} className="h-4 w-4" />
                       </button>
                       <button
-                        onClick={() => handleDelete(category.id)}
+                        onClick={() => setPendingDeleteId(category.id)}
                         className="p-2 text-gray-400 hover:text-red-900 dark:text-gray-500 dark:hover:text-red-500 transition-colors"
                       >
                         <FontAwesomeIcon icon={faTrash} className="h-4 w-4" />
@@ -200,7 +216,7 @@ export default function CategoriesPage() {
                     <FontAwesomeIcon icon={faEdit} className="h-4 w-4" />
                   </button>
                   <button
-                    onClick={() => handleDelete(category.id)}
+                    onClick={() => setPendingDeleteId(category.id)}
                     className="p-2 text-gray-400 hover:text-red-900 dark:text-gray-500 dark:hover:text-red-500 transition-colors"
                   >
                     <FontAwesomeIcon icon={faTrash} className="h-4 w-4" />

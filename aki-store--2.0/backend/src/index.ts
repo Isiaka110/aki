@@ -248,6 +248,7 @@ app.get('/api/store-admin/overview', protect, async (req: any, res) => {
                 storeName: myStore?.name || 'Your Store',
                 storeId: myStore?.storeId || '',
                 slug: myStore?.slug || '',
+                status: myStore?.status || 'Active',
                 totalRevenue: orderStats.totalRevenue || 0,
                 activeOrders: orderStats.activeOrders || 0,
                 totalProducts: totalProducts || 0,

@@ -98,6 +98,8 @@ interface StoreSettings {
   setLogo: (url: string) => void;
   bannerUrl: string;
   setBannerUrl: (url: string) => void;
+  status: string;
+  setStatus: (status: string) => void;
   hydrateSettings: (settings: Partial<StoreSettings>) => void;
 }
 
@@ -134,6 +136,8 @@ export const useStoreSettings = create<StoreSettings>()(
       setLogo: (url) => set({ logo: url }),
       bannerUrl: '',
       setBannerUrl: (url) => set({ bannerUrl: url }),
+      status: 'Active',
+      setStatus: (status) => set({ status }),
       hydrateSettings: (data) => set((state) => ({ ...state, ...data })),
     }),
     {

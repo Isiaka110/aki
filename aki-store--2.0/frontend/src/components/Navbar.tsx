@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faShoppingBag, faUser, faMoon, faSun, faBars } from '@fortawesome/free-solid-svg-icons';
 import { useCartStore } from "../store/useCartStore";
 import MobileMenu from "./MobileMenu";
-import ConfirmModal from "./ConfirmModal";
+import ConfirmationModal from "./ConfirmationModal";
 import { apiGetStoreBySlug } from "../services/api";
 
 export default function Navbar() {
@@ -171,15 +171,15 @@ export default function Navbar() {
       />
 
       {/* Exit Store Warning Modal */}
-      <ConfirmModal
+      <ConfirmationModal
         isOpen={showExitWarning}
         title="Leave Storefront?"
-        message="You are about to exit this personalized store and return to the main platform directory. Are you sure you wish to proceed?"
+        message="You are about to exit this personalized boutique and return to the AKI platform directory. Are you sure you wish to proceed?"
         confirmLabel="Exit Store"
         cancelLabel="Stay Here"
-        variant="warning"
+        type="warning"
         onConfirm={() => { setShowExitWarning(false); router('/'); }}
-        onCancel={() => setShowExitWarning(false)}
+        onClose={() => setShowExitWarning(false)}
       />
     </>
   );

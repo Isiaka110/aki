@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash, faTimes, faIcons, faTruck, faCheck } from '@fortawesome/free-solid-svg-icons';
-import ConfirmModal from "../../../components/ConfirmModal";
+import ConfirmationModal from "../../../components/ConfirmationModal";
 
 import { apiGetProducts, apiGetCategories, apiCreateProduct, apiUpdateProduct, apiDeleteProduct } from "../../../services/api";
 
@@ -118,15 +118,15 @@ export default function ProductsPage() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
 
       {/* Soft Delete Confirmation */}
-      <ConfirmModal
+      <ConfirmationModal
         isOpen={!!pendingDeleteId}
         title="Archive this Piece?"
-        message="This action will permanently remove the piece from your collection and cannot be undone. Are you sure you want to proceed?"
-        confirmLabel="Remove Piece"
-        cancelLabel="Keep It"
-        variant="danger"
+        message="You are about to permanently remove this piece from your atelier collection. This action is irreversible and will immediately delist the item from your storefront. Proceed?"
+        confirmLabel="Execute Deletion"
+        cancelLabel="Keep Piece"
+        type="danger"
         onConfirm={handleDeleteConfirm}
-        onCancel={() => setPendingDeleteId(null)}
+        onClose={() => setPendingDeleteId(null)}
       />
 
       {/* --- PAGE HEADER & TABLE --- */}

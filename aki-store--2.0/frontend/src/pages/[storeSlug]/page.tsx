@@ -1,7 +1,7 @@
 import ProductCard from "../../components/ProductCard";
 import StoreSidebar from "../../components/StoreSidebar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faArrowLeft, faPlus, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import ClientFeedbackForm from "./ClientFeedbackForm";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -28,11 +28,13 @@ export default function StorePage() {
         const data = await response.json();
         if (data.success) {
           setStore(data.data);
+          document.title = `${data.data.name || storeSlug} | AKI Boutique`;
           if (data.data.primaryColor) {
             document.documentElement.style.setProperty('--color-primary', data.data.primaryColor);
           }
         } else {
           setStore(null);
+          document.title = "Store Not Found | AKI";
         }
       } catch (error) {
         console.error("Failed to fetch store:", error);
@@ -149,9 +151,14 @@ export default function StorePage() {
           )}
 
           <div className="space-y-4">
-            <h1 className="text-5xl sm:text-8xl font-cinzel text-gray-900 dark:text-white uppercase tracking-[0.15em] font-medium animate-in fade-in slide-in-from-bottom-8 duration-1000 leading-tight">
-              {store?.name || storeSlug}
-            </h1>
+            <div className="flex items-center justify-center gap-4">
+              <h1 className="text-5xl sm:text-8xl font-cinzel text-gray-900 dark:text-white uppercase tracking-[0.15em] font-medium animate-in fade-in slide-in-from-bottom-8 duration-1000 leading-tight">
+                {store?.name || storeSlug}
+              </h1>
+              {store?.status === 'Active' && (
+                <FontAwesomeIcon icon={faCheckCircle} className="text-emerald-500 text-2xl mt-4 animate-in fade-in zoom-in duration-1000 delay-500" title="AKI Verified Boutique" />
+              )}
+            </div>
             <div className="h-0.5 w-24 bg-gray-900 dark:bg-white mx-auto" />
           </div>
 

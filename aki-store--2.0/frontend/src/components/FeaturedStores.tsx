@@ -1,27 +1,29 @@
 
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faStar, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
 
 const featuredShops = [
     {
         id: "1",
-        name: "L'Aura Vintage",
-        slug: "laura-vintage",
-        category: "Haute Couture",
-        rating: 4.9,
+        name: "HUDEEN",
+        slug: "hudeen",
+        category: "Designer Wear",
+        rating: 5.0,
         image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=80",
-        description: "Curated vintage pieces for the discerning modern soul."
+        description: "Bespoke elegance crafted for the modern individual.",
+        verified: true
     },
     {
         id: "2",
-        name: "Aura Home",
-        slug: "aura-home",
-        category: "Fine Jewelry",
+        name: "Official",
+        slug: "official",
+        category: "Essentials",
         rating: 4.8,
         image: "https://images.unsplash.com/photo-1550614000-4b95d4edc0c5?w=800&q=80",
-        description: "Handcrafted accessories and timeless elegant jewelry."
+        description: "The definitive standard for quality everyday pieces.",
+        verified: true
     },
     {
         id: "3",
@@ -30,7 +32,8 @@ const featuredShops = [
         category: "Leather Goods",
         rating: 5.0,
         image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800&q=80",
-        description: "Premium leather craftsmanship emphasizing minimalist design."
+        description: "Premium leather craftsmanship emphasizing minimalist design.",
+        verified: false
     }
 ];
 
@@ -85,10 +88,15 @@ export default function FeaturedStores() {
                                 <span className="mb-2 block text-[10px] font-semibold tracking-[0.2em] text-gray-500 dark:text-gray-400 uppercase">
                                     {shop.category}
                                 </span>
-                                <h3 className="font-cinzel text-2xl text-gray-900 dark:text-white font-medium tracking-wide mb-2 transition-colors group-hover:text-gray-600 dark:group-hover:text-gray-300">
-                                    {shop.name}
-                                </h3>
-                                <p className="text-sm font-light text-gray-600 dark:text-gray-400 leading-relaxed max-w-sm">
+                                <div className="flex items-center gap-2">
+                                    <h3 className="font-cinzel text-2xl text-gray-900 dark:text-white font-medium tracking-wide transition-colors group-hover:text-gray-600 dark:group-hover:text-gray-300">
+                                        {shop.name}
+                                    </h3>
+                                    {shop.verified && (
+                                        <FontAwesomeIcon icon={faCheckCircle} className="h-4 w-4 text-emerald-500" title="AKI Verified Store" />
+                                    )}
+                                </div>
+                                <p className="text-sm font-light text-gray-600 dark:text-gray-400 leading-relaxed max-w-sm mt-2">
                                     {shop.description}
                                 </p>
                             </div>

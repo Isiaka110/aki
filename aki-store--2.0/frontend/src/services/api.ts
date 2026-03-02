@@ -55,6 +55,7 @@ export async function apiGetStoreAdminOverview() {
         activeOrders: number;
         totalProducts: number;
         storeViews: number;
+        status: string;
         recentOrders: any[];
         settings?: {
             designation: string;

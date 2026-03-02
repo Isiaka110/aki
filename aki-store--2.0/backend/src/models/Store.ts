@@ -27,11 +27,11 @@ export interface IStore extends Document {
 
 const StoreSchema = new Schema<IStore>(
     {
-        storeId: { type: String, required: true, unique: true },
-        slug: { type: String, required: true, unique: true },
-        name: { type: String, required: true },
+        storeId: { type: String, required: true, unique: true, index: true },
+        slug: { type: String, required: true, unique: true, index: true },
+        name: { type: String, required: true, index: true },
         ownerName: { type: String, required: true },
-        email: { type: String, required: true, unique: true },
+        email: { type: String, required: true, unique: true, index: true },
         adminId: { type: Schema.Types.ObjectId, ref: "User", required: true },
         status: { type: String, enum: ["Active", "Pending", "Flagged", "Suspended"], default: "Pending" },
         riskScore: { type: String, enum: ["Low", "Medium", "Critical"], default: "Low" },

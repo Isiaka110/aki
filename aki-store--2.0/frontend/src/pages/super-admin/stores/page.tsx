@@ -5,6 +5,7 @@ import { apiGetAllStores, apiUpdateStoreIntegrity, apiGetSuperAdminStoreProducts
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faStore, faExclamationTriangle, faCheckCircle, faBan, faExternalLinkAlt, faTimes, faSync, faBox, faFolder } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
+import ConfirmationModal from "../../../components/ConfirmationModal";
 
 export default function StoresIntegrityPage() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -245,62 +246,57 @@ export default function StoresIntegrityPage() {
             </div>
 
             {/* Approve Modal */}
-            {isApproveOpen && selectedStore && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-300">
-                    <div className="w-full max-w-md bg-[#fcfcfc] dark:bg-[#050505] border border-gray-200 dark:border-white/10 p-8 relative">
-                        <button onClick={() => setIsApproveOpen(false)} className="absolute right-6 top-6 text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                            <FontAwesomeIcon icon={faTimes} className="h-5 w-5" />
-                        </button>
-                        <h2 className="font-cinzel text-2xl tracking-wider text-gray-900 dark:text-white uppercase mb-4">Approve Store</h2>
-                        <p className="text-sm font-light text-gray-500 mb-8">
-                            Are you sure you want to approve <span className="font-semibold text-gray-900 dark:text-white">{selectedStore.name}</span>? They will gain full access to the vendor platform and their storefront will become public.
-                        </p>
-                        <div className="flex gap-4">
-                            <button onClick={() => setIsApproveOpen(false)} className="flex-1 border border-gray-200 py-3 text-xs font-semibold uppercase tracking-widest text-gray-600 hover:border-gray-900 dark:border-white/10 dark:text-gray-400 dark:hover:border-white transition-colors">
-                                Cancel
-                            </button>
-                            <button onClick={() => handleStatusUpdate(selectedStore.storeId, "Active")} className="flex-1 border border-green-900 bg-green-900 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-colors hover:bg-transparent hover:text-green-900 dark:hover:text-green-500">
-                                Confirm Approval
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <ConfirmationModal
+                isOpen={isApproveOpen && !!selectedStore}
+                title="Authorize Boutique"
+                message={`You are about to authorize '${selectedStore?.name}' for full platform operation. This action will enable their public storefront and grant the vendor access to administrative tools. Proceed with authorization?`}
+                confirmLabel="Confirm Approval"
+                cancelLabel="Decline"
+                type="info"
+                onConfirm={() => handleStatusUpdate(selectedStore.storeId, "Active")}
+                onClose={() => setIsApproveOpen(false)}
+            />
 
             {/* Suspend Modal */}
             {isSuspendOpen && selectedStore && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-300">
-                    <div className="w-full max-w-md bg-[#fcfcfc] dark:bg-[#050505] border border-gray-200 dark:border-white/10 p-8 relative">
-                        <button onClick={() => setIsSuspendOpen(false)} className="absolute right-6 top-6 text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                            <FontAwesomeIcon icon={faTimes} className="h-5 w-5" />
-                        </button>
-                        <h2 className="font-cinzel text-2xl tracking-wider text-red-600 dark:text-red-500 uppercase mb-4 flex items-center gap-3">
-                            <FontAwesomeIcon icon={faExclamationTriangle} className="h-6 w-6" /> Suspend Store
-                        </h2>
-                        <p className="text-sm font-light text-gray-500 mb-2">
-                            You are about to suspend <span className="font-semibold text-gray-900 dark:text-white">{selectedStore.name}</span>.
-                        </p>
-                        <textarea
-                            value={suspendReason}
-                            onChange={(e) => setSuspendReason(e.target.value)}
-                            className="w-full border border-gray-200 dark:border-white/10 bg-transparent p-3 text-sm focus:border-red-900 focus:outline-none dark:text-white dark:focus:border-red-500 transition-colors mt-4 mb-8 resize-none font-light"
-                            rows={3}
-                            placeholder="Reason for suspension (required)..."
-                        />
-                        <div className="flex gap-4">
-                            <button onClick={() => setIsSuspendOpen(false)} className="flex-1 border border-gray-200 py-3 text-xs font-semibold uppercase tracking-widest text-gray-600 hover:border-gray-900 dark:border-white/10 dark:text-gray-400 dark:hover:border-white transition-colors">
-                                Cancel
-                            </button>
-                            <button
-                                onClick={() => {
-                                    if (!suspendReason.trim()) return alert("Please provide a suspension reason.");
-                                    handleStatusUpdate(selectedStore.storeId, "Suspended", "Critical", suspendReason);
-                                }}
-                                className="flex-1 border border-red-900 bg-red-900 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-colors hover:bg-transparent hover:text-red-900 dark:hover:text-red-500"
-                            >
-                                Enforce Ban
-                            </button>
+                    <div className="w-full max-w-md bg-[#fcfcfc] dark:bg-[#0b0b0b] border border-gray-200 dark:border-white/10 shadow-2xl relative animate-in zoom-in-95 duration-200">
+                        <div className="p-8">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="flex h-12 w-12 items-center justify-center border-2 border-red-500 text-red-500">
+                                    <FontAwesomeIcon icon={faBan} className="h-5 w-5" />
+                                </div>
+                                <h2 className="font-cinzel text-xl tracking-widest text-gray-900 dark:text-white uppercase">Suspend Store</h2>
+                            </div>
+
+                            <p className="text-sm font-light text-gray-500 mb-6">
+                                Enforce a platform-wide suspension on <span className="font-semibold text-gray-900 dark:text-white">{selectedStore.name}</span>. Public storefront will be delisted immediately.
+                            </p>
+
+                            <textarea
+                                value={suspendReason}
+                                onChange={(e) => setSuspendReason(e.target.value)}
+                                className="w-full border border-gray-200 dark:border-white/10 bg-transparent p-4 text-xs focus:border-red-900 focus:outline-none dark:text-white dark:focus:border-red-500 transition-colors mb-8 resize-none font-light tracking-wide"
+                                rows={3}
+                                placeholder="Audit Reason (Required for enforcement)..."
+                            />
+
+                            <div className="flex gap-4">
+                                <button onClick={() => { setIsSuspendOpen(false); setSuspendReason(""); }} className="flex-1 px-6 py-4 text-[10px] font-bold tracking-[0.3em] uppercase border border-gray-200 text-gray-900 dark:border-white/10 dark:text-white transition-all hover:bg-gray-50 dark:hover:bg-white/5">
+                                    Abort
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        if (!suspendReason.trim()) return alert("Audit reason is required for suspension.");
+                                        handleStatusUpdate(selectedStore.storeId, "Suspended", "Critical", suspendReason);
+                                    }}
+                                    className="flex-1 px-6 py-4 text-[10px] font-bold tracking-[0.3em] uppercase bg-red-600 text-white transition-all hover:bg-red-700"
+                                >
+                                    Enforce Ban
+                                </button>
+                            </div>
                         </div>
+                        <div className="h-1 w-full bg-red-600" />
                     </div>
                 </div>
             )}

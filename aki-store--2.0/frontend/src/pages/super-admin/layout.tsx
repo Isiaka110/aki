@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faStore, faExclamationTriangle, faCog, faSignOutAlt, faBars, faSun, faMoon, faShieldAlt } from '@fortawesome/free-solid-svg-icons';
 import SuperAdminMobileMenu from "./SuperAdminMobileMenu";
 import { useTheme } from "next-themes";
-import ConfirmModal from "../../components/ConfirmModal";
+import ConfirmationModal from "../../components/ConfirmationModal";
 import { useAuthStore } from "../../store/useAuthStore";
 import { apiLogout } from "../../services/api";
 
@@ -37,15 +37,15 @@ export default function SuperAdminLayout() {
         <div className="flex h-screen bg-[#fcfcfc] dark:bg-[#050505] transition-colors overflow-hidden">
             <SuperAdminMobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
 
-            <ConfirmModal
+            <ConfirmationModal
                 isOpen={showLockModal}
-                title="Lock System Core?"
-                message="You are about to lock the AKI administrative core. All active sessions will be terminated. Are you certain you wish to proceed?"
-                confirmLabel="Lock System"
-                cancelLabel="Stay"
-                variant="danger"
+                title="Seal Administrative Core"
+                message="You are about to terminate all active sessions and lock the AKI administrative core. This will disconnect all current supervisors. Proceeed with lock sequence?"
+                confirmLabel="Execute Lock"
+                cancelLabel="Abort Sequence"
+                type="danger"
                 onConfirm={handleLockConfirm}
-                onCancel={() => setShowLockModal(false)}
+                onClose={() => setShowLockModal(false)}
             />
 
             {/* Sidebar Navigation */}

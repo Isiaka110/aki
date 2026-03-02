@@ -12,21 +12,50 @@ export default function SignupPage() {
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showTooltip, setShowTooltip] = useState<string | null>(null);
   const setAuth = useAuthStore((state) => state.setAuth);
+
+  useEffect(() => {
+    document.title = "Apply | AKI Boutique Platform";
+
+    // Detect fresh session for coach marks (one-time welcome)
+    const isReturning = localStorage.getItem('aki_returning_vendor');
+    if (!isReturning) {
+      setShowTooltip('onboarding');
+      localStorage.setItem('aki_returning_vendor', 'true');
+    }
+  }, []);
+
+  const validatePassword = (pass: string) => {
+    const minLength = pass.length >= 8;
+    const hasUpper = /[A-Z]/.test(pass);
+    const hasLower = /[a-z]/.test(pass);
+    const hasNumber = /[0-9]/.test(pass);
+    const hasSymbol = /[^A-Za-z0-9]/.test(pass);
+    return minLength && hasUpper && hasLower && hasNumber && hasSymbol;
+  };
 
   const set = (field: string, value: string) => setForm((prev) => ({ ...prev, [field]: value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!agreed) return setError('Please accept the Terms of Service to continue.');
+    if (!validatePassword(form.password)) {
+      return setError('Security threshold not met. Use 8+ characters with mixed cases, numbers, and symbols.');
+    }
     setError('');
     setLoading(true);
     try {
-      const { user, token } = await apiRegister(form);
+      // Formatted for Nigerian Convention (Surname First tracking)
+      const submission = {
+        ...form,
+        lastName: form.lastName.toUpperCase(),
+        firstName: form.firstName.charAt(0).toUpperCase() + form.firstName.slice(1).toLowerCase()
+      };
+      const { user, token } = await apiRegister(submission);
       setAuth(user, token);
       navigate('/store-admin');
     } catch (err: any) {
-      setError(err.message || 'Registration failed. Please try again.');
+      setError(err.message || 'Registration failed. Check your boutique name availability.');
     } finally {
       setLoading(false);
     }
@@ -96,10 +125,29 @@ export default function SignupPage() {
             </div>
             <input type="email" required value={form.email} onChange={(e) => set('email', e.target.value)} placeholder="Email Address" autoComplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other"
               className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors tracking-wide font-light placeholder-gray-400" />
-            <input type="text" required value={form.storeName} onChange={(e) => set('storeName', e.target.value)} placeholder="Boutique Name" autoComplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other"
-              className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors tracking-wide font-light placeholder-gray-400" />
-            <input type="password" required value={form.password} onChange={(e) => set('password', e.target.value)} placeholder="Password" autoComplete="new-password" data-lpignore="true" data-1p-ignore="true" data-form-type="other"
-              className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors tracking-wide font-light placeholder-gray-400" />
+            <div className="relative group">
+              <input type="text" required value={form.storeName} onChange={(e) => set('storeName', e.target.value)}
+                onFocus={() => setShowTooltip('boutique')} onBlur={() => setShowTooltip(null)}
+                placeholder="Boutique Name" autoComplete="off"
+                className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors tracking-wide font-light placeholder-gray-400" />
+              {showTooltip === 'boutique' && (
+                <div className="absolute -top-12 left-0 right-0 bg-gray-900 text-white text-[10px] py-2 px-3 animate-in fade-in slide-in-from-bottom-2 duration-300 z-50">
+                  Must be unique. This defines your public URL: <span className="text-gray-400">aki.digital/&quot;name&quot;</span>
+                </div>
+              )}
+            </div>
+
+            <div className="relative">
+              <input type="password" required value={form.password} onChange={(e) => set('password', e.target.value)}
+                onFocus={() => setShowTooltip('password')} onBlur={() => setShowTooltip(null)}
+                placeholder="Secure Password"
+                className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors tracking-wide font-light placeholder-gray-400" />
+              {showTooltip === 'password' && (
+                <div className="absolute -top-16 left-0 right-0 bg-gray-900 text-white text-[10px] py-2 px-3 animate-in fade-in slide-in-from-bottom-2 duration-300 z-50 leading-relaxed">
+                  Required: 8+ chars • Uppercase • Lowercase • Numerical • Special Symbol (!@#$)
+                </div>
+              )}
+            </div>
 
             <div className="flex items-center gap-3 pt-2">
               <input type="checkbox" required checked={agreed} onChange={(e) => setAgreed(e.target.checked)}

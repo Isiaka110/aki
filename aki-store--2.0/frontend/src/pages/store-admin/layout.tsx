@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faBox, faShoppingBag, faStar, faCog, faSignOutAlt, faStore, faTags, faBars, faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
 import AdminMobileMenu from "./AdminMobileMenu";
 import { useTheme } from "next-themes";
-import ConfirmModal from "../../components/ConfirmModal";
+import ConfirmationModal from "../../components/ConfirmationModal";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useStoreSettings } from "../../store/useCartStore";
 import { apiGetStoreAdminOverview, apiLogout } from "../../services/api";
@@ -27,7 +27,7 @@ export default function StoreAdminLayout() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { clearAuth, user } = useAuthStore();
-  const { primaryColor, hydrateSettings, storeName, storeId, slug } = useStoreSettings();
+  const { primaryColor, hydrateSettings, storeName, storeId, slug, status } = useStoreSettings();
 
   // Use the verified storeId slug from settings hydration (from DB)
   // Fallback to name-based slug only if storeId isn't yet available
@@ -49,6 +49,7 @@ export default function StoreAdminLayout() {
             storeName: data.storeName,
             storeId: data.storeId,
             slug: data.slug,
+            status: data.status,
             ...data.settings
           });
         }
@@ -70,15 +71,15 @@ export default function StoreAdminLayout() {
     <div className="flex h-screen bg-[#fcfcfc] dark:bg-[#050505] transition-colors overflow-hidden">
       <AdminMobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
 
-      <ConfirmModal
+      <ConfirmationModal
         isOpen={showLogoutModal}
-        title="Sign Out?"
-        message="Are you certain you wish to sign out of the secure store portal? Any unsaved changes will be lost."
-        confirmLabel="Sign Out"
-        cancelLabel="Stay Here"
-        variant="danger"
+        title="Terminate Session"
+        message="You are about to sign out of the secure AKI administrative portal. Any unsaved modifications to your boutique will not be committed. Proceed?"
+        confirmLabel="Confirm Logout"
+        cancelLabel="Continue Working"
+        type="danger"
         onConfirm={handleLogoutConfirm}
-        onCancel={() => setShowLogoutModal(false)}
+        onClose={() => setShowLogoutModal(false)}
       />
 
       {/* Sidebar Navigation */}
@@ -139,7 +140,13 @@ export default function StoreAdminLayout() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 h-full overflow-y-auto custom-scrollbar">
+      <main className="flex-1 h-full overflow-y-auto custom-scrollbar flex flex-col">
+        {status !== 'Active' && (
+          <div className="bg-red-600 text-white px-8 py-3 text-[10px] font-bold tracking-[0.3em] uppercase animate-pulse flex items-center justify-between pointer-events-none sticky top-0 z-[60]">
+            <span>Store Status: {status} • Platform functionality restricted</span>
+            <span>Contact Super Admin</span>
+          </div>
+        )}
         <header className="sticky top-0 z-50 flex h-20 shrink-0 items-center justify-between border-b border-gray-200 bg-[#fcfcfc] px-6 dark:border-white/10 dark:bg-[#050505] md:hidden">
           <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-gray-900 hover:opacity-70 transition-opacity dark:text-white">
             <FontAwesomeIcon icon={faBars} className="h-6 w-6" />

@@ -1,42 +1,49 @@
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faStore, faArrowRight, faStar, faArrowTrendUp } from '@fortawesome/free-solid-svg-icons';
-
+import { faSearch, faStore, faArrowRight, faStar, faArrowTrendUp, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { useEffect } from "react";
 
 const featuredShops = [
     {
         id: "1",
-        name: "ThriftElegance",
-        slug: "thriftelegance",
-        category: "Vintage Fashion",
-        rating: 4.9,
-        reviews: 128,
+        name: "HUDEEN",
+        slug: "hudeen",
+        category: "Designer Wear",
+        rating: 5.0,
+        reviews: 24,
         image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80",
-        description: "Curated vintage pieces for the modern soul."
+        description: "Bespoke elegance crafted for the modern individual.",
+        verified: true
     },
     {
         id: "2",
-        name: "TechHaven",
-        slug: "techhaven",
-        category: "Gadgets",
-        rating: 4.7,
-        reviews: 85,
+        name: "Official",
+        slug: "official",
+        category: "Essentials",
+        rating: 4.8,
+        reviews: 12,
         image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80",
-        description: "The latest gadgets and tech accessories."
+        description: "The definitive standard for quality everyday pieces.",
+        verified: true
     },
     {
         id: "3",
-        name: "HomeSpun",
-        slug: "homespun",
-        category: "Home Decor",
+        name: "Noir Collection",
+        slug: "noir-collection",
+        category: "Leather Goods",
         rating: 5.0,
         reviews: 42,
         image: "https://images.unsplash.com/photo-1513519245088-0e12902e35a6?w=800&q=80",
-        description: "Handmade comfort for your living space."
+        description: "Premium leather craftsmanship emphasizing minimalist design.",
+        verified: false
     }
 ];
 
 export default function ExplorePage() {
+    useEffect(() => {
+        document.title = "Explore The Directory | AKI";
+    }, []);
+
     return (
         <div className="min-h-screen bg-[#fcfcfc] dark:bg-[#050505] px-4 py-32 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-7xl">
@@ -80,7 +87,7 @@ export default function ExplorePage() {
 
                     <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
                         {featuredShops.map((shop) => (
-                            <Link to={`/${shop.slug}`}
+                            <Link key={shop.id} to={`/${shop.slug}`}
                                 className="group flex flex-col"
                             >
                                 {/* Shop Image */}
@@ -99,21 +106,24 @@ export default function ExplorePage() {
                                 </div>
 
                                 {/* Shop Content */}
-                                <div>
-                                    <div className="flex flex-col">
-                                        <h3 className="text-2xl font-cinzel text-gray-900 dark:text-white tracking-wide mb-2">{shop.name}</h3>
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <FontAwesomeIcon icon={faStar} className="h-3 w-3 fill-gray-900 text-gray-900 dark:fill-white dark:text-white" />
-                                            <span className="text-xs font-semibold tracking-wide text-gray-900 dark:text-white">{shop.rating}</span>
-                                            <span className="text-xs text-gray-400 font-light">({shop.reviews})</span>
-                                        </div>
+                                <div className="flex flex-col">
+                                    <div className="flex items-center gap-2">
+                                        <h3 className="text-2xl font-cinzel text-gray-900 dark:text-white tracking-wide">{shop.name}</h3>
+                                        {shop.verified && (
+                                            <FontAwesomeIcon icon={faCheckCircle} className="h-4 w-4 text-emerald-500" title="AKI Verified Store" />
+                                        )}
+                                    </div>
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <FontAwesomeIcon icon={faStar} className="h-3 w-3 fill-gray-900 text-gray-900 dark:fill-white dark:text-white" />
+                                        <span className="text-xs font-semibold tracking-wide text-gray-900 dark:text-white">{shop.rating}</span>
+                                        <span className="text-xs text-gray-400 font-light">({shop.reviews})</span>
                                     </div>
 
                                     <p className="text-sm text-gray-600 dark:text-gray-400 font-light tracking-wide leading-relaxed line-clamp-2 mb-6 border-l-2 border-gray-200 dark:border-white/10 pl-4">
                                         {shop.description}
                                     </p>
 
-                                    <div className="inline-flex items-center gap-3 text-xs font-cinzel tracking-[0.2em] uppercase text-gray-900 dark:text-white group-hover:gap-5 transition-all border-b border-gray-900 dark:border-white pb-1">
+                                    <div className="inline-flex items-center gap-3 text-xs font-cinzel tracking-[0.2em] uppercase text-gray-900 dark:text-white group-hover:gap-5 transition-all border-b border-gray-900 dark:border-white pb-1 w-fit">
                                         Enter Boutique <FontAwesomeIcon icon={faArrowRight} className="h-4 w-4" />
                                     </div>
                                 </div>
@@ -133,7 +143,7 @@ export default function ExplorePage() {
 
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6 border-t border-l border-gray-200 dark:border-white/10">
                         {['Fashion', 'Tech', 'Home', 'Art', 'Beauty', 'Food'].map((cat) => (
-                            <Link to={`/explore?category=${cat.toLowerCase()}`}
+                            <Link key={cat} to={`/explore?category=${cat.toLowerCase()}`}
                                 className="group flex flex-col items-center justify-center gap-4 border-r border-b border-gray-200 dark:border-white/10 p-10 bg-transparent hover:bg-gray-50 dark:hover:bg-white/5 transition-colors aspect-square"
                             >
                                 <div className="text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">

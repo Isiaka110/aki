@@ -18,6 +18,10 @@ export async function registerStoreAdmin(payload: any) {
     const existingUser = await User.findOne({ email });
     if (existingUser) throw new Error("Email is already registered.");
 
+    const slug = storeName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const existingStore = await Store.findOne({ slug });
+    if (existingStore) throw new Error("This Boutique Name is already taken. Please choose another.");
+
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
@@ -27,9 +31,12 @@ export async function registerStoreAdmin(payload: any) {
     try {
         const newUser = await User.create([{ email, passwordHash, role: "store-admin", firstName, lastName }], { session });
         const storeId = `STR-${Math.floor(Math.random() * 90000) + 10000}`;
-        const slug = storeName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+        // Nigerian convention: If the names are provided, we ensure they are capitalized properly
+        const formattedOwnerName = `${lastName.toUpperCase()}, ${firstName}`;
+
         const newStore = await Store.create([{
-            storeId, slug, name: storeName, ownerName: `${firstName} ${lastName}`,
+            storeId, slug, name: storeName, ownerName: formattedOwnerName,
             email, adminId: newUser[0]._id, status: "Pending", riskScore: "Low", revenue: 0
         }], { session });
 
