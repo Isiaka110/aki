@@ -18,7 +18,13 @@ const loadEnv = () => {
     paths.forEach(p => {
         const result = dotenv.config({ path: p });
         if (result.parsed) {
-            console.log(`[AKI] Successfully loaded configuration from: ${p}`);
+            const keys = Object.keys(result.parsed);
+            console.log(`[AKI] Successfully loaded ${keys.length} keys from: ${p}`);
+            if (keys.length > 0) {
+                console.log(`[AKI] Keys discovered: ${keys.join(', ')}`);
+                // Force-assign to process.env to ensure visibility
+                Object.assign(process.env, result.parsed);
+            }
         }
     });
 };
