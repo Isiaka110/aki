@@ -2,12 +2,28 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import path from "path";
 
-// More aggressive env loading for containers & local use
-dotenv.config(); // Standard .env
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
-dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
-dotenv.config({ path: path.resolve(__dirname, '../../../.env.local') }); // Local dev relative path
-dotenv.config({ path: path.resolve(__dirname, '../../.env') }); // Relative to dist or src
+// Environment Initialization:
+const loadEnv = () => {
+    const paths = [
+        path.resolve(process.cwd(), '.env'),
+        path.resolve(process.cwd(), '.env.local'),
+        path.resolve(process.cwd(), 'backend', '.env'),
+        path.resolve(process.cwd(), 'backend', '.env.local'),
+        path.resolve(__dirname, '../../.env'),
+        path.resolve(__dirname, '../../.env.local'),
+        path.resolve(__dirname, '../../../../.env.local')
+    ];
+
+    console.log(`[AKI] Current Working Directory: ${process.cwd()}`);
+    paths.forEach(p => {
+        const result = dotenv.config({ path: p });
+        if (result.parsed) {
+            console.log(`[AKI] Successfully loaded configuration from: ${p}`);
+        }
+    });
+};
+
+loadEnv();
 
 interface MongooseCache {
     conn: mongoose.Mongoose | null;
@@ -33,6 +49,7 @@ async function connectToDatabase(): Promise<mongoose.Mongoose> {
 
     if (!MONGODB_URI) {
         console.error("❌ CRITICAL: MONGODB_URI is not defined.");
+        console.log(`[AKI] Current Environment Keys: ${Object.keys(process.env).join(', ')}`);
         throw new Error("Please define the MONGODB_URI environment variable in your hosting provider's dashboard or .env file.");
     }
 
