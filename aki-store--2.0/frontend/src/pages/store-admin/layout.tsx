@@ -2,7 +2,7 @@
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTachometerAlt, faBox, faShoppingBag, faStar, faCog, faSignOutAlt, faStore, faTags, faBars, faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
+import { faTachometerAlt, faBox, faShoppingBag, faStar, faCog, faSignOutAlt, faStore, faTags, faBars, faSun, faMoon, faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import AdminMobileMenu from "./AdminMobileMenu";
 import { useTheme } from "next-themes";
 import ConfirmationModal from "../../components/ConfirmationModal";
@@ -25,6 +25,7 @@ export default function StoreAdminLayout() {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showProfileWarner, setShowProfileWarner] = useState(false);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { clearAuth, user } = useAuthStore();
@@ -53,6 +54,11 @@ export default function StoreAdminLayout() {
             status: data.status,
             ...data.settings
           });
+
+          // Check if profile is incomplete
+          if (!data.settings?.whatsappNumber || !data.settings?.supportEmail) {
+            setShowProfileWarner(true);
+          }
         }
       } catch (e) {
         console.error("Failed to sync admin store data");
@@ -150,6 +156,23 @@ export default function StoreAdminLayout() {
           <div className="bg-red-600 text-white px-8 py-3 text-[10px] font-bold tracking-[0.3em] uppercase animate-pulse flex items-center justify-between pointer-events-none sticky top-0 z-[60]">
             <span>Store Status: {status} • Platform functionality restricted</span>
             <span>Contact Super Admin</span>
+          </div>
+        )}
+
+        {showProfileWarner && (
+          <div className="bg-amber-500 text-white px-8 py-4 text-[11px] font-bold tracking-[0.2em] uppercase flex items-center justify-between sticky top-0 z-[60] border-b border-amber-600 shadow-lg">
+            <div className="flex items-center gap-3">
+              <FontAwesomeIcon icon={faExclamationTriangle} className="h-4 w-4" />
+              <span>Complete Your Profile: Some contact information is missing from your registry.</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <Link to="/store-admin/settings" onClick={() => setShowProfileWarner(false)} className="bg-white text-amber-600 px-4 py-1.5 hover:bg-amber-50 transition-colors">
+                Update Settings
+              </Link>
+              <button onClick={() => setShowProfileWarner(false)} className="hover:opacity-70">
+                <FontAwesomeIcon icon={faTimes} />
+              </button>
+            </div>
           </div>
         )}
         <header className="sticky top-0 z-50 flex h-20 shrink-0 items-center justify-between border-b border-gray-200 bg-[#fcfcfc] px-6 dark:border-white/10 dark:bg-[#050505] md:hidden">

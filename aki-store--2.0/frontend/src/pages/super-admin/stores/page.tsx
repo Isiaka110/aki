@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { apiGetAllStores, apiUpdateStoreIntegrity, apiGetSuperAdminStoreProducts, apiGetSuperAdminStoreCategories } from "../../../services/api";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faStore, faCheckCircle, faBan, faExternalLinkAlt, faTimes, faSync, faBox, faFolder } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faStore, faCheckCircle, faBan, faExternalLinkAlt, faTimes, faSync, faBox, faFolder, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 
@@ -36,15 +36,15 @@ export default function StoresIntegrityPage() {
         fetchStores();
     }, []);
 
-    const handleStatusUpdate = async (storeId: string, status: string, riskScore?: string, reason?: string) => {
+    const handleStatusUpdate = async (storeId: string, status: string, riskScore?: string, reason?: string, isFeatured?: boolean) => {
         try {
-            await apiUpdateStoreIntegrity({ storeId, status, riskScore, reason });
+            await apiUpdateStoreIntegrity({ storeId, status, riskScore, reason, isFeatured });
             fetchStores();
             setIsApproveOpen(false);
             setIsSuspendOpen(false);
             setSuspendReason("");
             if (isStoreDetailsOpen && selectedStore?.storeId === storeId) {
-                setSelectedStore((prev: any) => prev ? { ...prev, status } : null);
+                setSelectedStore((prev: any) => prev ? { ...prev, status, isFeatured } : null);
             }
         } catch (e) {
             console.error("Failed to update store");
@@ -123,6 +123,7 @@ export default function StoresIntegrityPage() {
                                 <th className="p-6 text-[10px] font-semibold uppercase tracking-widest text-gray-500">LTV Revenue</th>
                                 <th className="p-6 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Risk Profile</th>
                                 <th className="p-6 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Status</th>
+                                <th className="p-6 text-[10px] font-semibold uppercase tracking-widest text-gray-500 text-center">Featured</th>
                                 <th className="p-6 text-right text-[10px] font-semibold uppercase tracking-widest text-gray-500">Actions</th>
                             </tr>
                         </thead>
@@ -162,6 +163,15 @@ export default function StoresIntegrityPage() {
                                         <span className={`inline-flex items-center border px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest ${getStatusColor(store.status)}`}>
                                             {store.status}
                                         </span>
+                                    </td>
+                                    <td className="p-6 text-center">
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); handleStatusUpdate(store.storeId, store.status, store.riskScore, undefined, !store.isFeatured); }}
+                                            className={`transition-colors ${store.isFeatured ? 'text-red-500' : 'text-gray-300 dark:text-gray-700'} hover:text-red-600`}
+                                            title={store.isFeatured ? "Un-feature Boutique" : "Feature on Homepage"}
+                                        >
+                                            <FontAwesomeIcon icon={faHeart} className="h-4 w-4" />
+                                        </button>
                                     </td>
                                     <td className="p-6 text-right">
                                         <div className="flex items-center justify-end gap-3" onClick={(e) => e.stopPropagation()}>

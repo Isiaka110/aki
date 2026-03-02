@@ -21,6 +21,7 @@ export interface IStore extends Document {
     paystackSecretKey?: string;
     logo?: string;
     bannerUrl?: string;
+    isFeatured?: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -46,7 +47,8 @@ const StoreSchema = new Schema<IStore>(
         paystackPublicKey: { type: String, default: "" },
         paystackSecretKey: { type: String, default: "" },
         logo: { type: String, default: "" },
-        bannerUrl: { type: String, default: "" }
+        bannerUrl: { type: String, default: "" },
+        isFeatured: { type: Boolean, default: false }
     },
     { timestamps: true }
 );

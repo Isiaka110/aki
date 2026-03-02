@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faSpinner, faShieldAlt, faBolt, faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faSpinner, faShieldAlt, faBolt, faGlobe, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { apiRegister } from '../../../services/api';
 import { useAuthStore } from '../../../store/useAuthStore';
 import logo from '../../../assets/logo.png';
@@ -14,6 +14,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showTooltip, setShowTooltip] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const setAuth = useAuthStore((state) => state.setAuth);
 
   useEffect(() => {
@@ -139,16 +140,23 @@ export default function SignupPage() {
                 className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors tracking-wide font-light placeholder-gray-400" />
               {showTooltip === 'boutique' && (
                 <div className="absolute -top-12 left-0 right-0 bg-gray-900 text-white text-[10px] py-2 px-3 animate-in fade-in slide-in-from-bottom-2 duration-300 z-50">
-                  Must be unique. This defines your public URL: <span className="text-gray-400">aki.digital/&quot;name&quot;</span>
+                  Must be unique. Once selected, it cannot be changed. Public URL: <span className="text-gray-400">aki.digital/&quot;name&quot;</span>
                 </div>
               )}
             </div>
 
             <div className="relative">
-              <input type="password" required value={form.password} onChange={(e) => set('password', e.target.value)}
+              <input type={showPassword ? "text" : "password"} required value={form.password} onChange={(e) => set('password', e.target.value)}
                 onFocus={() => setShowTooltip('password')} onBlur={() => setShowTooltip(null)}
                 placeholder="Secure Password"
                 className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors tracking-wide font-light placeholder-gray-400" />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+              >
+                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} className="h-4 w-4" />
+              </button>
               {showTooltip === 'password' && (
                 <div className="absolute -top-16 left-0 right-0 bg-gray-900 text-white text-[10px] py-2 px-3 animate-in fade-in slide-in-from-bottom-2 duration-300 z-50 leading-relaxed">
                   Required: 8+ chars • Uppercase • Lowercase • Numerical • Special Symbol (!@#$)

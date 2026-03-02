@@ -173,6 +173,7 @@ export async function apiUpdateStoreIntegrity(payload: {
     storeId: string;
     status: string;
     riskScore?: string;
+    isFeatured?: boolean;
     reason?: string;
 }) {
     return apiRequest<any>('/api/super-admin/stores', {
@@ -233,4 +234,9 @@ export async function apiSubmitComplaint(payload: {
 
 export async function apiGetStoreBySlug(slug: string) {
     return apiRequest<any>(`/api/store/${slug}`);
+}
+
+export async function apiGetFeaturedStores() {
+    const res = await apiRequest<any>('/api/stores/featured');
+    return res.data || [];
 }

@@ -34,12 +34,15 @@ export async function getStoreById(storeId: string) {
  * Updates the status and risk profile of a target store.
  * Primarily utilized by the Super Admin integrity checks.
  */
-export async function updateStoreIntegrity(storeId: string, status: string, riskScore?: string) {
+export async function updateStoreIntegrity(storeId: string, status: string, riskScore?: string, isFeatured?: boolean) {
     await connectToDatabase();
 
     const updatePayload: any = { status };
     if (riskScore) {
         updatePayload.riskScore = riskScore;
+    }
+    if (isFeatured !== undefined) {
+        updatePayload.isFeatured = isFeatured;
     }
 
     // Try finding by internal ID first (Super Admin dashboard often passes _id)

@@ -140,9 +140,9 @@ app.get('/api/super-admin/stores', async (req, res) => {
 
 app.put('/api/super-admin/stores', async (req, res) => {
     try {
-        const { storeId, status, riskScore } = req.body;
+        const { storeId, status, riskScore, isFeatured } = req.body;
         if (!storeId || !status) return res.status(400).json({ success: false, error: 'Missing parameters' });
-        const updatedStore = await updateStoreIntegrity(storeId, status, riskScore);
+        const updatedStore = await updateStoreIntegrity(storeId, status, riskScore, isFeatured);
         res.status(200).json({ success: true, data: updatedStore });
     } catch (error: any) {
         res.status(500).json({ success: false, error: error.message });
@@ -198,6 +198,15 @@ app.post('/api/store/complaints', async (req, res) => {
 });
 
 // --- Public Store Detail ---
+app.get('/api/stores/featured', async (req, res) => {
+    try {
+        const featuredStores = await Store.find({ isFeatured: true, status: 'Active' });
+        res.status(200).json({ success: true, data: featuredStores });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 app.get('/api/store/:storeId', async (req, res) => {
     try {
         const store = await getStoreById(req.params.storeId);

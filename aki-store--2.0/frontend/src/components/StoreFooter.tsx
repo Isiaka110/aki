@@ -2,14 +2,17 @@
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faIcons, faEnvelope, faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faInstagram, faXTwitter } from '@fortawesome/free-brands-svg-icons';
 import { useStoreSettings } from "../store/useCartStore";
 import { useEffect, useState } from "react";
+
+const DEFAULT_ANIME_LOGO = "https://api.dicebear.com/7.x/avataaars/svg?seed=Lucky";
 
 export default function StoreFooter() {
     const params = useParams();
     const storeSlug = params?.storeSlug as string;
-    const { ownerName, contactEmail, socialInstagram, socialTwitter } = useStoreSettings();
+    const { ownerName, contactEmail, socialInstagram, socialTwitter, logo } = useStoreSettings();
     const [mounted, setMounted] = useState(false);
     const [isReportOpen, setIsReportOpen] = useState(false);
 
@@ -22,16 +25,22 @@ export default function StoreFooter() {
     const mainLinks = [
         { name: 'Catalogue', path: basePath },
         { name: 'Account', path: storeSlug ? `/${storeSlug}/account` : '/account' },
-        { name: 'Concierge', path: `${basePath}/concierge` },
     ];
 
     return (
         <footer className="bg-[#fcfcfc] dark:bg-[#050505] px-4 py-16 sm:px-6 lg:px-8 border-t border-gray-200 dark:border-white/10 transition-colors">
             <div className="mx-auto max-w-7xl">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-12 mb-12">
-                    <div className="flex items-center gap-2">
-                        <Link to={basePath}>
-                            <span className="font-cinzel text-2xl font-medium tracking-[0.2em] text-gray-900 dark:text-white uppercase transition-opacity hover:opacity-70">
+                    <div className="flex items-center gap-4">
+                        <Link to={basePath} className="flex items-center gap-3">
+                            <div className="h-10 w-10 overflow-hidden border border-gray-900 dark:border-white">
+                                <img
+                                    src={logo || DEFAULT_ANIME_LOGO}
+                                    alt={ownerName}
+                                    className="h-full w-full object-cover"
+                                />
+                            </div>
+                            <span className="font-cinzel text-xl font-medium tracking-[0.2em] text-gray-900 dark:text-white uppercase transition-opacity hover:opacity-70">
                                 {storeSlug ? storeSlug : "AKI."}
                             </span>
                         </Link>
@@ -48,12 +57,12 @@ export default function StoreFooter() {
                     <div className="flex gap-6">
                         {socialInstagram && (
                             <a href={`https://instagram.com/${socialInstagram.replace('@', '')}`} target="_blank" rel="noreferrer" className="p-2 border border-transparent hover:border-gray-900 text-gray-400 hover:text-gray-900 dark:hover:border-white dark:hover:text-white transition-all duration-300">
-                                <FontAwesomeIcon icon={faIcons} className="h-4 w-4" />
+                                <FontAwesomeIcon icon={faInstagram} className="h-4 w-4" />
                             </a>
                         )}
                         {socialTwitter && (
                             <a href={`https://twitter.com/${socialTwitter.replace('@', '')}`} target="_blank" rel="noreferrer" className="p-2 border border-transparent hover:border-gray-900 text-gray-400 hover:text-gray-900 dark:hover:border-white dark:hover:text-white transition-all duration-300">
-                                <FontAwesomeIcon icon={faIcons} className="h-4 w-4" />
+                                <FontAwesomeIcon icon={faXTwitter} className="h-4 w-4" />
                             </a>
                         )}
                         {contactEmail && (

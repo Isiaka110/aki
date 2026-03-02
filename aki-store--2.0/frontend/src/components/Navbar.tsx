@@ -104,7 +104,6 @@ export default function Navbar() {
             {storeSlug && (
               <div className="flex items-center gap-8">
                 <Link to={`/${storeSlug}`} className="font-cinzel text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">Catalogue</Link>
-                <Link to={`/${storeSlug}/account`} className="font-cinzel text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">Architect</Link>
               </div>
             )}
             <form onSubmit={handleSearch} className="relative w-full max-w-sm group">
