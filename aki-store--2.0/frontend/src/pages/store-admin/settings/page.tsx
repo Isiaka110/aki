@@ -1,10 +1,10 @@
 
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStore, faImage, faPalette, faMoon, faSun, faDesktop, faCheckCircle, faCreditCard, faExclamationTriangle, faTimes, faShieldAlt } from '@fortawesome/free-solid-svg-icons';
+import { faStore, faImage, faPalette, faMoon, faSun, faDesktop, faCheckCircle, faCreditCard, faExclamationTriangle, faTimes, faShieldAlt, faLock, faCrown } from '@fortawesome/free-solid-svg-icons';
 import { useTheme } from "next-themes";
 import { useStoreSettings } from "../../../store/useCartStore";
-import { apiUpdateStoreSettings } from "../../../services/api";
+import { apiUpdateStoreSettings, apiGetStoreAdminOverview } from "../../../services/api";
 
 // Pre-curated, high-contrast colors that work beautifully in UI design
 const presetColors = [
@@ -51,6 +51,7 @@ export default function SettingsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorStatus, setErrorStatus] = useState<string | null>(null);
   const [successStatus, setSuccessStatus] = useState<string | null>(null);
+  const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -67,6 +68,10 @@ export default function SettingsPage() {
     setLocalLogo(logo);
     setLocalBanner(bannerUrl);
     setLocalStoreName(storeName);
+    // Fetch premium status
+    apiGetStoreAdminOverview().then(data => {
+      if (data?.isPremium) setIsPremium(true);
+    }).catch(() => { });
   }, [whatsappNumber, designation, manifesto, ownerName, contactEmail, socialInstagram, socialTwitter, primaryColor, paystackPublicKey, paystackSecretKey, logo, bannerUrl, storeName]);
 
   if (!mounted) return null;
@@ -412,13 +417,38 @@ export default function SettingsPage() {
         </div>
 
         {/* Storefront Theme & Colors */}
-        <div className="border border-gray-200 bg-transparent p-8 dark:border-white/10">
+        <div className="border border-gray-200 bg-transparent p-8 dark:border-white/10 relative">
           <div className="mb-8 flex items-center gap-4">
             <FontAwesomeIcon icon={faPalette} className="h-5 w-5 text-gray-900 dark:text-white" />
             <h2 className="font-cinzel text-lg tracking-[0.2em] text-gray-900 dark:text-white uppercase">Aesthetic Preferences</h2>
+            {!isPremium && (
+              <span className="ml-auto flex items-center gap-1.5 border border-amber-400 text-amber-600 dark:text-amber-400 px-3 py-1 text-[9px] font-bold uppercase tracking-widest">
+                <FontAwesomeIcon icon={faCrown} className="h-3 w-3" /> Premium Only
+              </span>
+            )}
           </div>
 
-          <div className="space-y-12">
+          {/* Premium Lock Overlay */}
+          {!isPremium && (
+            <div className="absolute inset-0 top-0 left-0 z-10 flex flex-col items-center justify-center bg-white/80 dark:bg-black/80 backdrop-blur-sm">
+              <FontAwesomeIcon icon={faLock} className="h-8 w-8 text-amber-500 mb-4" />
+              <p className="font-cinzel text-xl font-medium tracking-widest text-gray-900 dark:text-white uppercase mb-2">Premium Feature</p>
+              <p className="text-xs font-light tracking-wide text-gray-500 max-w-xs text-center mb-6 leading-relaxed">
+                Full storefront theme customization including brand tone colors is exclusively available to AKI Premium members.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  type="button"
+                  className="border border-amber-500 bg-amber-500 px-8 py-3 text-[10px] font-bold uppercase tracking-widest text-white hover:bg-transparent hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+                  onClick={() => alert('Premium upgrade coming soon. Contact the platform administrator.')}
+                >
+                  <FontAwesomeIcon icon={faCrown} className="mr-2 h-3 w-3" /> Upgrade to Premium
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className={`space-y-12 ${!isPremium ? 'pointer-events-none opacity-40 select-none' : ''}`}>
             {/* Primary Accent Color */}
             <div>
               <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">
@@ -435,7 +465,6 @@ export default function SettingsPage() {
                     style={{ backgroundColor: color.hex }}
                     aria-label={`Select ${color.name} color`}
                   >
-                    {/* Tooltip */}
                     <span className="absolute -top-10 left-1/2 w-max -translate-x-1/2 scale-0 border border-gray-900 bg-gray-900 px-3 py-1.5 text-[9px] font-semibold uppercase tracking-widest text-white transition-all group-hover:scale-100 dark:border-white dark:bg-white dark:text-black">
                       {color.name}
                     </span>

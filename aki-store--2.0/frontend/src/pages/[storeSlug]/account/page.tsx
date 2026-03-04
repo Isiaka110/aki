@@ -5,6 +5,7 @@ import { faBox, faIcons, faEnvelope, faBookOpen, faSpinner } from '@fortawesome/
 
 import { apiGetStoreBySlug } from "../../../services/api";
 import ProductCard from "../../../components/ProductCard";
+import VerifiedBadge from "../../../components/VerifiedBadge";
 
 export default function StoreOwnerProfilePage() {
     const { storeSlug } = useParams();
@@ -54,10 +55,20 @@ export default function StoreOwnerProfilePage() {
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-16 pb-12 border-b border-gray-200 dark:border-white/10 transition-colors">
                     <div className="flex items-center gap-8">
                         <div className="relative h-28 w-28 overflow-hidden bg-gray-100 dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-white/10">
-                            <img src={logo || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&q=80"} alt={ownerName || "Owner"} className="object-cover w-full h-full" />
+                            {/* Non-human DiceBear avatar until owner uploads a custom logo */}
+                            <img
+                                src={logo || `https://api.dicebear.com/7.x/lorelei/svg?seed=${encodeURIComponent(storeSlug || ownerName || 'aki')}&backgroundColor=b6e3f4,c0aede,d1d4f9`}
+                                alt={ownerName || "Owner"}
+                                className="object-cover w-full h-full"
+                            />
                         </div>
                         <div>
-                            <h1 className="font-cinzel text-4xl tracking-widest text-gray-900 dark:text-white uppercase mb-2">{ownerName}</h1>
+                            <div className="flex items-center gap-3 mb-2">
+                                <h1 className="font-cinzel text-4xl tracking-widest text-gray-900 dark:text-white uppercase">{ownerName}</h1>
+                                {store?.verificationStatus === 'Verified' && (
+                                    <VerifiedBadge size="lg" title="AKI Verified Store" />
+                                )}
+                            </div>
                             <p className="text-gray-500 font-light tracking-[0.2em] text-xs uppercase">Creative Director • {designation}</p>
                         </div>
                     </div>

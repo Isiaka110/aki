@@ -76,8 +76,8 @@ export default function StoreFooter() {
                 <div className="pt-8 border-t border-gray-200 dark:border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] font-light text-gray-400 uppercase tracking-widest">
                     <p>© {new Date().getFullYear()} {storeSlug ? ownerName : "AKI Commerce"}. Integrity Assured.</p>
                     <div className="flex gap-8 items-center">
-                        <Link to={`${basePath}/policy/privacy`} className="hover:text-gray-900 dark:hover:text-white transition-colors">Privacy</Link>
-                        <Link to={`${basePath}/policy/terms`} className="hover:text-gray-900 dark:hover:text-white transition-colors">Terms</Link>
+                        <Link to={storeSlug ? `/${storeSlug}/privacy` : `/privacy`} className="hover:text-gray-900 dark:hover:text-white transition-colors">Privacy</Link>
+                        <Link to={storeSlug ? `/${storeSlug}/terms` : `/terms`} className="hover:text-gray-900 dark:hover:text-white transition-colors">Terms</Link>
                         {storeSlug && (
                             <button onClick={() => setIsReportOpen(true)} className="flex items-center gap-1.5 hover:text-red-900 dark:hover:text-red-500 transition-colors">
                                 <FontAwesomeIcon icon={faExclamationTriangle} className="h-3 w-3" /> Report Store

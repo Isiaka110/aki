@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSearch, faEdit, faTrash, faTimes, faTags, faSync } from '@fortawesome/free-solid-svg-icons';
 import { apiGetCategories, apiCreateCategory, apiUpdateCategory, apiDeleteCategory, apiGetStoreAdminOverview } from "../../../services/api";
@@ -7,6 +8,7 @@ import ConfirmationModal from "../../../components/ConfirmationModal";
 import Tooltip from "../../../components/Tooltip";
 
 export default function CategoriesPage() {
+  const navigate = useNavigate();
   const [categories, setCategories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -121,13 +123,26 @@ export default function CategoriesPage() {
       {isLockedModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="w-full max-w-sm border border-orange-500/30 bg-[#fcfcfc] dark:bg-[#050505] p-8 shadow-2xl animate-in zoom-in-95 duration-300 text-center">
-            <h3 className="font-cinzel text-xl font-medium tracking-widest text-orange-600 dark:text-orange-500 uppercase mb-4">Verification Required</h3>
+            <div className="mb-4 flex items-center justify-center">
+              <span className="inline-flex items-center justify-center h-14 w-14 border border-orange-500/30 bg-orange-50 dark:bg-orange-950/20">
+                <svg className="h-6 w-6 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              </span>
+            </div>
+            <h3 className="font-cinzel text-xl font-medium tracking-widest text-orange-600 dark:text-orange-500 uppercase mb-3">Verification Required</h3>
             <p className="text-xs font-light tracking-wide text-gray-500 leading-relaxed mb-8">
-              Collection access is temporarily restricted. Categories creation requires full verification completion and a 24-hr Super Admin authorization window.
+              Collection creation is locked until your identity is verified by a Super Admin. Submit your NIN or Driver's License to begin the 24-hour review process.
             </p>
-            <button onClick={() => setIsLockedModalOpen(false)} className="border border-orange-500 py-3 px-8 text-[10px] font-bold uppercase tracking-widest text-orange-600 dark:text-orange-500 hover:bg-orange-500 hover:text-white transition-colors">
-              Understood
-            </button>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => { setIsLockedModalOpen(false); navigate('/store-admin'); }}
+                className="border border-gray-900 bg-gray-900 py-3 px-8 text-[10px] font-bold uppercase tracking-widest text-white hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white transition-colors"
+              >
+                Go to Dashboard &amp; Verify
+              </button>
+              <button onClick={() => setIsLockedModalOpen(false)} className="border border-orange-500 py-3 px-8 text-[10px] font-bold uppercase tracking-widest text-orange-600 dark:text-orange-500 hover:bg-orange-500 hover:text-white transition-colors">
+                Maybe Later
+              </button>
+            </div>
           </div>
         </div>
       )}

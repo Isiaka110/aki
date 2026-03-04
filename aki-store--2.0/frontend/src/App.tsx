@@ -21,6 +21,8 @@ import TermsPage from './pages/terms/page';
 import ExplorePage from './pages/explore/page';
 import StorePage from './pages/[storeSlug]/page';
 import StorefrontAccountPage from './pages/[storeSlug]/account/page';
+import StorePrivacyPage from './pages/[storeSlug]/privacy/page';
+import StoreTermsPage from './pages/[storeSlug]/terms/page';
 
 // Auth
 import LoginPage from './pages/auth/login/page';
@@ -97,6 +99,8 @@ export default function App() {
         <Route element={<StorefrontLayout />}>
           <Route path="/:storeSlug" element={<StorePage />} />
           <Route path="/:storeSlug/account" element={<StorefrontAccountPage />} />
+          <Route path="/:storeSlug/privacy" element={<StorePrivacyPage />} />
+          <Route path="/:storeSlug/terms" element={<StoreTermsPage />} />
         </Route>
 
       </Routes>

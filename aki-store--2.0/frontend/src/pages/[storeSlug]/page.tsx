@@ -1,7 +1,8 @@
 import ProductCard from "../../components/ProductCard";
 import StoreSidebar from "../../components/StoreSidebar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faArrowLeft, faPlus, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
+import VerifiedBadge from "../../components/VerifiedBadge";
 import ClientFeedbackForm from "./ClientFeedbackForm";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -155,8 +156,8 @@ export default function StorePage() {
               <h1 className="text-4xl sm:text-6xl font-cinzel text-gray-900 dark:text-white uppercase tracking-[0.15em] font-medium animate-in fade-in slide-in-from-bottom-8 duration-1000 leading-tight">
                 {store?.name || storeSlug}
               </h1>
-              {store?.status === 'Active' && (
-                <FontAwesomeIcon icon={faCheckCircle} className="text-emerald-500 text-xl mt-2 animate-in fade-in zoom-in duration-1000 delay-500" title="AKI Verified Boutique" />
+              {store?.verificationStatus === 'Verified' && (
+                <VerifiedBadge size="lg" className="mt-2 animate-in fade-in zoom-in duration-1000 delay-500" />
               )}
             </div>
             <div className="h-0.5 w-16 bg-gray-900 dark:bg-white mx-auto" />

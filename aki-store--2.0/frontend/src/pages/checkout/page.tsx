@@ -1,14 +1,16 @@
 
 import { useCartStore } from "../../store/useCartStore";
+import { useCurrencyStore } from "../../store/useCurrencyStore";
 import { useNavigate as useRouter } from "react-router-dom";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faShoppingBag, faCreditCard, faShieldAlt, faTruck } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faShoppingBag, faCreditCard, faShieldAlt, faTruck, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 export default function CheckoutPage() {
     const { items, getTotal, clearCart, setLastOrder } = useCartStore();
+    const { formatPrice, currency, setCurrency } = useCurrencyStore();
     const router = useRouter();
     const [mounted, setMounted] = useState(false);
 
@@ -19,7 +21,7 @@ export default function CheckoutPage() {
     if (!mounted) return null;
 
     const subtotal = getTotal();
-    const shipping = subtotal > 50 ? 0 : 10;
+    const shipping = subtotal > 50000 ? 0 : 2500; // 0 free over ₦50,000, else ₦2,500
     const tax = subtotal * 0.075;
     const total = subtotal + shipping + tax;
 
@@ -135,7 +137,7 @@ export default function CheckoutPage() {
 
                             <div className="pt-8">
                                 <button type="submit" className="w-full border border-gray-900 bg-gray-900 py-5 text-sm font-semibold tracking-widest uppercase text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white">
-                                    Confirm Order — ${total.toFixed(2)}
+                                    Confirm Order — {formatPrice(total)}
                                 </button>
 
                                 <div className="mt-8 flex items-center justify-center gap-8 border-t border-gray-200 dark:border-white/10 pt-6">
@@ -178,21 +180,37 @@ export default function CheckoutPage() {
                                 <div className="space-y-4 border-t border-gray-200 pt-8 dark:border-white/10">
                                     <div className="flex justify-between text-sm text-gray-500 font-light tracking-wide">
                                         <span>Subtotal</span>
-                                        <span className="text-gray-900 dark:text-white">${subtotal.toFixed(2)}</span>
+                                        <span className="text-gray-900 dark:text-white">{formatPrice(subtotal)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm text-gray-500 font-light tracking-wide">
                                         <span>Logistics</span>
                                         <span className="text-gray-900 dark:text-white">
-                                            {shipping === 0 ? <span className="text-gray-900 dark:text-white italic">Complimentary</span> : `$${shipping.toFixed(2)}`}
+                                            {shipping === 0 ? <span className="text-gray-900 dark:text-white italic">Complimentary</span> : formatPrice(shipping)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-sm text-gray-500 font-light tracking-wide">
                                         <span>Duties (7.5%)</span>
-                                        <span className="text-gray-900 dark:text-white">${tax.toFixed(2)}</span>
+                                        <span className="text-gray-900 dark:text-white">{formatPrice(tax)}</span>
                                     </div>
                                     <div className="flex justify-between mt-8 border-t border-gray-900 pt-6 dark:border-white">
-                                        <span className="text-xl font-cinzel tracking-widest uppercase text-gray-900 dark:text-white">Total</span>
-                                        <span className="text-2xl font-cinzel font-medium text-gray-900 dark:text-white">${total.toFixed(2)}</span>
+                                        <div>
+                                            <span className="text-xl font-cinzel tracking-widest uppercase text-gray-900 dark:text-white">Total</span>
+                                            {/* Currency selector inline */}
+                                            <div className="flex items-center gap-1.5 mt-1">
+                                                <FontAwesomeIcon icon={faGlobe} className="h-3 w-3 text-gray-400" />
+                                                <select
+                                                    value={currency}
+                                                    onChange={e => setCurrency(e.target.value)}
+                                                    className="bg-transparent text-[9px] font-semibold uppercase tracking-widest text-gray-400 focus:outline-none cursor-pointer"
+                                                >
+                                                    <option value="NGN">₦ NGN</option>
+                                                    <option value="USD">$ USD</option>
+                                                    <option value="EUR">€ EUR</option>
+                                                    <option value="GBP">£ GBP</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <span className="text-2xl font-cinzel font-medium text-gray-900 dark:text-white">{formatPrice(total)}</span>
                                     </div>
                                 </div>
                             </div>

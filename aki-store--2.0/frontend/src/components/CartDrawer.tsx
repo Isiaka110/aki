@@ -5,14 +5,14 @@ import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faShoppingBag, faCreditCard, faSync, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { useCartStore } from "../store/useCartStore";
-import { useCurrencyStore } from "../store/useCurrencyStore";
+import { useCurrencyStore, CURRENCIES } from "../store/useCurrencyStore";
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function CartDrawer() {
   const { storeSlug } = useParams();
   const { items, isOpen, toggleCart, removeItem, getTotal, clearCart } = useCartStore();
-  const { formatPrice, currency, setCurrency } = useCurrencyStore();
+  const { formatPrice, currency, setCurrency, isFetchingRates } = useCurrencyStore();
 
   const [isCheckout, setIsCheckout] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', address: '', country: 'NG' });
@@ -264,16 +264,18 @@ export default function CartDrawer() {
               <div className="flex items-center gap-2">
                 <FontAwesomeIcon icon={faGlobe} className="text-gray-400 h-3 w-3" />
                 <span className="text-[10px] font-semibold uppercase tracking-widest text-gray-500">Currency</span>
+                {isFetchingRates && (
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" title="Fetching live rates" />
+                )}
               </div>
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
                 className="bg-transparent border-none text-xs font-semibold tracking-widest uppercase focus:outline-none dark:text-white"
               >
-                <option value="NGN">NGN (₦)</option>
-                <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="GBP">GBP (£)</option>
+                {Object.entries(CURRENCIES).map(([code, { symbol, label }]) => (
+                  <option key={code} value={code}>{symbol} {label}</option>
+                ))}
               </select>
             </div>
             {isCheckout ? (

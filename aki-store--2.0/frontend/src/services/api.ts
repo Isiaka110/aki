@@ -269,7 +269,11 @@ export async function apiGetStoreBySlug(slug: string) {
     return apiRequest<any>(`/api/store/${slug}`);
 }
 
-export async function apiGetFeaturedStores() {
+export async function apiGetFeaturedStores(): Promise<any[]> {
+    // apiRequest already unwraps data.data, so res IS the array
     const res = await apiRequest<any>('/api/stores/featured');
-    return res.data || [];
+    // Handle both array response and object wrapper
+    if (Array.isArray(res)) return res;
+    if (res && Array.isArray(res.data)) return res.data;
+    return [];
 }

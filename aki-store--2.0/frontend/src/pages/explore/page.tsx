@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faStore, faArrowRight, faStar, faArrowTrendUp, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faStore, faArrowRight, faStar, faArrowTrendUp } from '@fortawesome/free-solid-svg-icons';
+import VerifiedBadge from "../../components/VerifiedBadge";
 import { useEffect } from "react";
 
 const featuredShops = [
@@ -100,7 +101,7 @@ export default function ExplorePage() {
                                     <div className="flex items-center gap-2">
                                         <h3 className="text-2xl font-cinzel text-gray-900 dark:text-white tracking-wide">{shop.name}</h3>
                                         {shop.verified && (
-                                            <FontAwesomeIcon icon={faCheckCircle} className="h-4 w-4 text-emerald-500" title="AKI Verified Store" />
+                                            <VerifiedBadge size="sm" />
                                         )}
                                     </div>
                                     <div className="flex items-center gap-2 mb-4">
