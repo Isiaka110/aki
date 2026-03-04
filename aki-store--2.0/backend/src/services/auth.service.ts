@@ -37,7 +37,7 @@ export async function registerStoreAdmin(payload: any) {
 
         const newStore = await Store.create([{
             storeId, slug, name: storeName, ownerName: formattedOwnerName,
-            email, adminId: newUser[0]._id, status: "Pending", riskScore: "Low", revenue: 0
+            email, adminId: newUser[0]._id, status: "Pending", riskScore: "Low", revenue: 0, nin: "", verificationDocumentType: "", cacNumber: "", verificationStatus: "Pending"
         }], { session });
 
         newUser[0].storeId = newStore[0]._id;

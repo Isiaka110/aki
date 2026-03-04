@@ -37,8 +37,20 @@ export async function apiRegister(payload: {
     firstName: string;
     lastName: string;
     storeName: string;
+    nin?: string;
 }) {
     return apiRequest<{ user: any; token: string }>('/api/auth/register', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+    });
+}
+
+export async function apiVerifyIdentity(payload: {
+    nin: string;
+    verificationDocumentType: string;
+    cacNumber?: string;
+}) {
+    return apiRequest<{ success: boolean; data: any }>('/api/store-admin/verify-identity', {
         method: 'POST',
         body: JSON.stringify(payload),
     });
@@ -56,8 +68,14 @@ export async function apiGetStoreAdminOverview() {
         totalProducts: number;
         storeViews: number;
         status: string;
+        verificationStatus: string;
+        nin?: string;
+        noticeBanner: string;
         recentOrders: any[];
+        isPremium: boolean;
+        isSoftDeleted: boolean;
         settings?: {
+            ownerName: string;
             designation: string;
             manifesto: string;
             whatsappNumber: string;
@@ -162,7 +180,22 @@ export async function apiGetSuperAdminOverview() {
         pendingApprovals: number;
         openComplaints: number;
         totalRevenue: number;
+        noticeBanner: string;
     }>('/api/super-admin/overview');
+}
+
+export async function apiUpdateSuperAdminSettings(payload: { noticeBanner: string }) {
+    return apiRequest<any>('/api/super-admin/settings', {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+    });
+}
+
+export async function apiVerifyStore(storeId: string, status: 'Verified' | 'Rejected') {
+    return apiRequest<any>(`/api/super-admin/stores/${storeId}/verify`, {
+        method: 'PUT',
+        body: JSON.stringify({ status }),
+    });
 }
 
 export async function apiGetAllStores() {

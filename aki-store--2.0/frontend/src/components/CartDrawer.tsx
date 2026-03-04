@@ -3,20 +3,35 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faShoppingBag, faCreditCard, faSync } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faShoppingBag, faCreditCard, faSync, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { useCartStore } from "../store/useCartStore";
+import { useCurrencyStore } from "../store/useCurrencyStore";
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function CartDrawer() {
   const { storeSlug } = useParams();
   const { items, isOpen, toggleCart, removeItem, getTotal, clearCart } = useCartStore();
+  const { formatPrice, currency, setCurrency } = useCurrencyStore();
 
   const [isCheckout, setIsCheckout] = useState(false);
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', address: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', address: '', country: 'NG' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
+
+  const getTaxRate = () => {
+    switch (formData.country) {
+      case 'NG': return 0.075; // 7.5% NGN VAT
+      case 'US': return 0.08;  // 8% Avg US Tax
+      case 'GB': return 0.20;  // 20% UK VAT
+      case 'EU': return 0.21;  // Avg EU VAT
+      default: return 0.10;    // Standard Global 10%
+    }
+  };
+
+  const taxAmount = getTotal() * getTaxRate();
+  const grandTotal = getTotal() + taxAmount;
 
   const handleCheckout = () => {
     setIsCheckout(true);
@@ -31,7 +46,8 @@ export default function CartDrawer() {
         customerPhone: formData.phone,
         customerAddress: formData.address,
         items: items.map(i => ({ productId: i.id, title: i.title, quantity: i.quantity, price: i.price, image: i.image })),
-        totalAmount: getTotal(),
+        totalAmount: grandTotal,
+        taxAmount: taxAmount,
         paymentStatus: 'Completed',
         status: 'Pending',
         transactionRef: reference
@@ -94,13 +110,14 @@ export default function CartDrawer() {
 
       await loadPaystack();
 
-      const amountInKobo = Math.round(getTotal() * 100); // Amount to strictly kobo equivalent
+      const amountInKobo = Math.round(grandTotal * 100); // Amount to strictly kobo equivalent
 
       const paystackInstance = (window as any).PaystackPop.setup({
         key: pk,
         email: formData.email,
         amount: amountInKobo > 0 ? amountInKobo : 100, // Minimal test fallback
-        currency: 'NGN',
+        currency: 'NGN', // Always charge exactly what was calculated in NGN framework
+
         callback: function (response: any) {
           handlePaymentSuccess(response.reference);
         },
@@ -154,7 +171,20 @@ export default function CartDrawer() {
 
               <div>
                 <h3 className="text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-4 border-b border-gray-100 dark:border-white/5 pb-2">Shipping Log</h3>
-                <textarea required placeholder="Full Delivery Address" value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} rows={3} className="w-full border border-gray-200 dark:border-white/10 bg-transparent px-4 py-3 text-sm focus:border-gray-900 focus:outline-none dark:text-white dark:focus:border-white resize-none" />
+                <div className="space-y-4">
+                  <select
+                    value={formData.country}
+                    onChange={e => setFormData({ ...formData, country: e.target.value })}
+                    className="w-full border border-gray-200 dark:border-white/10 bg-transparent px-4 py-3 text-sm focus:border-gray-900 focus:outline-none dark:text-white dark:focus:border-white"
+                  >
+                    <option value="NG">Nigeria (NGN)</option>
+                    <option value="US">United States</option>
+                    <option value="GB">United Kingdom</option>
+                    <option value="EU">European Union</option>
+                    <option value="OT">Other International</option>
+                  </select>
+                  <textarea required placeholder="Full Delivery Address" value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} rows={3} className="w-full border border-gray-200 dark:border-white/10 bg-transparent px-4 py-3 text-sm focus:border-gray-900 focus:outline-none dark:text-white dark:focus:border-white resize-none" />
+                </div>
               </div>
 
               <div className="bg-gray-50 dark:bg-white/5 p-4 border border-gray-200 dark:border-white/10">
@@ -191,7 +221,7 @@ export default function CartDrawer() {
                     </div>
                     <div className="flex items-center justify-between mt-4">
                       <p className="font-cinzel text-sm tracking-wider text-gray-900 dark:text-white">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {formatPrice(item.price * item.quantity)}
                       </p>
                       <button
                         onClick={() => removeItem(item.id)}
@@ -210,9 +240,41 @@ export default function CartDrawer() {
         {/* Footer / Checkout */}
         {items.length > 0 && (
           <div className="border-t border-gray-200 p-8 dark:border-white/10">
-            <div className="mb-8 flex items-end justify-between">
+            <div className={`mb-2 flex items-end justify-between ${isCheckout ? 'opacity-50' : ''}`}>
               <span className="font-cinzel text-xs font-semibold tracking-widest text-gray-500 uppercase">Subtotal</span>
-              <span className="font-cinzel text-2xl tracking-wider text-gray-900 dark:text-white">${getTotal().toFixed(2)}</span>
+              <span className="font-cinzel text-xl tracking-wider text-gray-900 dark:text-white">{formatPrice(getTotal())}</span>
+            </div>
+
+            {isCheckout && (
+              <div className="mb-4 flex items-end justify-between border-b border-gray-100 dark:border-white/5 pb-4">
+                <span className="font-cinzel text-[10px] font-semibold tracking-widest text-gray-500 uppercase">Location Tax ({(getTaxRate() * 100).toFixed(1)}%)</span>
+                <span className="font-cinzel text-lg tracking-wider text-gray-900 dark:text-white">{formatPrice(taxAmount)}</span>
+              </div>
+            )}
+
+            {isCheckout && (
+              <div className="mb-4 flex items-end justify-between">
+                <span className="font-cinzel text-xs font-semibold tracking-widest text-gray-900 dark:text-white uppercase">Grand Total</span>
+                <span className="font-cinzel text-2xl tracking-wider text-gray-900 dark:text-white">{formatPrice(grandTotal)}</span>
+              </div>
+            )}
+
+            {/* Currency Selector */}
+            <div className="mb-8 flex items-center justify-between border-t border-b border-gray-100 dark:border-white/5 py-4">
+              <div className="flex items-center gap-2">
+                <FontAwesomeIcon icon={faGlobe} className="text-gray-400 h-3 w-3" />
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-gray-500">Currency</span>
+              </div>
+              <select
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+                className="bg-transparent border-none text-xs font-semibold tracking-widest uppercase focus:outline-none dark:text-white"
+              >
+                <option value="NGN">NGN (₦)</option>
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
+              </select>
             </div>
             {isCheckout ? (
               <button

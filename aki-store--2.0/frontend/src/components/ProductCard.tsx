@@ -3,6 +3,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { useCartStore } from "../store/useCartStore";
+import { useCurrencyStore } from "../store/useCurrencyStore";
 
 interface ProductCardProps {
   id: string;
@@ -30,6 +31,7 @@ export default function ProductCard({
 
   // Pull the actions from our Zustand store
   const { addItem, setQuickView } = useCartStore();
+  const { formatPrice } = useCurrencyStore();
 
   const product = { id, title, price, image, images: images || [image], quantity: 1 };
 
@@ -80,9 +82,9 @@ export default function ProductCard({
         {/* Pricing */}
         <div className="flex items-center gap-3 mt-1">
           {slashedPrice && (
-            <span className="text-sm font-light text-gray-400 line-through tracking-wide">${slashedPrice.toFixed(2)}</span>
+            <span className="text-sm font-light text-gray-400 line-through tracking-wide">{formatPrice(slashedPrice)}</span>
           )}
-          <span className="text-sm font-semibold tracking-widest text-gray-900 dark:text-white">${price.toFixed(2)}</span>
+          <span className="text-sm font-semibold tracking-widest text-gray-900 dark:text-white">{formatPrice(price)}</span>
         </div>
       </div>
 

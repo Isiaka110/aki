@@ -71,9 +71,33 @@ export async function createStore(payload: { storeId: string, name: string, owne
  */
 export async function updateStoreSettings(storeId: string, payload: any) {
     await connectToDatabase();
+
+    if (payload.name) {
+        const newSlug = payload.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        const existingStore = await Store.findOne({ slug: newSlug, _id: { $ne: storeId } });
+        if (existingStore) throw new Error("This Store Name is already taken. Please choose another.");
+        payload.slug = newSlug;
+    }
+
     return await Store.findByIdAndUpdate(
         storeId,
         payload,
         { new: true }
     );
+}
+
+export async function verifyStoreRegistration(adminStoreId: string, payload: { status: "Verified" | "Rejected" }) {
+    await connectToDatabase();
+    // adminStoreId here means the store being verified
+
+    const store = await Store.findByIdAndUpdate(
+        adminStoreId,
+        { verificationStatus: payload.status, status: payload.status === "Verified" ? "Active" : "Rejected" },
+        { new: true }
+    );
+
+    if (store && payload.status === "Verified") {
+        console.log(`[AKI EMAIL MOCK] Sending verification email to ${store.email} for store ${store.name}`);
+    }
+    return store;
 }

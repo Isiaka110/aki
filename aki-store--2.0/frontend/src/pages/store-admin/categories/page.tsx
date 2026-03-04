@@ -2,13 +2,16 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSearch, faEdit, faTrash, faTimes, faTags, faSync } from '@fortawesome/free-solid-svg-icons';
-import { apiGetCategories, apiCreateCategory, apiUpdateCategory, apiDeleteCategory } from "../../../services/api";
+import { apiGetCategories, apiCreateCategory, apiUpdateCategory, apiDeleteCategory, apiGetStoreAdminOverview } from "../../../services/api";
 import ConfirmationModal from "../../../components/ConfirmationModal";
+import Tooltip from "../../../components/Tooltip";
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [verificationStatus, setVerificationStatus] = useState("Pending");
+  const [isLockedModalOpen, setIsLockedModalOpen] = useState(false);
 
   interface Category {
     id: string;
@@ -30,10 +33,16 @@ export default function CategoriesPage() {
   const fetchCategories = async () => {
     setIsLoading(true);
     try {
-      const data = await apiGetCategories();
+      const [data, overviewData] = await Promise.all([
+        apiGetCategories().catch(() => []),
+        apiGetStoreAdminOverview().catch(() => null)
+      ]);
       setCategories(data || []);
+      if (overviewData) {
+        setVerificationStatus(overviewData.verificationStatus);
+      }
     } catch (error) {
-      console.error("Failed to load categories", error);
+      console.error("Failed to load categories/overview", error);
     } finally {
       setIsLoading(false);
     }
@@ -44,6 +53,10 @@ export default function CategoriesPage() {
   }, []);
 
   const openAddModal = () => {
+    if (verificationStatus !== "Verified") {
+      setIsLockedModalOpen(true);
+      return;
+    }
     setEditingCategory(null);
     setName("");
     setDescription("");
@@ -104,18 +117,39 @@ export default function CategoriesPage() {
         onClose={() => setPendingDeleteId(null)}
       />
 
+      {/* Verification Lock Modal */}
+      {isLockedModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="w-full max-w-sm border border-orange-500/30 bg-[#fcfcfc] dark:bg-[#050505] p-8 shadow-2xl animate-in zoom-in-95 duration-300 text-center">
+            <h3 className="font-cinzel text-xl font-medium tracking-widest text-orange-600 dark:text-orange-500 uppercase mb-4">Verification Required</h3>
+            <p className="text-xs font-light tracking-wide text-gray-500 leading-relaxed mb-8">
+              Collection access is temporarily restricted. Categories creation requires full verification completion and a 24-hr Super Admin authorization window.
+            </p>
+            <button onClick={() => setIsLockedModalOpen(false)} className="border border-orange-500 py-3 px-8 text-[10px] font-bold uppercase tracking-widest text-orange-600 dark:text-orange-500 hover:bg-orange-500 hover:text-white transition-colors">
+              Understood
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-cinzel text-3xl font-medium tracking-wider text-gray-900 dark:text-white uppercase mb-2">Collections</h1>
           <p className="text-sm font-light tracking-wide text-gray-500">Curate and organize your products.</p>
         </div>
-        <button
-          onClick={openAddModal}
-          className="flex items-center justify-center gap-2 border border-gray-900 bg-gray-900 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white"
-        >
-          <FontAwesomeIcon icon={faPlus} className="h-4 w-4" /> Add Collection
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={openAddModal}
+            className="flex items-center justify-center gap-2 border border-gray-900 bg-gray-900 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white"
+          >
+            <FontAwesomeIcon icon={faPlus} className="h-4 w-4" /> Add Collection
+          </button>
+          <Tooltip
+            text="Create a new product collection. Collections help buyers browse similar items together. Requires verified account."
+            position="left"
+          />
+        </div>
       </div>
 
       {/* Toolbar */}
@@ -245,7 +279,10 @@ export default function CategoriesPage() {
             <div className="p-8">
               <form onSubmit={handleSubmit} className="space-y-8">
                 <div>
-                  <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Collection Name</label>
+                  <label className="mb-3 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">
+                    Collection Name
+                    <Tooltip text="A short, memorable name for this product group. E.g. 'Summer Essentials' or 'Luxury Watches'." />
+                  </label>
                   <input
                     type="text"
                     required
@@ -257,7 +294,10 @@ export default function CategoriesPage() {
                 </div>
 
                 <div>
-                  <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Narrative (Optional)</label>
+                  <label className="mb-3 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">
+                    Narrative (Optional)
+                    <Tooltip text="A brief description of the collection's theme or style. Helps buyers understand what to expect from this collection." />
+                  </label>
                   <textarea
                     rows={3}
                     value={description}

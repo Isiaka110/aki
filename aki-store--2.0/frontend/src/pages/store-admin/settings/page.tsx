@@ -30,7 +30,7 @@ export default function SettingsPage() {
     paystackSecretKey, setPaystackSecretKey,
     logo, setLogo,
     bannerUrl, setBannerUrl,
-    storeId, slug,
+    storeId, slug, storeName, setStoreName,
   } = useStoreSettings();
 
   const [localPhone, setLocalPhone] = useState(whatsappNumber);
@@ -45,6 +45,7 @@ export default function SettingsPage() {
   const [localPaystackSec, setLocalPaystackSec] = useState(paystackSecretKey);
   const [localLogo, setLocalLogo] = useState(logo);
   const [localBanner, setLocalBanner] = useState(bannerUrl);
+  const [localStoreName, setLocalStoreName] = useState(storeName);
 
   const [mounted, setMounted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -65,7 +66,8 @@ export default function SettingsPage() {
     setLocalPaystackSec(paystackSecretKey);
     setLocalLogo(logo);
     setLocalBanner(bannerUrl);
-  }, [whatsappNumber, designation, manifesto, ownerName, contactEmail, socialInstagram, socialTwitter, primaryColor, paystackPublicKey, paystackSecretKey, logo, bannerUrl]);
+    setLocalStoreName(storeName);
+  }, [whatsappNumber, designation, manifesto, ownerName, contactEmail, socialInstagram, socialTwitter, primaryColor, paystackPublicKey, paystackSecretKey, logo, bannerUrl, storeName]);
 
   if (!mounted) return null;
 
@@ -109,6 +111,7 @@ export default function SettingsPage() {
 
     try {
       await apiUpdateStoreSettings({
+        name: localStoreName,
         whatsappNumber: localPhone,
         designation: localDesignation,
         manifesto: localManifesto,
@@ -135,6 +138,7 @@ export default function SettingsPage() {
       setPaystackSecretKey(localPaystackSec);
       setLogo(localLogo);
       setBannerUrl(localBanner);
+      setStoreName(localStoreName);
 
       // Attempt to immediately update root for visual sync
       document.documentElement.style.setProperty('--color-primary', selectedColor);
@@ -212,6 +216,17 @@ export default function SettingsPage() {
                 onChange={(e) => setLocalManifesto(e.target.value)}
                 className="w-full border border-gray-300 bg-transparent px-4 py-3 text-sm dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white resize-none"
               />
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Boutique Name</label>
+              <input
+                type="text"
+                value={localStoreName}
+                onChange={(e) => setLocalStoreName(e.target.value)}
+                className="font-cinzel tracking-widest text-lg w-full border-b border-gray-300 bg-transparent px-0 py-3 dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white"
+              />
+              <p className="mt-2 text-[9px] font-light tracking-wide text-gray-400 italic">Editing your name will automatically update your boutique signature across the platform.</p>
             </div>
 
             <div className="sm:col-span-2">

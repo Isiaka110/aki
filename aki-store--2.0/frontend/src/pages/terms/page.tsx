@@ -35,6 +35,13 @@ export default function TermsPage() {
                 We grant you the executive tools necessary to curate public reception and testimonials. This privilege must be exercised with absolute integrity. Fabricating praise or systematically erasing verified client critiques constitutes a critical breach of trust, resulting in comprehensive review audits and potential severance from the network.
               </p>
             </section>
+
+            <section>
+              <h2 className="text-xl font-cinzel text-gray-900 dark:text-white tracking-widest uppercase mb-4">IV. Global Data Use Act & KYC Verification</h2>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-light text-sm tracking-wide">
+                Account creation and boutique registration mandates explicit agreement to AKI Platform's Global Data Use Act. You consent to the submission of highly sensitive identification metrics required exclusively for executing Know Your Customer (KYC) policies. This information is meticulously handled via an encrypted layer. The data is temporarily stored under robust international surveillance guidelines and automatically purged from our local systems upon Super Admin authorization (typically a 24-hr timeframe). Continued usage implies continuous consent.
+              </p>
+            </section>
           </div>
         </div>
       </div>

@@ -45,6 +45,13 @@ export default function PrivacyPage() {
                                 Client logistical details are strictly confined to the specific artisans and boutiques contracted for acquisition fulfillment. These entities are absolutely restricted from leveraging client information outside the scope of finalizing the order. We categorically refuse the commercialization or dissemination of personal data to secondary marketing brokers.
                             </p>
                         </section>
+
+                        <section>
+                            <h2 className="text-xl font-cinzel text-gray-900 dark:text-white tracking-widest uppercase mb-4">V. Global Data Use & KYC Collection</h2>
+                            <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-light text-sm tracking-wide">
+                                In compliance with Global Data Use Acts, AKI Platform collects sensitive identification metrics such as National Identification Numbers (NIN) and corporate registration documents to verify boutique ownership. This data is exclusively utilized for rigorous KYC (Know Your Customer) policy adherence. All identification metrics are processed via an encrypted layer and are permanently purged from local server memory after Super Admin authorization within a standard 24-hr verification period. We operate under and conform to international surveillance and data protection acts to guarantee ultimate fiduciary integrity.
+                            </p>
+                        </section>
                     </div>
                 </div>
             </div>

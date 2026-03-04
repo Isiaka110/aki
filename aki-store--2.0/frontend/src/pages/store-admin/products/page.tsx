@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash, faTimes, faIcons, faTruck, faCheck } from '@fortawesome/free-solid-svg-icons';
 import ConfirmationModal from "../../../components/ConfirmationModal";
+import Tooltip from "../../../components/Tooltip";
 
-import { apiGetProducts, apiGetCategories, apiCreateProduct, apiUpdateProduct, apiDeleteProduct } from "../../../services/api";
+import { apiGetProducts, apiGetCategories, apiCreateProduct, apiUpdateProduct, apiDeleteProduct, apiGetStoreAdminOverview } from "../../../services/api";
 
 export default function ProductsPage() {
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
@@ -17,6 +18,8 @@ export default function ProductsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [verificationStatus, setVerificationStatus] = useState("Pending");
+  const [isLockedModalOpen, setIsLockedModalOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -31,12 +34,16 @@ export default function ProductsPage() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const [prodsData, catsData] = await Promise.all([
+      const [prodsData, catsData, overviewData] = await Promise.all([
         apiGetProducts(),
-        apiGetCategories().catch(() => []) // fallback if fails
+        apiGetCategories().catch(() => []), // fallback if fails
+        apiGetStoreAdminOverview().catch(() => null)
       ]);
       setProducts(prodsData || []);
       setCategories(catsData || []);
+      if (overviewData) {
+        setVerificationStatus(overviewData.verificationStatus);
+      }
     } catch (error) {
       console.error("Failed to load data");
     } finally {
@@ -49,6 +56,10 @@ export default function ProductsPage() {
   }, []);
 
   const openAddBuilder = () => {
+    if (verificationStatus !== "Verified") {
+      setIsLockedModalOpen(true);
+      return;
+    }
     setFormData({ title: "", category: categories.length > 0 ? categories[0].name : "", description: "", price: "", stock: "", images: [], status: "Active" });
     setEditingProduct(null);
     setActiveTab("info");
@@ -129,18 +140,39 @@ export default function ProductsPage() {
         onClose={() => setPendingDeleteId(null)}
       />
 
+      {/* Verification Lock Modal */}
+      {isLockedModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="w-full max-w-sm border border-orange-500/30 bg-[#fcfcfc] dark:bg-[#050505] p-8 shadow-2xl animate-in zoom-in-95 duration-300 text-center">
+            <h3 className="font-cinzel text-xl font-medium tracking-widest text-orange-600 dark:text-orange-500 uppercase mb-4">Verification Required</h3>
+            <p className="text-xs font-light tracking-wide text-gray-500 leading-relaxed mb-8">
+              Catalog access is temporarily restricted. Store creation requires full verification completion and a 24-hr Super Admin authorization window.
+            </p>
+            <button onClick={() => setIsLockedModalOpen(false)} className="border border-orange-500 py-3 px-8 text-[10px] font-bold uppercase tracking-widest text-orange-600 dark:text-orange-500 hover:bg-orange-500 hover:text-white transition-colors">
+              Understood
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* --- PAGE HEADER & TABLE --- */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-cinzel text-3xl font-medium tracking-wider text-gray-900 dark:text-white uppercase mb-2">Curated Products</h1>
           <p className="text-sm font-light tracking-wide text-gray-500">The definitive source for your atelier collection.</p>
         </div>
-        <button
-          onClick={openAddBuilder}
-          className="flex items-center justify-center gap-2 border border-gray-900 bg-gray-900 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white"
-        >
-          <FontAwesomeIcon icon={faPlus} className="h-4 w-4" /> Add Piece
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={openAddBuilder}
+            className="flex items-center justify-center gap-2 border border-gray-900 bg-gray-900 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white"
+          >
+            <FontAwesomeIcon icon={faPlus} className="h-4 w-4" /> Add Piece
+          </button>
+          <Tooltip
+            text="Create a new product listing. Requires identity verification to be approved by Super Admin first."
+            position="left"
+          />
+        </div>
       </div>
 
       <div className="border border-gray-200 bg-transparent dark:border-white/10">
@@ -190,7 +222,7 @@ export default function ProductsPage() {
                     </div>
                   </td>
                   <td className="px-8 py-5 text-gray-600 dark:text-gray-300">{product.category}</td>
-                  <td className="px-8 py-5 font-cinzel text-gray-900 dark:text-white tracking-widest">${product.price.toFixed(2)}</td>
+                  <td className="px-8 py-5 font-cinzel text-gray-900 dark:text-white tracking-widest">₦{Number(product.price).toLocaleString()}</td>
                   <td className="px-8 py-5 text-gray-500">{product.stock}</td>
                   <td className="px-8 py-5">
                     <span className={`inline-flex items-center border px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.2em]
@@ -262,7 +294,7 @@ export default function ProductsPage() {
 
               <div className="flex items-center justify-between border-t border-gray-100 dark:border-white/5 pt-4">
                 <div className="font-cinzel text-gray-900 dark:text-white tracking-widest">
-                  ${product.price.toFixed(2)}
+                  ₦{Number(product.price).toLocaleString()}
                 </div>
                 <span className={`inline-flex items-center border px-2 py-0.5 text-[8px] font-semibold uppercase tracking-[0.2em]
                    ${product.status === 'Active' ? 'border-gray-900 text-gray-900 dark:border-white dark:text-white' : 'border-gray-300 text-gray-500 dark:border-gray-700 dark:text-gray-400'}
@@ -348,7 +380,7 @@ export default function ProductsPage() {
                 <div className="grid grid-cols-2 gap-8">
                   <div>
                     <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500 mb-4 border-b border-gray-200 dark:border-white/10 pb-2">Valuation</h3>
-                    <div className="font-cinzel text-xl text-gray-900 dark:text-white tracking-widest">${viewedProduct.price.toFixed(2)}</div>
+                    <div className="font-cinzel text-xl text-gray-900 dark:text-white tracking-widest">₦{Number(viewedProduct.price).toLocaleString()}</div>
                   </div>
                   <div>
                     <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500 mb-4 border-b border-gray-200 dark:border-white/10 pb-2">Inventory</h3>
@@ -420,11 +452,17 @@ export default function ProductsPage() {
                   {activeTab === "info" && (
                     <div className="space-y-8 animate-in fade-in duration-500">
                       <div>
-                        <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Title of Piece</label>
+                        <label className="mb-3 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">
+                          Title of Piece
+                          <Tooltip text="The product name as it will appear on your public storefront. Keep it concise and descriptive." />
+                        </label>
                         <input type="text" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} placeholder="E.g. Vintage Leather Jacket" className="w-full border-b border-gray-300 bg-transparent px-0 py-3 text-sm dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white" />
                       </div>
                       <div>
-                        <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Collection</label>
+                        <label className="mb-3 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">
+                          Collection
+                          <Tooltip text="Assign this product to a collection (category). Collections help organize your storefront and improve navigation for buyers." />
+                        </label>
                         <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} className="w-full border-b border-gray-300 bg-transparent px-0 py-3 text-sm dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white appearance-none">
                           <option value="">Select Collection...</option>
                           {categories.map(c => (
@@ -433,7 +471,10 @@ export default function ProductsPage() {
                         </select>
                       </div>
                       <div>
-                        <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Description</label>
+                        <label className="mb-3 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">
+                          Description
+                          <Tooltip text="Describe the item's materials, style, provenance, and unique features. A compelling description boosts buyer confidence." />
+                        </label>
                         <textarea rows={5} value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} placeholder="Describe the materials, provenance, and style..." className="w-full border border-gray-300 bg-transparent px-4 py-3 text-sm dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white resize-none" />
                       </div>
                     </div>
@@ -467,11 +508,17 @@ export default function ProductsPage() {
                     <div className="space-y-8 animate-in fade-in duration-500">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                         <div>
-                          <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Valuation (USD)</label>
+                          <label className="mb-3 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">
+                            Valuation (NGN)
+                            <Tooltip text="Set your product price in Nigerian Naira (₦). This is the local base price — global currency display is handled automatically." />
+                          </label>
                           <input type="number" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} placeholder="0.00" className="font-cinzel tracking-widest w-full border-b border-gray-300 bg-transparent px-0 py-3 text-lg dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white" />
                         </div>
                         <div>
-                          <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Inventory Allocation</label>
+                          <label className="mb-3 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">
+                            Inventory Allocation
+                            <Tooltip text="Total number of units available for purchase. When stock hits 0, the product is automatically marked as sold out." />
+                          </label>
                           <input type="number" value={formData.stock} onChange={e => setFormData({ ...formData, stock: e.target.value })} placeholder="0" className="font-cinzel tracking-widest w-full border-b border-gray-300 bg-transparent px-0 py-3 text-lg dark:border-gray-700 dark:text-white focus:border-gray-900 focus:outline-none focus:ring-0 dark:focus:border-white" />
                         </div>
                       </div>

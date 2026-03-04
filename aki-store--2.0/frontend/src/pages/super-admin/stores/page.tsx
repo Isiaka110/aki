@@ -1,7 +1,7 @@
 
 
 import { useState, useEffect } from "react";
-import { apiGetAllStores, apiUpdateStoreIntegrity, apiGetSuperAdminStoreProducts, apiGetSuperAdminStoreCategories } from "../../../services/api";
+import { apiGetAllStores, apiUpdateStoreIntegrity, apiGetSuperAdminStoreProducts, apiGetSuperAdminStoreCategories, apiVerifyStore } from "../../../services/api";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faStore, faCheckCircle, faBan, faExternalLinkAlt, faTimes, faSync, faBox, faFolder, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
@@ -120,6 +120,7 @@ export default function StoresIntegrityPage() {
                         <thead className="border-b border-gray-200 bg-gray-50 dark:border-white/10 dark:bg-gray-900/50">
                             <tr>
                                 <th className="p-6 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Store / Owner</th>
+                                <th className="p-6 text-[10px] font-semibold uppercase tracking-widest text-gray-500">NIN</th>
                                 <th className="p-6 text-[10px] font-semibold uppercase tracking-widest text-gray-500">LTV Revenue</th>
                                 <th className="p-6 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Risk Profile</th>
                                 <th className="p-6 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Status</th>
@@ -130,13 +131,13 @@ export default function StoresIntegrityPage() {
                         <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                             {isLoading ? (
                                 <tr>
-                                    <td colSpan={5} className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
+                                    <td colSpan={7} className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
                                         <FontAwesomeIcon icon={faSync} className="h-4 w-4 mx-auto animate-spin mb-2" /> Loading records...
                                     </td>
                                 </tr>
                             ) : filteredStores.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
+                                    <td colSpan={7} className="p-12 text-center text-gray-500 uppercase tracking-widest text-[10px]">
                                         No stores found.
                                     </td>
                                 </tr>
@@ -152,6 +153,10 @@ export default function StoresIntegrityPage() {
                                                 <p className="text-[10px] text-gray-500 tracking-widest">{store.ownerName} • {store.storeId}</p>
                                             </div>
                                         </div>
+                                    </td>
+                                    <td className="p-6 text-[10px] font-mono tracking-widest text-gray-500">
+                                        {store.nin || 'UNREGISTERED'}
+                                        {store.verificationStatus === 'Verified' && <FontAwesomeIcon icon={faCheckCircle} className="ml-2 text-green-500" title="NIN Verified" />}
                                     </td>
                                     <td className="p-6 font-cinzel tracking-wider text-gray-900 dark:text-white">${store.revenue?.toLocaleString() || 0}</td>
                                     <td className="p-6">
@@ -175,11 +180,11 @@ export default function StoresIntegrityPage() {
                                     </td>
                                     <td className="p-6 text-right">
                                         <div className="flex items-center justify-end gap-3" onClick={(e) => e.stopPropagation()}>
-                                            {store.status === 'Pending' && (
+                                            {(store.status === 'Pending' || store.verificationStatus === 'Pending') && (
                                                 <button
                                                     onClick={() => { setSelectedStore(store); setIsApproveOpen(true); }}
                                                     className="text-green-600 hover:text-green-800 transition-colors"
-                                                    title="Approve Store"
+                                                    title="Verify NIN & Approve Store"
                                                 >
                                                     <FontAwesomeIcon icon={faCheckCircle} className="h-4 w-4" />
                                                 </button>
@@ -229,7 +234,7 @@ export default function StoresIntegrityPage() {
                                     </div>
                                 </div>
                                 <div className="flex gap-3 text-right" onClick={(e) => e.stopPropagation()}>
-                                    {store.status === 'Pending' && (
+                                    {(store.status === 'Pending' || store.verificationStatus === 'Pending') && (
                                         <button onClick={() => { setSelectedStore(store); setIsApproveOpen(true); }} className="text-green-600"><FontAwesomeIcon icon={faCheckCircle} className="h-4 w-4" /></button>
                                     )}
                                     {store.status !== 'Suspended' && (
@@ -240,13 +245,13 @@ export default function StoresIntegrityPage() {
                             </div>
                             <div className="flex justify-between items-center bg-gray-50 dark:bg-white/5 p-3 rounded-none">
                                 <div className="flex flex-col">
-                                    <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1">LTV Revenue</span>
-                                    <span className="font-cinzel tracking-wider text-gray-900 dark:text-white text-sm">${store.revenue?.toLocaleString() || 0}</span>
+                                    <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1">NIN Number</span>
+                                    <span className="font-mono tracking-wider text-gray-900 dark:text-white text-xs">{store.nin || 'UNREGISTERED'}</span>
                                 </div>
                                 <div className="flex flex-col text-right">
-                                    <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1">Risk Profile</span>
-                                    <span className={`text-[10px] font-bold uppercase tracking-widest ${store.riskScore === 'Low' ? 'text-gray-500' : store.riskScore === 'Medium' ? 'text-yellow-600' : 'text-red-600'}`}>
-                                        {store.riskScore}
+                                    <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1">Status</span>
+                                    <span className={`text-[10px] font-bold uppercase tracking-widest ${store.verificationStatus === 'Verified' ? 'text-green-600' : 'text-yellow-600'}`}>
+                                        {store.verificationStatus}
                                     </span>
                                 </div>
                             </div>
@@ -258,12 +263,21 @@ export default function StoresIntegrityPage() {
             {/* Approve Modal */}
             <ConfirmationModal
                 isOpen={isApproveOpen && !!selectedStore}
-                title="Authorize Boutique"
-                message={`You are about to authorize '${selectedStore?.name}' for full platform operation. This action will enable their public storefront and grant the vendor access to administrative tools. Proceed with authorization?`}
-                confirmLabel="Confirm Approval"
-                cancelLabel="Decline"
+                title="Verify & Authorize"
+                message={`You are about to verify NIN profile '${selectedStore?.nin}' and authorize '${selectedStore?.name}' for full platform operation. This action will trigger a verification email to the store owner. Proceed?`}
+                confirmLabel="Verify & Approve"
+                cancelLabel="Abort"
                 type="info"
-                onConfirm={() => handleStatusUpdate(selectedStore.storeId, "Active")}
+                onConfirm={async () => {
+                    try {
+                        await apiVerifyStore(selectedStore._id, "Verified");
+                        fetchStores();
+                        setIsApproveOpen(false);
+                    } catch (e) {
+                        console.error(e);
+                        alert("Verification failed.");
+                    }
+                }}
                 onClose={() => setIsApproveOpen(false)}
             />
 

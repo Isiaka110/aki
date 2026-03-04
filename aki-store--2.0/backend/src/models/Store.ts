@@ -10,6 +10,10 @@ export interface IStore extends Document {
     status: "Active" | "Pending" | "Flagged" | "Suspended";
     riskScore: "Low" | "Medium" | "Critical";
     revenue: number;
+    nin?: string;
+    verificationDocumentType?: "NIN" | "DriversLicense" | "";
+    cacNumber?: string;
+    verificationStatus: "Pending" | "Verified" | "Rejected";
     designation?: string;
     manifesto?: string;
     whatsappNumber?: string;
@@ -22,6 +26,8 @@ export interface IStore extends Document {
     logo?: string;
     bannerUrl?: string;
     isFeatured?: boolean;
+    isPremium?: boolean;
+    isSoftDeleted?: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -37,6 +43,10 @@ const StoreSchema = new Schema<IStore>(
         status: { type: String, enum: ["Active", "Pending", "Flagged", "Suspended"], default: "Pending" },
         riskScore: { type: String, enum: ["Low", "Medium", "Critical"], default: "Low" },
         revenue: { type: Number, default: 0 },
+        nin: { type: String, default: "" },
+        verificationDocumentType: { type: String, enum: ["NIN", "DriversLicense", ""], default: "" },
+        cacNumber: { type: String, default: "" },
+        verificationStatus: { type: String, enum: ["Pending", "Verified", "Rejected"], default: "Pending" },
         designation: { type: String, default: "" },
         manifesto: { type: String, default: "" },
         whatsappNumber: { type: String, default: "" },
@@ -48,7 +58,9 @@ const StoreSchema = new Schema<IStore>(
         paystackSecretKey: { type: String, default: "" },
         logo: { type: String, default: "" },
         bannerUrl: { type: String, default: "" },
-        isFeatured: { type: Boolean, default: false }
+        isFeatured: { type: Boolean, default: false },
+        isPremium: { type: Boolean, default: false },
+        isSoftDeleted: { type: Boolean, default: false }
     },
     { timestamps: true }
 );

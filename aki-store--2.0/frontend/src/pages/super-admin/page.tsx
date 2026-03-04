@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartBar, faUsers, faDollarSign, faStore, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from "react";
-import { apiGetSuperAdminOverview } from "../../services/api";
+import { apiGetSuperAdminOverview, apiUpdateSuperAdminSettings } from "../../services/api";
 
 export default function SuperAdminDashboard() {
     const [stats, setStats] = useState({
@@ -15,12 +15,16 @@ export default function SuperAdminDashboard() {
     if (isLoading) { } // Suppress unused var
 
 
+    const [bannerText, setBannerText] = useState("");
+    const [isSaving, setIsSaving] = useState(false);
+
     useEffect(() => {
         async function fetchOverview() {
             try {
                 const data = await apiGetSuperAdminOverview();
                 if (data) {
                     setStats(data);
+                    setBannerText(data.noticeBanner || "");
                 }
             } catch (err) {
                 console.error("Failed to fetch overview data", err);
@@ -30,6 +34,19 @@ export default function SuperAdminDashboard() {
         }
         fetchOverview();
     }, []);
+
+    const handleUpdateBanner = async () => {
+        setIsSaving(true);
+        try {
+            await apiUpdateSuperAdminSettings({ noticeBanner: bannerText });
+            alert("Banner updated successfully.");
+        } catch (e) {
+            console.error(e);
+            alert("Update failed.");
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
     const metrics = [
         { name: "Total Revenue Volume", value: `$${stats.totalRevenue.toLocaleString()}`, change: "Live", isPositive: true, icon: faDollarSign },
@@ -67,9 +84,28 @@ export default function SuperAdminDashboard() {
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                {/* Global Notice Banner Section */}
+                <div className="border border-gray-200 bg-transparent p-8 dark:border-white/10 flex flex-col">
+                    <h3 className="font-cinzel text-lg tracking-widest uppercase text-gray-900 dark:text-white mb-6">Global Admin Notice</h3>
+                    <p className="text-xs font-light text-gray-500 mb-6">This banner will be broadcasted to all store administrators on their dashboard.</p>
+                    <textarea
+                        value={bannerText}
+                        onChange={(e) => setBannerText(e.target.value)}
+                        className="w-full h-32 border border-gray-200 dark:border-white/10 bg-transparent p-4 text-xs focus:border-gray-900 focus:outline-none dark:text-white dark:focus:border-white transition-colors mb-6 resize-none font-light tracking-wide"
+                        placeholder="Type system-wide notice here..."
+                    />
+                    <button
+                        onClick={handleUpdateBanner}
+                        disabled={isSaving}
+                        className="self-end border border-gray-900 bg-gray-900 px-8 py-3 text-[10px] font-bold tracking-[0.3em] uppercase text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white"
+                    >
+                        {isSaving ? "Updating..." : "Broadcast Notice"}
+                    </button>
+                </div>
+
                 {/* Urgent Alerts Chart Area */}
-                <div className="border border-gray-200 bg-transparent p-8 dark:border-white/10 flex flex-col items-center justify-center min-h-[400px]">
+                <div className="border border-gray-200 bg-transparent p-8 dark:border-white/10 flex flex-col items-center justify-center min-h-[300px]">
                     <FontAwesomeIcon icon={faChartBar} className="mb-4 h-12 w-12 text-gray-200 dark:text-gray-800" />
                     <p className="font-cinzel text-lg tracking-widest uppercase text-gray-400 mb-2">Revenue Velocity</p>
                     <p className="text-xs font-light tracking-wide text-gray-500">Global chart visualization requires integration.</p>

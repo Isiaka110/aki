@@ -44,6 +44,7 @@ export default function SignupPage() {
     if (!validatePassword(form.password)) {
       return setError('Security threshold not met. Use 8+ characters with mixed cases, numbers, and symbols.');
     }
+
     setError('');
     setLoading(true);
     try {
@@ -88,7 +89,7 @@ export default function SignupPage() {
             <div className="space-y-8 pl-2">
               {[
                 { icon: faBolt, title: 'Immediate Prestige', desc: 'Launch your ecommerce instantly with pre-configured, architecturally designed templates.' },
-                { icon: faShieldAlt, title: 'Absolute Discretion', desc: 'Client data and transaction ledgers secured via enterprise-grade encryption.' },
+                { icon: faShieldAlt, title: 'Absolute Discretion', desc: 'Your identity and data secured via National Identification or Driver\'s License verification.' },
                 { icon: faGlobe, title: 'Global Operations', desc: 'Transact locally while scaling your presence across international markets.' },
               ].map((item) => (
                 <div key={item.title} className="flex gap-6 items-start">
@@ -119,7 +120,7 @@ export default function SignupPage() {
           </div>
 
           {error && (
-            <div className="mb-6 border border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950/20 px-4 py-3 text-xs font-light tracking-wide text-red-700 dark:text-red-400">
+            <div className="mb-6 border border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950/20 px-4 py-3 text-xs font-light tracking-wide text-red-700 dark:text-red-400 animate-shake">
               {error}
             </div>
           )}
@@ -133,6 +134,9 @@ export default function SignupPage() {
             </div>
             <input type="email" required value={form.email} onChange={(e) => set('email', e.target.value)} placeholder="Email Address" autoComplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other"
               className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors tracking-wide font-light placeholder-gray-400" />
+
+
+
             <div className="relative group">
               <input type="text" required value={form.storeName} onChange={(e) => set('storeName', e.target.value)}
                 onFocus={() => setShowTooltip('boutique')} onBlur={() => setShowTooltip(null)}
@@ -140,7 +144,7 @@ export default function SignupPage() {
                 className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors tracking-wide font-light placeholder-gray-400" />
               {showTooltip === 'boutique' && (
                 <div className="absolute -top-12 left-0 right-0 bg-gray-900 text-white text-[10px] py-2 px-3 animate-in fade-in slide-in-from-bottom-2 duration-300 z-50">
-                  Must be unique. Once selected, it cannot be changed. Public URL: <span className="text-gray-400">aki.digital/&quot;name&quot;</span>
+                  Must be unique. Public URL: <span className="text-gray-400">aki.digital/&quot;name&quot;</span>
                 </div>
               )}
             </div>

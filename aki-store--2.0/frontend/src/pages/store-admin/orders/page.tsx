@@ -272,7 +272,7 @@ export default function OrdersPage() {
                       </span>
                     </td>
                     <td className="px-8 py-6 hidden sm:table-cell">
-                      <span className="font-cinzel text-gray-900 dark:text-white tracking-widest">${order.total.toFixed(2)}</span>
+                      <span className="font-cinzel text-gray-900 dark:text-white tracking-widest">₦{order.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                       <span className="text-xs font-light text-gray-500 ml-2">({order.items} pieces)</span>
                     </td>
                     <td className="px-8 py-6 text-right relative hidden lg:table-cell">
@@ -366,7 +366,7 @@ export default function OrdersPage() {
 
               <div className="flex items-center justify-between border-t border-gray-100 dark:border-white/5 pt-4">
                 <div className="flex flex-col">
-                  <span className="font-cinzel text-gray-900 dark:text-white tracking-widest">${order.total.toFixed(2)}</span>
+                  <span className="font-cinzel text-gray-900 dark:text-white tracking-widest">₦{order.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   <span className="text-[10px] text-gray-500">{order.items} pieces</span>
                 </div>
                 <div className="flex justify-end gap-2 relative">
@@ -493,7 +493,7 @@ export default function OrdersPage() {
                     </div>
                     <div>
                       <span className="block text-gray-400 text-xs mb-1">Total Valuation</span>
-                      <span className="font-cinzel text-xl text-gray-900 dark:text-white tracking-widest">${viewedOrder.total.toFixed(2)}</span>
+                      <span className="font-cinzel text-xl text-gray-900 dark:text-white tracking-widest">₦{viewedOrder.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                     </div>
                   </div>
                 </div>
@@ -507,7 +507,7 @@ export default function OrdersPage() {
                           <span className="text-gray-900 dark:text-white">{item.name}</span>
                           <span className="text-xs text-gray-500">Qty: {item.quantity}</span>
                         </div>
-                        <span className="font-cinzel tracking-widest text-gray-900 dark:text-white">${item.price.toFixed(2)}</span>
+                        <span className="font-cinzel tracking-widest text-gray-900 dark:text-white">₦{item.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                       </div>
                     ))}
                   </div>

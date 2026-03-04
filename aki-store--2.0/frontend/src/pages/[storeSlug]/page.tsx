@@ -123,7 +123,7 @@ export default function StorePage() {
     <div className="min-h-screen bg-[#fcfcfc] dark:bg-[#050505] pb-24 transition-colors">
 
       {/* Hero Banner / Header - Full Width Eye-Catching */}
-      <div className={`relative w-full overflow-hidden border-b border-gray-200 dark:border-white/10 ${store?.bannerUrl ? 'min-h-[60vh] flex items-center justify-center' : 'pt-32 pb-20 text-center'}`}>
+      <div className={`relative w-full overflow-hidden border-b border-gray-200 dark:border-white/10 ${store?.bannerUrl ? 'min-h-[40vh] flex items-center justify-center' : 'pt-24 pb-12 text-center'}`}>
         {store?.bannerUrl ? (
           <div className="absolute inset-0 z-0">
             <img src={store.bannerUrl} alt="Store Banner" className="h-full w-full object-cover opacity-70 dark:opacity-40" />
@@ -132,18 +132,18 @@ export default function StorePage() {
         ) : (
           <div className="absolute inset-0 z-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none">
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="font-cinzel text-[20vw] font-black uppercase tracking-tighter select-none">{storeSlug}</span>
+              <span className="font-cinzel text-[15vw] font-black uppercase tracking-tighter select-none">{storeSlug}</span>
             </div>
           </div>
         )}
 
-        <div className="relative z-10 space-y-8 flex flex-col items-center px-6 text-center max-w-4xl mx-auto">
+        <div className="relative z-10 space-y-6 flex flex-col items-center px-6 text-center max-w-4xl mx-auto">
           {store?.logo ? (
-            <div className="mb-2 h-28 w-28 overflow-hidden border-2 border-gray-900 bg-white dark:border-white p-1 shadow-2xl">
+            <div className="mb-1 h-20 w-20 overflow-hidden border-2 border-gray-900 bg-white dark:border-white p-1 shadow-2xl">
               <img src={store.logo} alt="Store Logo" className="h-full w-full object-contain" />
             </div>
           ) : (
-            <div className="mb-2 border border-gray-900 dark:border-white px-4 py-1">
+            <div className="mb-1 border border-gray-900 dark:border-white px-4 py-1">
               <span className="text-[10px] font-bold tracking-[0.4em] text-gray-900 dark:text-white uppercase">
                 {store?.designation || 'EST. 2026'}
               </span>
@@ -152,14 +152,14 @@ export default function StorePage() {
 
           <div className="space-y-4">
             <div className="flex items-center justify-center gap-4">
-              <h1 className="text-5xl sm:text-8xl font-cinzel text-gray-900 dark:text-white uppercase tracking-[0.15em] font-medium animate-in fade-in slide-in-from-bottom-8 duration-1000 leading-tight">
+              <h1 className="text-4xl sm:text-6xl font-cinzel text-gray-900 dark:text-white uppercase tracking-[0.15em] font-medium animate-in fade-in slide-in-from-bottom-8 duration-1000 leading-tight">
                 {store?.name || storeSlug}
               </h1>
               {store?.status === 'Active' && (
-                <FontAwesomeIcon icon={faCheckCircle} className="text-emerald-500 text-2xl mt-4 animate-in fade-in zoom-in duration-1000 delay-500" title="AKI Verified Boutique" />
+                <FontAwesomeIcon icon={faCheckCircle} className="text-emerald-500 text-xl mt-2 animate-in fade-in zoom-in duration-1000 delay-500" title="AKI Verified Boutique" />
               )}
             </div>
-            <div className="h-0.5 w-24 bg-gray-900 dark:bg-white mx-auto" />
+            <div className="h-0.5 w-16 bg-gray-900 dark:bg-white mx-auto" />
           </div>
 
           {isOwner && store?.status !== 'Active' && (

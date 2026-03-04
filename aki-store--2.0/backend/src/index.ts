@@ -16,6 +16,7 @@ import { protect, AuthRequest } from './middleware/auth';
 import Store from './models/Store';
 import Product from './models/Product';
 import Category from './models/Category';
+import SystemSettings from './models/SystemSettings';
 
 import path from 'path';
 dotenv.config(); // Try standard .env in CWD
@@ -42,7 +43,7 @@ app.post('/api/auth/register', async (req, res) => {
     try {
         const { email, password, firstName, lastName, storeName } = req.body;
         if (!email || !password || !firstName || !lastName || !storeName) {
-            return res.status(400).json({ success: false, error: 'Please fill out all fields' });
+            return res.status(400).json({ success: false, error: 'Please fill out all mandatory fields' });
         }
         await registerStoreAdmin(req.body);
         const data = await loginUser(email, password, 'store-admin');
@@ -123,7 +124,25 @@ app.get('/api/super-admin/overview', async (req, res) => {
         const pendingApprovals = stores.filter(s => s.status === 'Pending').length;
         const openComplaints = complaints.filter(c => c.status === 'Open').length;
         const totalRevenue = stores.reduce((acc, store) => acc + (store.revenue || 0), 0);
-        res.status(200).json({ success: true, data: { activeStores, pendingApprovals, openComplaints, totalRevenue } });
+        let settings = await SystemSettings.findOne();
+        if (!settings) settings = await SystemSettings.create({ noticeBanner: "" });
+        res.status(200).json({ success: true, data: { activeStores, pendingApprovals, openComplaints, totalRevenue, noticeBanner: settings.noticeBanner } });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.put('/api/super-admin/settings', async (req, res) => {
+    try {
+        const { noticeBanner } = req.body;
+        let settings = await SystemSettings.findOne();
+        if (!settings) {
+            settings = await SystemSettings.create({ noticeBanner });
+        } else {
+            settings.noticeBanner = noticeBanner;
+            await settings.save();
+        }
+        res.status(200).json({ success: true, data: settings });
     } catch (error: any) {
         res.status(500).json({ success: false, error: error.message });
     }
@@ -143,6 +162,21 @@ app.put('/api/super-admin/stores', async (req, res) => {
         const { storeId, status, riskScore, isFeatured } = req.body;
         if (!storeId || !status) return res.status(400).json({ success: false, error: 'Missing parameters' });
         const updatedStore = await updateStoreIntegrity(storeId, status, riskScore, isFeatured);
+        res.status(200).json({ success: true, data: updatedStore });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+import { verifyStoreRegistration } from './services/store.service';
+
+app.put('/api/super-admin/stores/:storeId/verify', async (req, res) => {
+    try {
+        const { status } = req.body;
+        if (!['Verified', 'Rejected'].includes(status)) {
+            return res.status(400).json({ success: false, error: 'Invalid verification status' });
+        }
+        const updatedStore = await verifyStoreRegistration(req.params.storeId, { status });
         res.status(200).json({ success: true, data: updatedStore });
     } catch (error: any) {
         res.status(500).json({ success: false, error: error.message });
@@ -251,6 +285,10 @@ app.get('/api/store-admin/overview', protect, async (req: any, res) => {
         const totalProducts = await Product.countDocuments({ storeId: myStore?._id.toString() });
         const orderStats = await getStoreOrderStats(storeId);
 
+        // Fetch notice banner
+        let settings = await SystemSettings.findOne();
+        const noticeBanner = settings ? settings.noticeBanner : "";
+
         res.status(200).json({
             success: true,
             data: {
@@ -258,11 +296,13 @@ app.get('/api/store-admin/overview', protect, async (req: any, res) => {
                 storeId: myStore?.storeId || '',
                 slug: myStore?.slug || '',
                 status: myStore?.status || 'Active',
+                verificationStatus: myStore?.verificationStatus || 'Pending',
                 totalRevenue: orderStats.totalRevenue || 0,
                 activeOrders: orderStats.activeOrders || 0,
                 totalProducts: totalProducts || 0,
                 storeViews: myStore?.storeViews || 0, // Assuming a storeViews field might exist later
                 recentOrders: orderStats.recentOrders || [],
+                noticeBanner,
                 settings: {
                     ownerName: myStore?.ownerName || '',
                     designation: myStore?.designation || '',
@@ -276,7 +316,10 @@ app.get('/api/store-admin/overview', protect, async (req: any, res) => {
                     paystackSecretKey: myStore?.paystackSecretKey || '',
                     logo: myStore?.logo || '',
                     bannerUrl: myStore?.bannerUrl || '',
-                }
+                },
+                isPremium: myStore?.isPremium || false,
+                isSoftDeleted: myStore?.isSoftDeleted || false,
+                nin: myStore?.nin || ''
             }
         });
     } catch (error: any) {
@@ -389,6 +432,27 @@ app.put('/api/store-admin/settings', protect, async (req: any, res) => {
     try {
         const storeId = req.user.storeId;
         const updatedStore = await updateStoreSettings(storeId, req.body);
+        res.status(200).json({ success: true, data: updatedStore });
+    } catch (error: any) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.post('/api/store-admin/verify-identity', protect, async (req: any, res) => {
+    try {
+        const storeId = req.user.storeId;
+        const { nin, verificationDocumentType, cacNumber } = req.body;
+        if (!nin || !verificationDocumentType) {
+            return res.status(400).json({ success: false, error: 'Identity details required' });
+        }
+
+        const updatedStore = await Store.findByIdAndUpdate(storeId, {
+            nin,
+            verificationDocumentType,
+            cacNumber,
+            verificationStatus: 'Pending'
+        }, { new: true });
+
         res.status(200).json({ success: true, data: updatedStore });
     } catch (error: any) {
         res.status(500).json({ success: false, error: error.message });
