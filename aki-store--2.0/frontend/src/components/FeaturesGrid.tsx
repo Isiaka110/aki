@@ -23,7 +23,7 @@ export default function FeaturesGrid() {
   const features = [
     {
       title: "Signature URL",
-      description: "Secure a bespoke aki.com/your-brand address. Establish immediate credibility without sharing space on crowded feeds.",
+      description: "Get your own aki.com/store-name address. Stand out instantly rather than sharing space on crowded social feeds.",
       icon: (
         <FontAwesomeIcon icon={faShoppingBag} className="h-6 w-6 transition-transform duration-500 group-hover:scale-110" />
       ),
@@ -36,7 +36,7 @@ export default function FeaturesGrid() {
       ),
     },
     {
-      title: "Verified Prestige",
+      title: "Verified Badge",
       description: "Accumulate unparalleled social proof. Display verified reviews that convert passive admirers into loyal clientele.",
       icon: mounted ? (
         <i

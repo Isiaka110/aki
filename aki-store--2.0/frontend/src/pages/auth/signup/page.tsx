@@ -88,7 +88,7 @@ export default function SignupPage() {
             <h1 className="font-cinzel text-6xl text-white tracking-wide mb-10 leading-[1.1]">Establish<br />Your <span className="text-gray-400">Legacy.</span></h1>
             <div className="space-y-8 pl-2">
               {[
-                { icon: faBolt, title: 'Immediate Prestige', desc: 'Launch your ecommerce instantly with pre-configured, architecturally designed templates.' },
+                { icon: faBolt, title: 'Go Live Fast', desc: 'Launch your online store instantly with a ready-made, professionally designed layout.' },
                 { icon: faShieldAlt, title: 'Absolute Discretion', desc: 'Your identity and data secured via National Identification or Driver\'s License verification.' },
                 { icon: faGlobe, title: 'Global Operations', desc: 'Transact locally while scaling your presence across international markets.' },
               ].map((item) => (
@@ -140,7 +140,7 @@ export default function SignupPage() {
             <div className="relative group">
               <input type="text" required value={form.storeName} onChange={(e) => set('storeName', e.target.value)}
                 onFocus={() => setShowTooltip('boutique')} onBlur={() => setShowTooltip(null)}
-                placeholder="Boutique Name" autoComplete="off"
+                placeholder="Store Name" autoComplete="off"
                 className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors tracking-wide font-light placeholder-gray-400" />
               {showTooltip === 'boutique' && (
                 <div className="absolute -top-12 left-0 right-0 bg-gray-900 text-white text-[10px] py-2 px-3 animate-in fade-in slide-in-from-bottom-2 duration-300 z-50">
@@ -187,7 +187,7 @@ export default function SignupPage() {
           <div className="mt-10 text-center">
             <p className="text-xs font-light text-gray-500 tracking-wide">
               Already a member?{' '}
-              <Link to="/auth/login" className="text-gray-900 hover:text-gray-600 dark:text-white dark:hover:text-gray-300 font-medium ml-1 transition-colors">Enter Atelier</Link>
+              <Link to="/auth/login" className="text-gray-900 hover:text-gray-600 dark:text-white dark:hover:text-gray-300 font-medium ml-1 transition-colors">Sign In</Link>
             </p>
           </div>
 

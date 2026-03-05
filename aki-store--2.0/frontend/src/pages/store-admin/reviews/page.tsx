@@ -9,7 +9,7 @@ import { apiGetReviews, apiUpdateReviewStatus } from "../../../services/api";
 
 export default function ReviewsPage() {
   const { user } = useAuthStore();
-  const storeName = user?.storeName || 'Your Boutique';
+  const storeName = user?.storeName || 'Your Store';
 
   const [activeTab, setActiveTab] = useState("All");
   const tabs = ["All", "Pending", "Approved", "Rejected"];

@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faShoppingBag, faUser, faMoon, faSun, faBars, faChevronDown, faSignOutAlt, faCog, faStore } from '@fortawesome/free-solid-svg-icons';
 import { useCartStore } from "../store/useCartStore";
 import { useCurrencyStore, CURRENCIES } from "../store/useCurrencyStore";
+import { useAuthStore } from "../store/useAuthStore";
 import MobileMenu from "./MobileMenu";
 import ConfirmationModal from "./ConfirmationModal";
 import { apiGetStoreBySlug } from "../services/api";
@@ -92,12 +93,14 @@ export default function Navbar() {
     }
   };
 
+  const { clearAuth } = useAuthStore();
+
   const handleLogout = () => {
-    // Clear session cookies/keys
+    clearAuth();
     document.cookie = 'token=; Max-Age=0; path=/;';
     localStorage.removeItem('aki_session');
     setProfileOpen(false);
-    router('/auth/signin');
+    router('/auth/login');
   };
 
   return (

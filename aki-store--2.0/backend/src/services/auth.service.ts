@@ -4,8 +4,28 @@ import Store from "../models/Store";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import nodemailer from "nodemailer";
 
-const JWT_SECRET = process.env.JWT_SECRET || "fallback_core_secret_key_123!";
+const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_changeme";
+
+// Optional: SMTP configuration for sending real emails
+const smtpHost = process.env.SMTP_HOST;
+const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 587;
+const smtpUser = process.env.SMTP_USER;
+const smtpPass = process.env.SMTP_PASS;
+
+let transporter: nodemailer.Transporter | null = null;
+if (smtpHost && smtpUser && smtpPass) {
+    transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpPort === 465, // true for 465, false for other ports
+        auth: {
+            user: smtpUser,
+            pass: smtpPass,
+        },
+    });
+}
 
 /**
  * Registers a new Store Admin and their respective Store.
@@ -44,6 +64,26 @@ export async function registerStoreAdmin(payload: any) {
         await newUser[0].save({ session });
         await session.commitTransaction();
         session.endSession();
+
+        // DEV: Simulated platform-styled dispatch email
+        console.log(`
+==================================================
+[AKI Platform] DISPATCH: Welcome to the Directory
+==================================================
+To: ${email}
+Subject: Your Store is Reserved.
+
+Welcome, ${formattedOwnerName}.
+Your bespoke storefront "${storeName}" has been successfully reserved. 
+Our moderation team will review your application shortly.
+
+Enjoy unparalleled commerce.
+
+Regards,
+AKI Executive Suite
+==================================================
+`);
+
         return { user: newUser[0], store: newStore[0] };
     } catch (error) {
         await session.abortTransaction();
@@ -74,56 +114,66 @@ export async function loginUser(email: string, password: string, requiredRole?: 
     return { token, user: { id: user._id, email: user.email, role: user.role, storeId: user.storeId } };
 }
 
-// ─── Password Reset ───────────────────────────────────────────────────────────
-// In-memory OTP store (replace with DB + email delivery in production)
-const resetTokenStore = new Map<string, { code: string; expiresAt: number }>();
-
+// ─── Password Recovery ────────────────────────────────────────────────────────
 /**
- * Generates + stores a 6-digit OTP for the given email.
- * Logs to console in dev — integrate Nodemailer/Resend for production.
+ * Generates a strong temporary password, assigns it to the user,
+ * and logs the new password in a styled simulated email. 
  */
 export async function requestPasswordReset(email: string) {
     await connectToDatabase();
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+passwordHash");
     // Silent success to prevent email enumeration
     if (!user) return { success: true };
 
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
-    resetTokenStore.set(email, { code, expiresAt: Date.now() + 15 * 60 * 1000 });
-
-    // DEV: log the code — replace with email in production
-    console.log(`[AKI Reset] Code for ${email}: ${code}`);
-    return { success: true };
-}
-
-/**
- * Verifies the OTP provided by the user.
- */
-export async function verifyResetCode(email: string, code: string) {
-    const entry = resetTokenStore.get(email);
-    if (!entry) throw new Error("No reset code found. Please request a new one.");
-    if (Date.now() > entry.expiresAt) {
-        resetTokenStore.delete(email);
-        throw new Error("Code has expired. Please request a new one.");
+    // Generate a secure 10-char temporary password
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+    let tempPassword = '';
+    for (let i = 0; i < 10; i++) {
+        tempPassword += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    if (entry.code !== code) throw new Error("Invalid code. Please try again.");
-    return { success: true };
-}
-
-/**
- * Resets the password after OTP is verified.
- */
-export async function confirmPasswordReset(email: string, code: string, newPassword: string) {
-    await connectToDatabase();
-    await verifyResetCode(email, code); // re-verify
-
-    const user = await User.findOne({ email }).select("+passwordHash");
-    if (!user) throw new Error("User not found.");
 
     const salt = await bcrypt.genSalt(10);
-    user.passwordHash = await bcrypt.hash(newPassword, salt);
+    user.passwordHash = await bcrypt.hash(tempPassword, salt);
     await user.save();
 
-    resetTokenStore.delete(email); // purge used token
+    const emailBody = `
+==================================================
+[AKI Platform] DISPATCH: Password Recovery
+==================================================
+To: ${email}
+Subject: Your New Secure Password
+
+A recovery protocol was initiated for your store.
+We have generated a new secure password for you:
+
+Password: ${tempPassword}
+
+Please return to the login portal and use this 
+password. You are advised to change this in your 
+Settings immediately.
+
+Regards,
+AKI Security Infrastructure
+==================================================
+`;
+
+    if (transporter) {
+        try {
+            await transporter.sendMail({
+                from: `"AKI Commerce" <${smtpUser}>`,
+                to: email,
+                subject: "Your New Secure Password - AKI Commerce",
+                text: emailBody,
+            });
+            console.log(`[Email Sent] Password recovery sent to ${email}`);
+        } catch (mailError) {
+            console.error(`[Email Failed] Failed to send to ${email}`, mailError);
+            console.log(emailBody); // Fallback to console
+        }
+    } else {
+        // Fallback: Simulated platform-styled dispatch email
+        console.log(emailBody);
+    }
+
     return { success: true };
 }

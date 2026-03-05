@@ -7,7 +7,7 @@ import connectToDatabase from './lib/mongodb';
 // Import Services
 import { getAllStores, updateStoreIntegrity, updateStoreSettings, getStoreById } from './services/store.service';
 import { getAllComplaints, updateComplaintStatus, dispatchComplaint } from './services/complaint.service';
-import { registerStoreAdmin, loginUser, requestPasswordReset, verifyResetCode, confirmPasswordReset } from './services/auth.service';
+import { registerStoreAdmin, loginUser, requestPasswordReset } from './services/auth.service';
 import { getStoreProducts, createProduct, updateProduct, deleteProduct } from './services/product.service';
 import { getStoreCategories, createCategory, updateCategory, deleteCategory } from './services/category.service';
 import { createStoreOrder, getStoreOrders, updateOrderStatusAdmin, getStoreOrderStats } from './services/order.service';
@@ -92,28 +92,7 @@ app.post('/api/auth/reset-request', async (req, res) => {
     }
 });
 
-app.post('/api/auth/reset-verify', async (req, res) => {
-    try {
-        const { email, code } = req.body;
-        if (!email || !code) return res.status(400).json({ success: false, error: 'Email and code are required.' });
-        await verifyResetCode(email, code);
-        res.status(200).json({ success: true });
-    } catch (error: any) {
-        res.status(400).json({ success: false, error: error.message });
-    }
-});
 
-app.post('/api/auth/reset-confirm', async (req, res) => {
-    try {
-        const { email, code, password } = req.body;
-        if (!email || !code || !password) return res.status(400).json({ success: false, error: 'All fields are required.' });
-        if (password.length < 8) return res.status(400).json({ success: false, error: 'Password must be at least 8 characters.' });
-        await confirmPasswordReset(email, code, password);
-        res.status(200).json({ success: true, message: 'Password reset successfully.' });
-    } catch (error: any) {
-        res.status(400).json({ success: false, error: error.message });
-    }
-});
 
 // --- Super Admin Route ---
 app.get('/api/super-admin/overview', async (req, res) => {

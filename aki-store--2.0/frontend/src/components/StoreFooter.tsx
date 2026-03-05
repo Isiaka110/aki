@@ -133,7 +133,7 @@ export default function StoreFooter() {
                                 onClick={() => setIsReportOpen(false)}
                                 className="w-full mt-4 flex justify-center border border-red-900 bg-red-900 py-4 text-xs font-semibold tracking-widest uppercase text-white transition-colors hover:bg-transparent hover:text-red-900 dark:hover:text-red-500"
                             >
-                                Dispatch Secure Report
+                                Send a Message
                             </button>
                         </form>
                     </div>

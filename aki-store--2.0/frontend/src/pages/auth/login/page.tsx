@@ -50,7 +50,7 @@ export default function LoginPage() {
             </Link>
           </div>
           <div className="max-w-lg">
-            <h1 className="font-cinzel text-6xl text-gray-900 dark:text-white tracking-wide mb-6 leading-[1.1]">The Atelier<br />Awaits.</h1>
+            <h1 className="font-cinzel text-6xl text-gray-900 dark:text-white tracking-wide mb-6 leading-[1.1]">Welcome<br />Back.</h1>
             <p className="text-sm font-light tracking-wide text-gray-800 dark:text-gray-300">Resume curation of your exquisite collection.</p>
           </div>
           <p className="text-xs text-gray-900 dark:text-gray-400 font-medium tracking-[0.2em] uppercase">AKI Commerce / Authentication</p>
@@ -139,7 +139,7 @@ export default function LoginPage() {
           <div className="mt-12 text-center">
             <p className="text-xs font-light text-gray-500 tracking-wide">
               Do not maintain a presence?{' '}
-              <Link to="/auth/signup" className="text-gray-900 hover:text-gray-600 dark:text-white dark:hover:text-gray-300 font-medium ml-1 transition-colors">Register Boutique</Link>
+              <Link to="/auth/signup" className="text-gray-900 hover:text-gray-600 dark:text-white dark:hover:text-gray-300 font-medium ml-1 transition-colors">Create a Store</Link>
             </p>
           </div>
 

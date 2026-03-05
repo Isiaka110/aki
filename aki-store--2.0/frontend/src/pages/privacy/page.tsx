@@ -18,7 +18,7 @@ export default function PrivacyPage() {
                         <section>
                             <h2 className="text-xl font-cinzel text-gray-900 dark:text-white tracking-widest uppercase mb-4">I. Data Collection</h2>
                             <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-light text-sm tracking-wide">
-                                When you establish an AKI Commerce presence, we securely collect essential business identifiers, contact parameters, and necessary financial routing information for absolute transaction fidelity. For our distinguished clientele completing acquisitions, we require fulfillment logistics and correspondence details.
+                                When you create a store on AKI, we collect basic business details, contact information, and payment information needed to process transactions. For customers making purchases, we collect shipping address and contact details to fulfil orders.
                             </p>
                             <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-light text-sm tracking-wide mt-4">
                                 Under no pretense do we retain raw financial instrumentation on our direct architecture; all acquisitions traverse encrypted, premier banking infrastructure globally recognized for their stringent security.

@@ -224,7 +224,7 @@ export default function SettingsPage() {
             </div>
 
             <div className="sm:col-span-2">
-              <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Boutique Name</label>
+              <label className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Store Name</label>
               <input
                 type="text"
                 value={localStoreName}

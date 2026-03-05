@@ -577,7 +577,7 @@ export default function ProductsPage() {
                               <FontAwesomeIcon icon={faCheck} className="absolute left-[3px] top-[3px] h-3.5 w-3.5 text-white dark:text-black pointer-events-none opacity-0 peer-checked:opacity-100" />
                             </div>
                             <div>
-                              <span className="block text-sm font-medium tracking-wide text-gray-900 dark:text-white">Global Dispatch</span>
+                              <span className="block text-sm font-medium tracking-wide text-gray-900 dark:text-white">Ship Everywhere</span>
                               <span className="block text-xs font-light text-gray-500 mt-1">International shipping enabled.</span>
                             </div>
                           </label>
@@ -587,7 +587,7 @@ export default function ProductsPage() {
                               <FontAwesomeIcon icon={faCheck} className="absolute left-[3px] top-[3px] h-3.5 w-3.5 text-white dark:text-black pointer-events-none opacity-0 peer-checked:opacity-100" />
                             </div>
                             <div>
-                              <span className="block text-sm font-medium tracking-wide text-gray-900 dark:text-white">Atelier Collection</span>
+                              <span className="block text-sm font-medium tracking-wide text-gray-900 dark:text-white">My Store</span>
                               <span className="block text-xs font-light text-gray-500 mt-1">Client can physically retrieve the piece.</span>
                             </div>
                           </label>

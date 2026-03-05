@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const steps = [
   {
     id: 1,
-    title: "Claim your Boutique",
+    title: "Claim your Store",
     desc: "Pick your unique store name and URL (e.g., aki.com/vintage-chic).",
     icon: faStore,
     fullDesc: "Your namespace is your digital estate. Select an identity that reflects the heritage and exclusive nature of your curations."
@@ -47,7 +47,7 @@ export default function OnboardingGuide() {
             Partner with AKI Commerce
           </p>
           <h1 className="font-cinzel text-5xl tracking-widest text-gray-900 dark:text-white sm:text-7xl mb-6 uppercase">
-            Establish Your <br /> <span className="text-gray-400 font-light">Atelier</span>
+            Set Up Your <br /> <span className="text-gray-400 font-light">Store</span>
           </h1>
           <p className="mt-8 text-sm font-light tracking-wide text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
             The definitive protocol for launching a world-class digital storefront. A synthesis of luxury, technology, and commerce.
@@ -92,7 +92,7 @@ export default function OnboardingGuide() {
                 </button>
                 {activeStep === 4 && (
                   <Link to="/auth/signup" className="flex items-center gap-3 border border-gray-900 bg-transparent px-8 py-4 text-xs font-semibold tracking-widest uppercase text-gray-900 transition-all hover:bg-gray-900 hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-black">
-                    Register Atelier
+                    Create My Store
                   </Link>
                 )}
               </div>

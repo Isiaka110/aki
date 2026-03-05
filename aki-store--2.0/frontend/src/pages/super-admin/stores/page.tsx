@@ -173,7 +173,7 @@ export default function StoresIntegrityPage() {
                                         <button
                                             onClick={(e) => { e.stopPropagation(); handleStatusUpdate(store.storeId, store.status, store.riskScore, undefined, !store.isFeatured); }}
                                             className={`transition-colors ${store.isFeatured ? 'text-red-500' : 'text-gray-300 dark:text-gray-700'} hover:text-red-600`}
-                                            title={store.isFeatured ? "Un-feature Boutique" : "Feature on Homepage"}
+                                            title={store.isFeatured ? "Remove from Homepage" : "Feature on Homepage"}
                                         >
                                             <FontAwesomeIcon icon={faHeart} className="h-4 w-4" />
                                         </button>

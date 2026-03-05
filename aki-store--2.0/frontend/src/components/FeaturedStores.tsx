@@ -142,10 +142,10 @@ export default function FeaturedStores() {
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent transition-opacity duration-500" />
                                                 <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/20" />
 
-                                                {/* Store badge top-left */}
+                                                {/* Store designation label top-left — shows collection type, never internal ID */}
                                                 <div className="absolute top-4 left-4">
                                                     <div className="bg-black/60 backdrop-blur-md px-3 py-1 text-[10px] font-bold text-white tracking-[0.2em] uppercase">
-                                                        {shop.storeId || storeSlug}
+                                                        {shop.designation || "Collection"}
                                                     </div>
                                                 </div>
 

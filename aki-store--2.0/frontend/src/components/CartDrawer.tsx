@@ -61,7 +61,7 @@ export default function CartDrawer() {
 
       const data = await res.json();
       if (data.success) {
-        alert('Acquisition Complete! A confirmation receipt has been dispatched.');
+        alert('Order placed! A confirmation has been sent to your email.');
         clearCart();
         setIsCheckout(false);
         toggleCart();

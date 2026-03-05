@@ -17,13 +17,13 @@ export default function ContactPage() {
                             Private <br /> Consultations.
                         </h1>
                         <p className="mt-6 text-lg text-gray-600 dark:text-gray-400 font-light tracking-wide max-w-md leading-relaxed">
-                            Whether you represent an established brand or are launching a bespoke collection, our advisory board is at your absolute disposal.
+                            Whether you're an established brand or just starting out, our team is here to help.
                         </p>
 
                         <div className="mt-16 space-y-12">
                             <div className="flex items-start gap-6 group">
                                 <div className="flex h-12 w-12 shrink-0 items-center justify-center border border-gray-200 dark:border-white/10 bg-transparent transition-colors group-hover:bg-gray-900 dark:group-hover:bg-white text-gray-900 group-hover:text-white dark:text-white dark:group-hover:text-black">
-                                    <FontAwesomeIcon icon={faEnvelope}  className="h-5 w-5"  />
+                                    <FontAwesomeIcon icon={faEnvelope} className="h-5 w-5" />
                                 </div>
                                 <div className="pt-1">
                                     <h3 className="font-cinzel tracking-widest text-sm text-gray-900 dark:text-white uppercase mb-2">Direct Correspondence</h3>
@@ -32,7 +32,7 @@ export default function ContactPage() {
                             </div>
                             <div className="flex items-start gap-6 group">
                                 <div className="flex h-12 w-12 shrink-0 items-center justify-center border border-gray-200 dark:border-white/10 bg-transparent transition-colors group-hover:bg-gray-900 dark:group-hover:bg-white text-gray-900 group-hover:text-white dark:text-white dark:group-hover:text-black">
-                                    <FontAwesomeIcon icon={faComment}  className="h-5 w-5"  />
+                                    <FontAwesomeIcon icon={faComment} className="h-5 w-5" />
                                 </div>
                                 <div className="pt-1">
                                     <h3 className="font-cinzel tracking-widest text-sm text-gray-900 dark:text-white uppercase mb-2">Private Chat</h3>
@@ -41,10 +41,10 @@ export default function ContactPage() {
                             </div>
                             <div className="flex items-start gap-6 group">
                                 <div className="flex h-12 w-12 shrink-0 items-center justify-center border border-gray-200 dark:border-white/10 bg-transparent transition-colors group-hover:bg-gray-900 dark:group-hover:bg-white text-gray-900 group-hover:text-white dark:text-white dark:group-hover:text-black">
-                                    <FontAwesomeIcon icon={faMapMarkerAlt}  className="h-5 w-5"  />
+                                    <FontAwesomeIcon icon={faMapMarkerAlt} className="h-5 w-5" />
                                 </div>
                                 <div className="pt-1">
-                                    <h3 className="font-cinzel tracking-widest text-sm text-gray-900 dark:text-white uppercase mb-2">Atelier Address</h3>
+                                    <h3 className="font-cinzel tracking-widest text-sm text-gray-900 dark:text-white uppercase mb-2">Our Address</h3>
                                     <p className="text-xs text-gray-500 font-light tracking-wide">The Penthouse, Victoria Island, <br />Lagos, Nigeria.</p>
                                 </div>
                             </div>
@@ -73,7 +73,7 @@ export default function ContactPage() {
                             <div>
                                 <select className="w-full border-b border-gray-300 bg-transparent px-2 py-3 text-sm focus:border-gray-900 focus:outline-none dark:border-gray-700 dark:text-white dark:focus:border-white transition-colors duration-300 tracking-wide font-light text-gray-500 appearance-none rounded-none">
                                     <option value="" disabled selected>Nature of Inquiry</option>
-                                    <option className="text-gray-900">Boutique Application</option>
+                                    <option className="text-gray-900">Store Application</option>
                                     <option className="text-gray-900">VIP Sourcing</option>
                                     <option className="text-gray-900">Press / Editorial</option>
                                     <option className="text-gray-900">Corporate Identity</option>

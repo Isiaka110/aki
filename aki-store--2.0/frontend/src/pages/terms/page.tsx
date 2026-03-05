@@ -16,9 +16,9 @@ export default function TermsPage() {
 
           <div className="space-y-16">
             <section>
-              <h2 className="text-xl font-cinzel text-gray-900 dark:text-white tracking-widest uppercase mb-4">I. Sovereign Boutiques</h2>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-light text-sm tracking-wide">
-                AKI architects the digital infrastructure required to present your collections to the world. However, your boutique remains entirely your sovereign enterprise. You retain absolute control over and responsibility for inventory management, meticulous fulfillment, and direct client correspondence. AKI does not hold, manage, or dispatch physical assets on your behalf.
+              <h2 className="text-xl font-cinzel text-gray-900 dark:text-white tracking-widest uppercase mb-4">I. Your Store</h2>
+              <p className="text-sm font-light text-gray-600 dark:text-gray-400 leading-relaxed">
+                AKI provides the tools and infrastructure you need to run your online store. Your store is your own business — you own and control your products, fulfilment, and customer relationships. AKI does not manage or ship physical goods on your behalf.
               </p>
             </section>
 

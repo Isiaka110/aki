@@ -29,7 +29,7 @@ export default function StorePage() {
         const data = await response.json();
         if (data.success) {
           setStore(data.data);
-          document.title = `${data.data.name || storeSlug} | AKI Boutique`;
+          document.title = `${data.data.name || storeSlug} | AKI Store`;
           if (data.data.primaryColor) {
             document.documentElement.style.setProperty('--color-primary', data.data.primaryColor);
           }

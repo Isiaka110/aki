@@ -8,6 +8,7 @@ import Tooltip from "../../components/Tooltip";
 export default function DashboardOverview() {
   const [statsData, setStatsData] = useState({
     storeName: "Your Store",
+    slug: "",
     totalRevenue: 0,
     activeOrders: 0,
     totalProducts: 0,
@@ -32,6 +33,7 @@ export default function DashboardOverview() {
         if (data) {
           setStatsData({
             storeName: data.storeName || "Your Store",
+            slug: data.slug || "",
             totalRevenue: data.totalRevenue || 0,
             activeOrders: data.activeOrders || 0,
             totalProducts: data.totalProducts || 0,
@@ -94,8 +96,8 @@ export default function DashboardOverview() {
           <FontAwesomeIcon icon={faExclamationTriangle} className="h-5 w-5 text-red-900 dark:text-red-500 mt-0.5 shrink-0" />
           <div className="flex-1">
             <h3 className="font-cinzel text-xs font-bold tracking-widest text-red-900 dark:text-red-500 uppercase flex items-center gap-3 mb-2">
-              AKI Core Protocol Broadcast
-              <span className="text-[9px] bg-red-200 dark:bg-red-900/50 px-2 py-0.5 rounded-none tracking-[0.2em]">Priority Alpha</span>
+              Platform Notice
+              <span className="text-[9px] bg-red-200 dark:bg-red-900/50 px-2 py-0.5 rounded-none tracking-[0.2em]">Action Required</span>
             </h3>
             <p className="text-xs font-light tracking-wide text-red-800 dark:text-red-400 leading-relaxed max-w-2xl text-justify">
               {statsData.noticeBanner}
@@ -107,8 +109,8 @@ export default function DashboardOverview() {
       {/* Verification Status Banner */}
       {statsData.verificationStatus !== "Verified" && (
         <div className={`border p-4 mb-8 flex items-center justify-between gap-4 ${!statsData.nin
-            ? 'border-red-200 bg-red-50/30 dark:border-red-900/20 dark:bg-red-950/10'
-            : 'border-orange-200 bg-orange-50/30 dark:border-orange-900/20 dark:bg-orange-950/10'
+          ? 'border-red-200 bg-red-50/30 dark:border-red-900/20 dark:bg-red-950/10'
+          : 'border-orange-200 bg-orange-50/30 dark:border-orange-900/20 dark:bg-orange-950/10'
           }`}>
           <div className="flex items-center gap-3">
             <FontAwesomeIcon icon={faClock} className={`h-4 w-4 ${!statsData.nin ? 'text-red-600' : 'text-orange-600'}`} />
@@ -141,18 +143,20 @@ export default function DashboardOverview() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <h1 className="font-cinzel text-4xl font-medium tracking-wider text-gray-900 dark:text-white uppercase mb-3 leading-none">
-            Atelier Overview
+            Store Overview
           </h1>
           <p className="text-sm font-light tracking-wide text-gray-500">
-            Executive summary for <span className="text-gray-900 dark:text-white font-medium">{statsData.storeName}</span>.
+            Summary for <span className="text-gray-900 dark:text-white font-medium">{statsData.storeName}</span>.
           </p>
         </div>
         <Link
-          to={`/store/${statsData.storeName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`}
-          title="Visit Public Store"
+          to={statsData.slug ? `/${statsData.slug}` : '/'}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Visit your public storefront"
           className="border border-gray-900 bg-gray-900 px-8 py-3 text-[10px] font-bold tracking-[0.3em] uppercase text-white transition-all hover:bg-transparent hover:text-gray-900 dark:border-white dark:bg-white dark:text-black dark:hover:bg-transparent dark:hover:text-white"
         >
-          View Live Boutique
+          View My Store
         </Link>
       </div>
 
